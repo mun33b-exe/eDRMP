@@ -4,7 +4,7 @@ class AppRoutes {
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String appShell = '/app-shell';
-  
+
   // User routes
   static const String dashboard = '/dashboard';
   static const String myDevices = '/my-devices';
@@ -17,7 +17,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String notifications = '/notifications';
   static const String map = '/map';
-  
+
   // Admin routes
   static const String policeDashboard = '/police-dashboard';
   static const String ptaDashboard = '/pta-dashboard';

@@ -4,7 +4,9 @@ import '../../../../theme/colors.dart';
 import '../../data/models/user_dashboard_model.dart';
 
 class DashboardService {
-  Future<UserDashboardModel> fetchUserDashboard({required String userName}) async {
+  Future<UserDashboardModel> fetchUserDashboard({
+    required String userName,
+  }) async {
     await Future<void>.delayed(const Duration(milliseconds: 700));
 
     return UserDashboardModel(

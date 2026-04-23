@@ -7,10 +7,7 @@ import '../../settings/presentation/settings_page.dart';
 import 'dashboard_page.dart';
 
 class AppShellPage extends StatefulWidget {
-  const AppShellPage({
-    super.key,
-    this.initialIndex = 0,
-  });
+  const AppShellPage({super.key, this.initialIndex = 0});
 
   final int initialIndex;
 
@@ -49,10 +46,7 @@ class _AppShellPageState extends State<AppShellPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: _onDestinationSelected,

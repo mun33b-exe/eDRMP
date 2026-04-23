@@ -27,7 +27,8 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<UserDashboardModel> _loadDashboard() {
-    final userName = AuthController.instance.state.user?.fullName ?? 'eDRMP User';
+    final userName =
+        AuthController.instance.state.user?.fullName ?? 'eDRMP User';
     return _dashboardService.fetchUserDashboard(userName: userName);
   }
 

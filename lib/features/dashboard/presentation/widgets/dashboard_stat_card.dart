@@ -31,10 +31,7 @@ class DashboardStatCard extends StatelessWidget {
           Container(
             height: 10,
             width: 10,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(height: 10),
           Text(

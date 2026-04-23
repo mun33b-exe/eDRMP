@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../theme/colors.dart';
 
 class DashboardHeader extends StatelessWidget {
-  const DashboardHeader({
-    super.key,
-    required this.userName,
-  });
+  const DashboardHeader({super.key, required this.userName});
 
   final String userName;
 
@@ -20,10 +17,7 @@ class DashboardHeader extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppColors.primary,
-            AppColors.primaryLight,
-          ],
+          colors: [AppColors.primary, AppColors.primaryLight],
         ),
         borderRadius: BorderRadius.circular(22),
       ),

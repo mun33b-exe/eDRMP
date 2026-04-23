@@ -66,10 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  Text(name, style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 4),
                   Text(email, style: Theme.of(context).textTheme.bodyMedium),
                   const SizedBox(height: 10),
@@ -146,18 +143,18 @@ class _InfoTile extends StatelessWidget {
             width: 78,
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
           ),
           Expanded(
             child: Text(
               value,
               textAlign: TextAlign.end,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 15,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontSize: 15),
             ),
           ),
         ],

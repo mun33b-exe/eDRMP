@@ -27,7 +27,9 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showSoon(String feature) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('$feature will be available soon.')));
+      ..showSnackBar(
+        SnackBar(content: Text('$feature will be available soon.')),
+      );
   }
 
   @override
@@ -76,7 +78,9 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 14),
             ElevatedButton.icon(
               onPressed: _logout,
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.buttonDanger),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.buttonDanger,
+              ),
               icon: const Icon(Icons.logout_rounded),
               label: const Text('Logout'),
             ),
