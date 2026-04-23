@@ -48,10 +48,7 @@ class AuthController extends ChangeNotifier {
     }
   }
 
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     _setState(_state.copyWith(isLoading: true, clearError: true));
 
     try {
@@ -110,12 +107,7 @@ class AuthController extends ChangeNotifier {
       _setState(_state.copyWith(isLoading: false, clearError: true));
       return true;
     } on AuthException catch (e) {
-      _setState(
-        _state.copyWith(
-          isLoading: false,
-          errorMessage: e.message,
-        ),
-      );
+      _setState(_state.copyWith(isLoading: false, errorMessage: e.message));
       return false;
     } catch (_) {
       _setState(
@@ -136,12 +128,7 @@ class AuthController extends ChangeNotifier {
       _setState(_state.copyWith(isLoading: false, clearError: true));
       return true;
     } on AuthException catch (e) {
-      _setState(
-        _state.copyWith(
-          isLoading: false,
-          errorMessage: e.message,
-        ),
-      );
+      _setState(_state.copyWith(isLoading: false, errorMessage: e.message));
       return false;
     } catch (_) {
       _setState(

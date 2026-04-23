@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../theme/colors.dart';
 
 class AuthLogoBadge extends StatelessWidget {
-  const AuthLogoBadge({
-    super.key,
-    this.showTagline = true,
-  });
+  const AuthLogoBadge({super.key, this.showTagline = true});
 
   final bool showTagline;
 

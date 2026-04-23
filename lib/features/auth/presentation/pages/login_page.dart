@@ -53,8 +53,8 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final message = _authController.state.errorMessage ??
-        AppStrings.somethingWentWrong;
+    final message =
+        _authController.state.errorMessage ?? AppStrings.somethingWentWrong;
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -79,7 +79,9 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const Text('New to eDRMP? '),
               TextButton(
-                onPressed: isLoading ? null : () => context.push(AppRoutes.register),
+                onPressed: isLoading
+                    ? null
+                    : () => context.push(AppRoutes.register),
                 child: const Text('Create account'),
               ),
             ],
@@ -112,9 +114,8 @@ class _LoginPageState extends State<LoginPage> {
                     hintText: 'Enter your password',
                     prefixIcon: const Icon(Icons.lock_outline_rounded),
                     suffixIcon: IconButton(
-                      onPressed: () => setState(
-                        () => _obscurePassword = !_obscurePassword,
-                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                       icon: Icon(
                         _obscurePassword
                             ? Icons.visibility_off_outlined

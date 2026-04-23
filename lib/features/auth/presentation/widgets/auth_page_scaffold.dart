@@ -33,10 +33,7 @@ class AuthPageScaffold extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF7FBFF),
-              AppColors.scaffoldBackground,
-            ],
+            colors: [Color(0xFFF7FBFF), AppColors.scaffoldBackground],
           ),
         ),
         child: SafeArea(
@@ -66,7 +63,8 @@ class AuthPageScaffold extends StatelessWidget {
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight -
+                        minHeight:
+                            constraints.maxHeight -
                             AppPadding.screenPadding.vertical,
                       ),
                       child: IntrinsicHeight(
@@ -75,10 +73,7 @@ class AuthPageScaffold extends StatelessWidget {
                           children: [
                             ...[leading].whereType<Widget>(),
                             if (top != null) ...[
-                              Align(
-                                alignment: Alignment.center,
-                                child: top!,
-                              ),
+                              Align(alignment: Alignment.center, child: top!),
                               AppSpacing.vXL,
                             ],
                             Text(
@@ -88,10 +83,7 @@ class AuthPageScaffold extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              subtitle,
-                              style: textTheme.bodyMedium,
-                            ),
+                            Text(subtitle, style: textTheme.bodyMedium),
                             AppSpacing.vL,
                             Container(
                               padding: const EdgeInsets.all(18),
@@ -130,10 +122,7 @@ class AuthPageScaffold extends StatelessWidget {
 }
 
 class _GlowCircle extends StatelessWidget {
-  const _GlowCircle({
-    required this.size,
-    required this.color,
-  });
+  const _GlowCircle({required this.size, required this.color});
 
   final double size;
   final Color color;
@@ -143,10 +132,7 @@ class _GlowCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }

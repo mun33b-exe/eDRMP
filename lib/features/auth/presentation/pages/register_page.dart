@@ -71,7 +71,8 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    final message = _authController.state.errorMessage ??
+    final message =
+        _authController.state.errorMessage ??
         'Unable to create account. Please try again.';
 
     ScaffoldMessenger.of(context)
@@ -169,9 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     hintText: 'Strong password',
                     prefixIcon: const Icon(Icons.lock_outline_rounded),
                     suffixIcon: IconButton(
-                      onPressed: () => setState(
-                        () => _obscurePassword = !_obscurePassword,
-                      ),
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                       icon: Icon(
                         _obscurePassword
                             ? Icons.visibility_off_outlined
@@ -192,8 +192,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     prefixIcon: const Icon(Icons.lock_reset_rounded),
                     suffixIcon: IconButton(
                       onPressed: () => setState(
-                        () => _obscureConfirmPassword =
-                            !_obscureConfirmPassword,
+                        () =>
+                            _obscureConfirmPassword = !_obscureConfirmPassword,
                       ),
                       icon: Icon(
                         _obscureConfirmPassword

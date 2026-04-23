@@ -30,7 +30,8 @@ final GoRouter appRouter = GoRouter(
     final isAuthenticated = _authController.state.isAuthenticated;
     final location = state.matchedLocation;
 
-    final isOnAuthPage = location == AppRoutes.splash ||
+    final isOnAuthPage =
+        location == AppRoutes.splash ||
         location == AppRoutes.login ||
         location == AppRoutes.register ||
         location == AppRoutes.forgotPassword;

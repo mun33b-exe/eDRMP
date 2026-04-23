@@ -47,15 +47,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           const SnackBar(
-            content: Text(
-              'Password reset link sent. Please check your inbox.',
-            ),
+            content: Text('Password reset link sent. Please check your inbox.'),
           ),
         );
       return;
     }
 
-    final message = _authController.state.errorMessage ??
+    final message =
+        _authController.state.errorMessage ??
         'Unable to send reset link. Please try again.';
 
     ScaffoldMessenger.of(context)

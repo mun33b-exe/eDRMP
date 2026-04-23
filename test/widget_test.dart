@@ -10,7 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:edrmp/main.dart';
 
 void main() {
-  testWidgets('App boots and shows splash branding', (WidgetTester tester) async {
+  testWidgets('App boots and shows splash branding', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const EdrmpApp());
     await tester.pump();
 
