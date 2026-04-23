@@ -161,7 +161,7 @@ class AppTheme {
 
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.bottomNav,
-        indicatorColor: AppColors.primary.withOpacity(0.08),
+        indicatorColor: AppColors.primary.withValues(alpha: 0.08),
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             fontSize: 12,
@@ -278,7 +278,7 @@ class AppTheme {
 
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,
-        indicatorColor: AppColors.secondary.withOpacity(0.14),
+        indicatorColor: AppColors.secondary.withValues(alpha: 0.14),
         iconTheme: WidgetStateProperty.all(
           const IconThemeData(color: AppColors.darkTextSecondary),
         ),
