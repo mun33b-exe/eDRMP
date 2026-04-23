@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     if (success) {
-      context.go(AppRoutes.dashboard);
+      context.go(AppRoutes.appShell);
       return;
     }
 

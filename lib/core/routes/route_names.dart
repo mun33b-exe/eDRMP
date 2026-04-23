@@ -3,6 +3,7 @@ class RouteNames {
   static const String login = 'login';
   static const String register = 'register';
   static const String forgotPassword = 'forgotPassword';
+  static const String appShell = 'appShell';
   static const String dashboard = 'dashboard';
   static const String myDevices = 'myDevices';
   static const String addDevice = 'addDevice';

@@ -4,7 +4,7 @@ import '../../features/auth/presentation/forgot_password_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/register_page.dart';
 import '../../features/auth/presentation/splash_page.dart';
-import '../../features/dashboard/presentation/dashboard_page.dart';
+import '../../features/dashboard/presentation/app_shell_page.dart';
 import '../../features/devices/presentation/add_device_page.dart';
 import '../../features/devices/presentation/device_details_page.dart';
 import '../../features/devices/presentation/my_devices_page.dart';
@@ -12,11 +12,8 @@ import '../../features/fir/presentation/case_tracking_page.dart';
 import '../../features/fir/presentation/fir_history_page.dart';
 import '../../features/fir/presentation/submit_fir_page.dart';
 import '../../features/map/presentation/theft_map_page.dart';
-import '../../features/notifications/presentation/notifications_page.dart';
 import '../../features/police/presentation/police_dashboard_page.dart';
-import '../../features/profile/presentation/profile_page.dart';
 import '../../features/pta/presentation/pta_dashboard_page.dart';
-import '../../features/settings/presentation/settings_page.dart';
 import '../../features/auth/logic/auth_controller.dart';
 import 'app_routes.dart';
 import 'route_names.dart';
@@ -30,18 +27,25 @@ final GoRouter appRouter = GoRouter(
     final isAuthenticated = _authController.state.isAuthenticated;
     final location = state.matchedLocation;
 
+    final isUserShellRoute =
+        location == AppRoutes.appShell ||
+        location == AppRoutes.dashboard ||
+        location == AppRoutes.notifications ||
+        location == AppRoutes.profile ||
+        location == AppRoutes.settings;
+
     final isOnAuthPage =
         location == AppRoutes.splash ||
         location == AppRoutes.login ||
         location == AppRoutes.register ||
         location == AppRoutes.forgotPassword;
 
-    if (!isAuthenticated && location == AppRoutes.dashboard) {
+    if (!isAuthenticated && isUserShellRoute) {
       return AppRoutes.login;
     }
 
     if (isAuthenticated && isOnAuthPage) {
-      return AppRoutes.dashboard;
+      return AppRoutes.appShell;
     }
 
     return null;
@@ -68,9 +72,14 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const ForgotPasswordPage(),
     ),
     GoRoute(
+      path: AppRoutes.appShell,
+      name: RouteNames.appShell,
+      builder: (context, state) => const AppShellPage(),
+    ),
+    GoRoute(
       path: AppRoutes.dashboard,
       name: RouteNames.dashboard,
-      builder: (context, state) => const DashboardPage(),
+      builder: (context, state) => const AppShellPage(initialIndex: 0),
     ),
     GoRoute(
       path: AppRoutes.myDevices,
@@ -105,12 +114,12 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.profile,
       name: RouteNames.profile,
-      builder: (context, state) => const ProfilePage(),
+      builder: (context, state) => const AppShellPage(initialIndex: 2),
     ),
     GoRoute(
       path: AppRoutes.settings,
       name: RouteNames.settings,
-      builder: (context, state) => const SettingsPage(),
+      builder: (context, state) => const AppShellPage(initialIndex: 3),
     ),
     GoRoute(
       path: AppRoutes.policeDashboard,
@@ -125,7 +134,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.notifications,
       name: RouteNames.notifications,
-      builder: (context, state) => const NotificationsPage(),
+      builder: (context, state) => const AppShellPage(initialIndex: 1),
     ),
     GoRoute(
       path: AppRoutes.map,

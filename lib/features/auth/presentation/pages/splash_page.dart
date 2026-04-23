@@ -46,7 +46,7 @@ class _SplashPageState extends State<SplashPage>
 
       context.go(
         authController.state.isAuthenticated
-            ? AppRoutes.dashboard
+            ? AppRoutes.appShell
             : AppRoutes.login,
       );
     });
