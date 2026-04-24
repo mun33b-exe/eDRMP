@@ -120,7 +120,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     ),
                   );
                 },
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
                 itemCount: _notifications.length,
               ),
       ),
