@@ -39,10 +39,7 @@ class FirHistoryPage extends ConsumerWidget {
                 fir: firs[index],
                 isDark: isDark,
                 onTap: () {
-                  context.push(
-                    RouteNames.caseTracking,
-                    extra: firs[index].id,
-                  );
+                  context.push(RouteNames.caseTracking, extra: firs[index].id);
                 },
               );
             },

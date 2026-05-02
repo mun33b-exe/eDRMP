@@ -19,7 +19,10 @@ import '../../features/police/presentation/fir_review_page.dart';
 import '../../features/police/presentation/pending_fir_queue_page.dart';
 import '../../features/police/presentation/police_dashboard_page.dart';
 import '../../features/profile/presentation/profile_page.dart';
+import '../../features/pta/presentation/block_requests_page.dart';
+import '../../features/pta/presentation/device_approvals_page.dart';
 import '../../features/pta/presentation/pta_dashboard_page.dart';
+import '../../features/pta/presentation/pta_history_page.dart';
 import '../../features/settings/presentation/settings_page.dart';
 import 'route_names.dart';
 
@@ -137,6 +140,21 @@ final List<RouteBase> appRoutes = <RouteBase>[
     name: RouteNames.ptaDashboard,
     path: RouteNames.ptaDashboard,
     builder: (context, state) => const PtaDashboardPage(),
+  ),
+  GoRoute(
+    name: RouteNames.deviceApprovals,
+    path: RouteNames.deviceApprovals,
+    builder: (context, state) => const DeviceApprovalsPage(),
+  ),
+  GoRoute(
+    name: RouteNames.blockRequests,
+    path: RouteNames.blockRequests,
+    builder: (context, state) => const BlockRequestsPage(),
+  ),
+  GoRoute(
+    name: RouteNames.ptaHistory,
+    path: RouteNames.ptaHistory,
+    builder: (context, state) => const PtaHistoryPage(),
   ),
   GoRoute(
     name: RouteNames.theftMap,

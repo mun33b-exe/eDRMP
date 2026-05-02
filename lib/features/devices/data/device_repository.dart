@@ -114,6 +114,14 @@ class DeviceRepository {
     return device;
   }
 
+  Future<void> updateDeviceStatus(String id, DeviceStatus status) async {
+    await _delay();
+    final index = _devices.indexWhere((d) => d.id == id);
+    if (index >= 0) {
+      _devices[index] = _devices[index].copyWith(status: status);
+    }
+  }
+
   static Future<void> _delay() =>
       Future<void>.delayed(const Duration(milliseconds: 400));
 }

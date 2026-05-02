@@ -91,8 +91,7 @@ class PoliceDashboardPage extends ConsumerWidget {
                 AppSpacing.vXl,
                 AppButton(
                   label: 'Open Pending Queue',
-                  onPressed: () =>
-                      context.push(RouteNames.pendingFirQueue),
+                  onPressed: () => context.push(RouteNames.pendingFirQueue),
                   icon: Icons.list_alt,
                 ),
               ],

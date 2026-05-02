@@ -42,6 +42,16 @@ class DevicesNotifier extends AsyncNotifier<List<DeviceModel>> {
     ref.invalidateSelf();
     return device;
   }
+
+  Future<void> updateDeviceStatus(String id, DeviceStatus status) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repo.updateDeviceStatus(id, status);
+      ref.invalidateSelf();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
 }
 
 final devicesProvider =

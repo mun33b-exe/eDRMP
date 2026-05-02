@@ -34,6 +34,9 @@ class RouteNames {
   static const String pendingFirQueue = '/police/queue';
   static const String firReview = '/police/review';
   static const String ptaDashboard = '/pta';
+  static const String deviceApprovals = '/pta/device-approvals';
+  static const String blockRequests = '/pta/block-requests';
+  static const String ptaHistory = '/pta/history';
 
   // Misc
   static const String theftMap = '/map';
