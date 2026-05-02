@@ -21,9 +21,7 @@ class CaseTrackingPage extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: const AppAppBar(
-        title: AppStrings.titleCaseTracking,
-      ),
+      appBar: const AppAppBar(title: AppStrings.titleCaseTracking),
       body: firAsync.when(
         data: (fir) {
           final items = _buildTimelineItems(fir);

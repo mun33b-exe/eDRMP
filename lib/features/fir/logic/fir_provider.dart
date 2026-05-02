@@ -42,6 +42,26 @@ class FirsNotifier extends AsyncNotifier<List<FirModel>> {
       state = AsyncValue.error(e, st);
     }
   }
+
+  Future<void> updateFirStatus(
+    String id,
+    CaseStatus status, [
+    String? rejectReason,
+  ]) async {
+    state = const AsyncValue.loading();
+    try {
+      await ref
+          .read(firRepositoryProvider)
+          .updateFirStatus(id, status, rejectReason);
+      // Invalidate byId provider to refresh the UI immediately
+      ref.invalidate(firByIdProvider(id));
+      state = AsyncValue.data(
+        await ref.read(firRepositoryProvider).fetchUserFirs(),
+      );
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
 }
 
 final firByIdProvider = FutureProvider.family<FirModel, String>((

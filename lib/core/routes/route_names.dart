@@ -31,6 +31,8 @@ class RouteNames {
 
   // Admin
   static const String policeDashboard = '/police';
+  static const String pendingFirQueue = '/police/queue';
+  static const String firReview = '/police/review';
   static const String ptaDashboard = '/pta';
 
   // Misc

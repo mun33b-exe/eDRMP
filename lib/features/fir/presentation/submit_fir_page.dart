@@ -71,7 +71,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
 
     if (mounted) {
       setState(() => _isLoading = false);
-      context.goNamed(RouteNames.firHistory);
+      context.go(RouteNames.firHistory);
     }
   }
 
@@ -81,9 +81,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
     final devicesAsync = ref.watch(devicesProvider);
 
     return Scaffold(
-      appBar: const AppAppBar(
-        title: AppStrings.submitFirTitle,
-      ),
+      appBar: const AppAppBar(title: AppStrings.submitFirTitle),
       body: Column(
         children: [
           Expanded(
@@ -166,7 +164,8 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                       );
                     },
                     loading: () => const CircularProgressIndicator(),
-                    error: (error, stackTrace) => const Text('Error loading devices'),
+                    error: (error, stackTrace) =>
+                        const Text('Error loading devices'),
                   ),
 
                   AppSpacing.vLg,
@@ -227,7 +226,9 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
           Container(
             padding: const EdgeInsets.all(AppPadding.lg),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkBackground : AppColors.scaffoldBackground,
+              color: isDark
+                  ? AppColors.darkBackground
+                  : AppColors.scaffoldBackground,
               border: Border(
                 top: BorderSide(
                   color: isDark ? AppColors.darkBorder : AppColors.border,

@@ -15,6 +15,8 @@ import '../../features/fir/presentation/submit_fir_page.dart';
 import '../../features/map/presentation/theft_map_page.dart';
 import '../../features/notifications/presentation/notifications_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
+import '../../features/police/presentation/fir_review_page.dart';
+import '../../features/police/presentation/pending_fir_queue_page.dart';
 import '../../features/police/presentation/police_dashboard_page.dart';
 import '../../features/profile/presentation/profile_page.dart';
 import '../../features/pta/presentation/pta_dashboard_page.dart';
@@ -82,6 +84,21 @@ final List<RouteBase> appRoutes = <RouteBase>[
     builder: (context, state) {
       final firId = state.extra as String?;
       return CaseTrackingPage(firId: firId ?? '');
+    },
+  ),
+  GoRoute(
+    path: RouteNames.policeDashboard,
+    builder: (context, state) => const PoliceDashboardPage(),
+  ),
+  GoRoute(
+    path: RouteNames.pendingFirQueue,
+    builder: (context, state) => const PendingFirQueuePage(),
+  ),
+  GoRoute(
+    path: RouteNames.firReview,
+    builder: (context, state) {
+      final firId = state.extra as String?;
+      return FirReviewPage(firId: firId ?? '');
     },
   ),
   GoRoute(
