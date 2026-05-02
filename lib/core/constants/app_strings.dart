@@ -262,4 +262,34 @@ class AppStrings {
   static const String timelineDocVerified = 'Documents verified';
   static const String timelinePtaReview = 'PTA review in progress';
   static const String timelineApproved = 'Approval & registration';
+
+  // ---------------------------------------------------------------------------
+  // FIR & Case Tracking (Phase 4)
+  // ---------------------------------------------------------------------------
+  static const String firHistoryEmpty = 'No FIRs reported';
+  static const String firHistoryEmptyBody =
+      'You have not reported any stolen devices. If your device is lost or stolen, you can file an FIR from the device details page.';
+  static const String submitFirTitle = 'Report stolen device';
+  static const String submitFirWarning =
+      'Filing a false FIR is a criminal offence under Section 182. Your device will be blocked on the PTA network within 30 minutes.';
+  static const String submitFirDeviceLabel = 'Select device';
+  static const String submitFirDateLabel = 'Date & time of incident';
+  static const String submitFirLocationLabel = 'Location';
+  static const String submitFirStationLabel = 'Police station';
+  static const String submitFirDescriptionLabel = 'Description';
+  static const String submitFirDescriptionHint =
+      'Briefly describe what happened...';
+  static const String submitFirAction = 'File FIR & block device';
+
+  // Case tracking timeline steps
+  static const String caseTimelineDeviceRegistered = 'Device Registered';
+  static const String caseTimelineFirSubmitted = 'FIR Submitted';
+  static const String caseTimelineFirUnderReview = 'FIR Under Review';
+  static const String caseTimelineFirVerified = 'FIR Verified';
+  static const String caseTimelineFirRejected = 'FIR Rejected';
+  static const String caseTimelineBlockPending = 'Block Pending';
+  static const String caseTimelineBlockApproved = 'Block Approved';
+  static const String caseTimelineBlockRejected = 'Block Rejected';
+  static const String caseTimelineDeviceBlocked = 'Device Blocked';
+  static const String caseTimelineDeviceRecovered = 'Device Recovered';
 }

@@ -79,7 +79,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
   ),
   GoRoute(
     path: RouteNames.caseTracking,
-    builder: (context, state) => const CaseTrackingPage(),
+    builder: (context, state) {
+      final firId = state.extra as String?;
+      return CaseTrackingPage(firId: firId ?? '');
+    },
   ),
   GoRoute(
     path: RouteNames.profile,

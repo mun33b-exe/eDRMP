@@ -9,6 +9,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/app_timeline.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../data/device_model.dart';
@@ -316,48 +317,32 @@ class _TimelineCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = _buildItems(device.status);
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
-        borderRadius: AppRadius.allLg,
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.border,
-        ),
-      ),
-      padding: const EdgeInsets.all(AppPadding.md),
-      child: Column(
-        children: List.generate(items.length, (i) {
-          final item = items[i];
-          final isLast = i == items.length - 1;
-          return _TimelineItem(item: item, isDark: isDark, isLast: isLast);
-        }),
-      ),
-    );
+    return AppTimeline(items: items, isDark: isDark);
   }
 
-  List<_TLItem> _buildItems(DeviceStatus status) {
+  List<AppTimelineItemData> _buildItems(DeviceStatus status) {
     // Map device status to timeline state for each step.
     // States: 'done', 'active', 'pending'
     switch (status) {
       case DeviceStatus.pending:
         return [
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineSubmitted,
             meta: '28 Apr 2026 · 10:42 AM',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineDocVerified,
             meta: '28 Apr 2026 · 11:15 AM',
             note: 'Invoice and CNIC validated by automated checks.',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'active',
             title: AppStrings.timelinePtaReview,
             meta: 'In queue · est. 2 days',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'pending',
             title: AppStrings.timelineApproved,
             meta: 'Awaiting',
@@ -365,22 +350,22 @@ class _TimelineCard extends StatelessWidget {
         ];
       case DeviceStatus.approved:
         return [
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineSubmitted,
             meta: '12 Mar 2026 · 09:14 AM',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineDocVerified,
             meta: '12 Mar 2026 · 10:01 AM',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelinePtaReview,
             meta: '13 Mar 2026 · 14:22 PM',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineApproved,
             meta: '14 Mar 2026 · 08:30 AM',
@@ -389,22 +374,22 @@ class _TimelineCard extends StatelessWidget {
       case DeviceStatus.rejected:
       case DeviceStatus.blocked:
         return [
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineSubmitted,
             meta: '—',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineDocVerified,
             meta: '—',
           ),
-          const _TLItem(
+          const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelinePtaReview,
             meta: '—',
           ),
-          _TLItem(
+          AppTimelineItemData(
             state: 'done',
             title: status == DeviceStatus.rejected
                 ? 'Application rejected'
@@ -413,151 +398,5 @@ class _TimelineCard extends StatelessWidget {
           ),
         ];
     }
-  }
-}
-
-@immutable
-class _TLItem {
-  const _TLItem({
-    required this.state,
-    required this.title,
-    required this.meta,
-    this.note,
-  });
-
-  /// 'done' | 'active' | 'pending'
-  final String state;
-  final String title;
-  final String meta;
-  final String? note;
-}
-
-class _TimelineItem extends StatelessWidget {
-  const _TimelineItem({
-    required this.item,
-    required this.isDark,
-    required this.isLast,
-  });
-
-  final _TLItem item;
-  final bool isDark;
-  final bool isLast;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDone = item.state == 'done';
-    final isActive = item.state == 'active';
-
-    // Dot color
-    final dotColor = isDone
-        ? AppColors.approved
-        : isActive
-        ? AppColors.primary
-        : (isDark ? AppColors.darkTextMuted : AppColors.border);
-
-    // Line color
-    final lineColor = isDone
-        ? AppColors.approved
-        : (isDark ? AppColors.darkBorder : AppColors.border);
-
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left column: dot + line
-          SizedBox(
-            width: 24,
-            child: Column(
-              children: [
-                // Dot
-                Container(
-                  width: 16,
-                  height: 16,
-                  margin: const EdgeInsets.only(top: 2),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isDone ? dotColor : Colors.transparent,
-                    border: Border.all(color: dotColor, width: 2),
-                  ),
-                  child: isDone
-                      ? const Icon(Icons.check, size: 10, color: Colors.white)
-                      : isActive
-                      ? Center(
-                          child: Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        )
-                      : null,
-                ),
-                if (!isLast)
-                  Expanded(
-                    child: Container(
-                      width: 2,
-                      color: lineColor,
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          AppSpacing.hMd,
-          // Right column: text
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: isLast ? 0 : AppPadding.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.title,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: isActive
-                          ? AppColors.primary
-                          : (isDone
-                                ? (isDark
-                                      ? AppColors.darkTextPrimary
-                                      : AppColors.textPrimary)
-                                : (isDark
-                                      ? AppColors.darkTextMuted
-                                      : AppColors.textMuted)),
-                    ),
-                  ),
-                  AppSpacing.vXs,
-                  Text(
-                    item.meta,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
-                    ),
-                  ),
-                  if (item.note != null) ...[
-                    AppSpacing.vXs,
-                    Text(
-                      item.note!,
-                      style: TextStyle(
-                        fontSize: 11,
-                        height: 1.4,
-                        color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
