@@ -1,80 +1,47 @@
-import 'package:flutter/foundation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthUser;
 
-import '../../../core/constants/app_durations.dart';
+import '../../../core/services/supabase_service.dart';
 import '../logic/auth_failure.dart';
 import '../logic/auth_user.dart';
 
-/// Single hard-coded mock account.
-@immutable
-class _MockAccount {
-  const _MockAccount({required this.password, required this.user});
-
-  final String password;
-  final AuthUser user;
-}
-
-/// In-memory mock implementation of the auth backend.
+/// Supabase-backed auth repository.
 ///
-/// All async ops return after [AppDurations.mockNetwork] to simulate latency.
-/// Phase 9 swaps this for a Supabase-backed implementation **with the same
-/// public interface** so the controller / UI layers don't change.
-///
-/// Mock data is intentionally not persisted across cold starts — restarting
-/// the app returns the user to the login screen.
+/// Public interface is identical to the former mock so AuthController and all
+/// UI layers remain unchanged. Session persistence is handled by supabase_flutter
+/// (stores the session in flutter_secure_storage across cold starts).
 class AuthRepository {
-  // TODO(Phase 9): replace this entire file with a Supabase-backed
-  // implementation of the same public method signatures.
   AuthRepository();
 
-  final List<_MockAccount> _accounts = <_MockAccount>[
-    const _MockAccount(
-      password: 'Demo@1234',
-      user: AuthUser(
-        id: 'mock-user-001',
-        fullName: 'Hamza Khan',
-        email: 'demo.user@edrmp.pk',
-        cnic: '35202-1234567-9',
-        phone: '+92 321 1234567',
-        role: UserRole.user,
-      ),
-    ),
-    const _MockAccount(
-      password: 'Demo@1234',
-      user: AuthUser(
-        id: 'mock-police-001',
-        fullName: 'Inspector Tariq Mehmood',
-        email: 'demo.police@edrmp.pk',
-        cnic: '42101-7654321-3',
-        phone: '+92 333 9876543',
-        role: UserRole.police,
-      ),
-    ),
-    const _MockAccount(
-      password: 'Demo@1234',
-      user: AuthUser(
-        id: 'mock-pta-001',
-        fullName: 'Sana Iqbal',
-        email: 'demo.pta@edrmp.pk',
-        cnic: '61101-2468013-5',
-        phone: '+92 300 5551234',
-        role: UserRole.pta,
-      ),
-    ),
-  ];
+  SupabaseClient get _client => SupabaseService.client;
+
+  /// Returns the currently authenticated user by restoring the persisted
+  /// Supabase session, or null when no session exists.
+  Future<AuthUser?> currentUser() async {
+    final session = _client.auth.currentSession;
+    if (session == null) return null;
+    try {
+      return await _fetchProfile(session.user.id);
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<AuthUser> login({
     required String email,
     required String password,
   }) async {
-    await Future<void>.delayed(AppDurations.mockNetwork);
-    final normalized = email.trim().toLowerCase();
-    for (final acc in _accounts) {
-      if (acc.user.email.toLowerCase() == normalized &&
-          acc.password == password) {
-        return acc.user;
-      }
+    try {
+      final response = await _client.auth.signInWithPassword(
+        email: email.trim().toLowerCase(),
+        password: password,
+      );
+      final userId = response.user!.id;
+      await _saveFcmToken(userId);
+      return await _fetchProfile(userId);
+    } on AuthException catch (e) {
+      throw _mapAuthError(e);
     }
-    throw const InvalidCredentialsFailure();
   }
 
   Future<AuthUser> register({
@@ -84,40 +51,112 @@ class AuthRepository {
     required String phone,
     required String password,
   }) async {
-    await Future<void>.delayed(AppDurations.mockNetwork);
-    final normalizedEmail = email.trim().toLowerCase();
-    final normalizedCnic = cnic.trim();
-    if (_accounts.any((a) => a.user.email.toLowerCase() == normalizedEmail)) {
-      throw const EmailAlreadyRegisteredFailure();
+    try {
+      final response = await _client.auth.signUp(
+        email: email.trim().toLowerCase(),
+        password: password,
+      );
+      final user = response.user;
+      if (user == null) throw const InvalidCredentialsFailure();
+
+      await _client.from('profiles').insert({
+        'id': user.id,
+        'full_name': fullName.trim(),
+        'cnic': cnic.trim(),
+        'email': email.trim().toLowerCase(),
+        'phone': phone.trim(),
+        'role': 'user',
+      });
+
+      return AuthUser(
+        id: user.id,
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        cnic: cnic.trim(),
+        phone: phone.trim(),
+        role: UserRole.user,
+      );
+    } on AuthException catch (e) {
+      throw _mapAuthError(e);
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') {
+        if (e.message.toLowerCase().contains('cnic')) {
+          throw const CnicAlreadyRegisteredFailure();
+        }
+        throw const EmailAlreadyRegisteredFailure();
+      }
+      rethrow;
     }
-    if (_accounts.any((a) => a.user.cnic == normalizedCnic)) {
-      throw const CnicAlreadyRegisteredFailure();
-    }
-    final user = AuthUser(
-      id: 'mock-user-${DateTime.now().millisecondsSinceEpoch}',
-      fullName: fullName.trim(),
-      email: normalizedEmail,
-      cnic: normalizedCnic,
-      phone: phone.trim(),
-      role: UserRole.user,
-    );
-    _accounts.add(_MockAccount(password: password, user: user));
-    return user;
   }
 
   Future<void> sendPasswordReset(String email) async {
-    await Future<void>.delayed(AppDurations.mockNetwork);
-    final normalized = email.trim().toLowerCase();
-    final exists = _accounts.any(
-      (a) => a.user.email.toLowerCase() == normalized,
-    );
-    if (!exists) {
-      throw const UnknownEmailFailure();
+    try {
+      await _client.auth.resetPasswordForEmail(email.trim().toLowerCase());
+    } on AuthException catch (e) {
+      throw _mapAuthError(e);
     }
-    // Mock: pretend a reset link was emailed; nothing else to do.
   }
 
   Future<void> logout() async {
-    await Future<void>.delayed(AppDurations.mockNetwork);
+    await _client.auth.signOut();
+  }
+
+  // ─── private helpers ────────────────────────────────────────────────────────
+
+  Future<AuthUser> _fetchProfile(String userId) async {
+    final data = await _client
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .single();
+    return AuthUser(
+      id: data['id'] as String,
+      fullName: data['full_name'] as String,
+      email: data['email'] as String,
+      cnic: data['cnic'] as String,
+      phone: (data['phone'] as String?) ?? '',
+      role: _parseRole(data['role'] as String),
+    );
+  }
+
+  Future<void> _saveFcmToken(String userId) async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        await _client
+            .from('profiles')
+            .update({'fcm_token': token})
+            .eq('id', userId);
+      }
+    } catch (_) {
+      // FCM token save is best-effort — never fail login because of it.
+    }
+  }
+
+  AuthFailure _mapAuthError(AuthException e) {
+    final msg = e.message.toLowerCase();
+    if (msg.contains('invalid login credentials') ||
+        msg.contains('invalid credentials') ||
+        msg.contains('wrong password') ||
+        msg.contains('user not found')) {
+      return const InvalidCredentialsFailure();
+    }
+    if (msg.contains('user already registered') ||
+        msg.contains('already registered') ||
+        msg.contains('email address is already')) {
+      return const EmailAlreadyRegisteredFailure();
+    }
+    return const InvalidCredentialsFailure();
+  }
+
+  UserRole _parseRole(String role) {
+    switch (role) {
+      case 'police':
+        return UserRole.police;
+      case 'pta':
+        return UserRole.pta;
+      default:
+        return UserRole.user;
+    }
   }
 }

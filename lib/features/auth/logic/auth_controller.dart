@@ -18,6 +18,8 @@ class AuthController extends AsyncNotifier<AuthState> {
 
   @override
   Future<AuthState> build() async {
+    final user = await _repo.currentUser();
+    if (user != null) return AuthState.authenticated(user);
     return const AuthState.unauthenticated();
   }
 
