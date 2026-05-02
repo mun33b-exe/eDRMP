@@ -54,6 +54,11 @@ class DeviceRepository {
     '35693809': (brand: 'Apple', model: 'iPhone 15 Pro'),
     '35467812': (brand: 'Samsung', model: 'Galaxy S24'),
     '86991204': (brand: 'Xiaomi', model: 'Redmi Note 13'),
+    '35975010': (brand: 'OnePlus', model: 'OnePlus 12'),
+    '86123456': (brand: 'Tecno', model: 'Camon 30'),
+    '35912310': (brand: 'Google', model: 'Pixel 8'),
+    '86400000': (brand: 'Infinix', model: 'Hot 40'),
+    '35800000': (brand: 'Vivo', model: 'Y200'),
   };
 
   // ---------------------------------------------------------------------------

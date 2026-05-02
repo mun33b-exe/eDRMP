@@ -154,10 +154,13 @@ class _HeroHeader extends StatelessWidget {
                     _IconBtn(
                       icon: Icons.notifications_outlined,
                       badge: true,
-                      onTap: () {},
+                      onTap: () => context.push(RouteNames.notifications),
                     ),
                     AppSpacing.hSm,
-                    _IconBtn(icon: Icons.person_outline, onTap: () {}),
+                    _IconBtn(
+                      icon: Icons.person_outline,
+                      onTap: () => context.push(RouteNames.profile),
+                    ),
                   ],
                 ),
               ],
@@ -425,14 +428,22 @@ class _QuickActionsGrid extends StatelessWidget {
           label: AppStrings.dashboardTransfer,
           toneColor: AppColors.info,
           isDark: isDark,
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(AppStrings.featureComingSoon)),
+            );
+          },
         ),
         _QuickActionTile(
           icon: Icons.qr_code_scanner_outlined,
           label: AppStrings.dashboardVerifyImei,
           toneColor: AppColors.secondary,
           isDark: isDark,
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(AppStrings.featureComingSoon)),
+            );
+          },
         ),
       ],
     );

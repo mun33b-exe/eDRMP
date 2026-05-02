@@ -8,7 +8,7 @@ import 'route_names.dart';
 String homeRouteForRole(UserRole role) {
   switch (role) {
     case UserRole.user:
-      return RouteNames.dashboard;
+      return RouteNames.appShell;
     case UserRole.police:
       return RouteNames.policeDashboard;
     case UserRole.pta:

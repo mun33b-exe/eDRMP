@@ -8,6 +8,9 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../theme/colors.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/widgets/confirm_dialog.dart';
+import '../../auth/logic/auth_controller.dart';
 import '../../fir/data/fir_model.dart';
 import '../../fir/logic/fir_provider.dart';
 
@@ -38,7 +41,29 @@ class PoliceDashboardPage extends ConsumerWidget {
         backgroundColor: isDark
             ? AppColors.darkSurface
             : AppColors.policePrimary,
-        foregroundColor: Colors.white,
+        foregroundColor: isDark ? AppColors.darkTextPrimary : Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (_) => const ConfirmDialog(
+                  title: AppStrings.profileSignOut,
+                  message: AppStrings.profileSignOutConfirm,
+                  confirmLabel: AppStrings.profileSignOut,
+                  isDestructive: true,
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                await ref.read(authControllerProvider.notifier).logout();
+                if (context.mounted) {
+                  context.go(RouteNames.login);
+                }
+              }
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: firsAsync.when(
         data: (firs) {

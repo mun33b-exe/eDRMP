@@ -274,7 +274,9 @@ class _DeviceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${device.brand} ${device.model}',
+                    device.brand == 'Unknown'
+                        ? 'Unverified device'
+                        : '${device.brand} ${device.model}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,

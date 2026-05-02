@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/widgets/confirm_dialog.dart';
 import '../../../theme/colors.dart';
+import '../../auth/logic/auth_controller.dart';
 
-class PtaDashboardPage extends StatelessWidget {
+class PtaDashboardPage extends ConsumerWidget {
   const PtaDashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -94,6 +99,29 @@ class PtaDashboardPage extends StatelessWidget {
                       : AppColors.textPrimary,
                 ),
               ],
+            ),
+          ),
+          IconButton(
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (_) => const ConfirmDialog(
+                  title: AppStrings.profileSignOut,
+                  message: AppStrings.profileSignOutConfirm,
+                  confirmLabel: AppStrings.profileSignOut,
+                  isDestructive: true,
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                await ref.read(authControllerProvider.notifier).logout();
+                if (context.mounted) {
+                  context.go(RouteNames.login);
+                }
+              }
+            },
+            icon: Icon(
+              Icons.logout,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
             ),
           ),
         ],

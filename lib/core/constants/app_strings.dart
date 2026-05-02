@@ -35,6 +35,7 @@ class AppStrings {
       'Something went wrong. Please try again.';
   static const String noInternetConnection = 'No internet connection.';
   static const String emptyData = 'Nothing here yet.';
+  static const String featureComingSoon = 'This feature is coming soon.';
 
   // ---------------------------------------------------------------------------
   // Phase labels — placeholder copy for stub screens (Phase 0 only)

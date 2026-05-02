@@ -113,7 +113,10 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
           ),
         );
       default:
-        return AppBar(title: const Text(AppStrings.addDeviceStep3Title));
+        return AppBar(
+          title: const Text(AppStrings.addDeviceStep3Title),
+          automaticallyImplyLeading: false,
+        );
     }
   }
 
@@ -419,12 +422,23 @@ class _Step2 extends StatelessWidget {
                   ),
                   AppSpacing.vMd,
                   // Invoice upload (placeholder)
-                  _ReadOnlyField(
-                    label: AppStrings.addDeviceInvoiceLabel,
-                    value: AppStrings.addDeviceInvoiceHint,
-                    isDark: isDark,
-                    placeholder: true,
-                    trailing: const Icon(Icons.upload_outlined, size: 16),
+                  GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Invoice upload will be available in the next update.',
+                          ),
+                        ),
+                      );
+                    },
+                    child: _ReadOnlyField(
+                      label: AppStrings.addDeviceInvoiceLabel,
+                      value: AppStrings.addDeviceInvoiceHint,
+                      isDark: isDark,
+                      placeholder: true,
+                      trailing: const Icon(Icons.upload_outlined, size: 16),
+                    ),
                   ),
                   AppSpacing.vLg,
                   _InfoBanner(isDark: isDark),
