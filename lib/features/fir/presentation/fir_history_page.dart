@@ -85,10 +85,13 @@ class _FirCard extends StatelessWidget {
       case CaseStatus.firVerified:
       case CaseStatus.blockApproved:
       case CaseStatus.deviceRecovered:
+      case CaseStatus.unblockApproved:
+      case CaseStatus.unblocked:
         return StatusBadgeVariant.verified;
       case CaseStatus.firSubmitted:
       case CaseStatus.firUnderReview:
       case CaseStatus.blockPending:
+      case CaseStatus.unblockPending:
         return StatusBadgeVariant.pending;
       case CaseStatus.firRejected:
       case CaseStatus.blockRejected:
@@ -120,6 +123,12 @@ class _FirCard extends StatelessWidget {
         return AppStrings.caseTimelineDeviceBlocked;
       case CaseStatus.deviceRecovered:
         return AppStrings.caseTimelineDeviceRecovered;
+      case CaseStatus.unblockPending:
+        return AppStrings.caseTimelineUnblockPending;
+      case CaseStatus.unblockApproved:
+        return AppStrings.caseTimelineUnblockApproved;
+      case CaseStatus.unblocked:
+        return AppStrings.caseTimelineDeviceUnblocked;
     }
   }
 

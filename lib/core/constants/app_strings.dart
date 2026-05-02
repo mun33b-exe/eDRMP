@@ -227,6 +227,7 @@ class AppStrings {
   static const String notificationsEmptyTitle = "You're all caught up";
   static const String notificationsEmptyBody =
       "No new notifications right now. We'll alert you when your device status changes.";
+  static const String notificationsMarkAllRead = 'Mark all read';
 
   // ---------------------------------------------------------------------------
   // Devices (Phase 3)
@@ -323,6 +324,9 @@ class AppStrings {
   static const String caseTimelineBlockRejected = 'Block Rejected';
   static const String caseTimelineDeviceBlocked = 'Device Blocked';
   static const String caseTimelineDeviceRecovered = 'Device Recovered';
+  static const String caseTimelineUnblockPending = 'Unblock Pending';
+  static const String caseTimelineUnblockApproved = 'Unblock Approved';
+  static const String caseTimelineDeviceUnblocked = 'Device Unblocked';
 
   // ---------------------------------------------------------------------------
   // Admin / PTA / Police (Phase 5-8)

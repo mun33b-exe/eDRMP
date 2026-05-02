@@ -1,20 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/block_request_model.dart';
+import '../data/block_request_repository.dart';
 import '../data/device_model.dart';
 import '../data/device_repository.dart';
+import '../data/unblock_request_model.dart';
+import '../data/unblock_request_repository.dart';
 
 // ---------------------------------------------------------------------------
-// Repository provider — singleton for the current session.
+// Repository providers
 // ---------------------------------------------------------------------------
 
-/// Single shared [DeviceRepository] instance. All features (citizen, police,
-/// PTA) read from this provider so mock state is consistent across modules.
 final deviceRepositoryProvider = Provider<DeviceRepository>(
   (_) => DeviceRepository(),
 );
 
+final blockRequestRepositoryProvider = Provider<BlockRequestRepository>(
+  (_) => BlockRequestRepository(),
+);
+
+final unblockRequestRepositoryProvider = Provider<UnblockRequestRepository>(
+  (_) => UnblockRequestRepository(),
+);
+
 // ---------------------------------------------------------------------------
-// Devices list — AsyncNotifier so we can expose add + refresh.
+// Devices list — AsyncNotifier
 // ---------------------------------------------------------------------------
 
 class DevicesNotifier extends AsyncNotifier<List<DeviceModel>> {
@@ -23,7 +33,6 @@ class DevicesNotifier extends AsyncNotifier<List<DeviceModel>> {
   @override
   Future<List<DeviceModel>> build() => _repo.fetchAll();
 
-  /// Adds a new device registration and refreshes the list.
   Future<DeviceModel> register({
     required String imei,
     String? imei2,
@@ -38,7 +47,6 @@ class DevicesNotifier extends AsyncNotifier<List<DeviceModel>> {
       model: model,
       operator: operator,
     );
-    // Optimistic refresh — re-read the full list from the repo.
     ref.invalidateSelf();
     return device;
   }
@@ -60,10 +68,24 @@ final devicesProvider =
     );
 
 // ---------------------------------------------------------------------------
-// Single device — reads from the shared list to avoid duplicate fetches.
+// Single device — reads from the shared list
 // ---------------------------------------------------------------------------
 
 final deviceByIdProvider = Provider.family<DeviceModel?, String>((ref, id) {
   final asyncDevices = ref.watch(devicesProvider);
   return asyncDevices.valueOrNull?.where((d) => d.id == id).firstOrNull;
 });
+
+// ---------------------------------------------------------------------------
+// Block / Unblock request list providers
+// ---------------------------------------------------------------------------
+
+final blockRequestsByFirProvider =
+    FutureProvider.family<List<BlockRequestModel>, String>((ref, firId) {
+      return ref.read(blockRequestRepositoryProvider).fetchByFirId(firId);
+    });
+
+final unblockRequestsByFirProvider =
+    FutureProvider.family<List<UnblockRequestModel>, String>((ref, firId) {
+      return ref.read(unblockRequestRepositoryProvider).fetchByFirId(firId);
+    });

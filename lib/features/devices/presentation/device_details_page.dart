@@ -250,6 +250,7 @@ class _DeviceDetailCard extends StatelessWidget {
   StatusBadgeVariant _statusVariant(DeviceStatus status) {
     switch (status) {
       case DeviceStatus.approved:
+      case DeviceStatus.unblocked:
         return StatusBadgeVariant.approved;
       case DeviceStatus.pending:
         return StatusBadgeVariant.pending;
@@ -378,6 +379,7 @@ class _TimelineCard extends StatelessWidget {
         ];
       case DeviceStatus.rejected:
       case DeviceStatus.blocked:
+      case DeviceStatus.unblocked:
         return [
           const AppTimelineItemData(
             state: 'done',
@@ -398,6 +400,8 @@ class _TimelineCard extends StatelessWidget {
             state: 'done',
             title: status == DeviceStatus.rejected
                 ? 'Application rejected'
+                : status == DeviceStatus.unblocked
+                ? 'Device unblocked'
                 : 'Device blocked',
             meta: '—',
           ),

@@ -196,10 +196,16 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
   void _onStep1Continue() {
     if (!_formKey1.currentState!.validate()) return;
 
-    final repo = ref.read(deviceRepositoryProvider);
     final rawImei = _imeiCtrl.text.trim();
+    final normalised = rawImei.replaceAll(RegExp(r'\D'), '');
+    final existing = ref.read(devicesProvider).valueOrNull ?? [];
+    final isDuplicate = existing.any(
+      (d) =>
+          d.imei.replaceAll(RegExp(r'\D'), '') == normalised ||
+          (d.imei2?.replaceAll(RegExp(r'\D'), '') ?? '') == normalised,
+    );
 
-    if (repo.isDuplicate(rawImei)) {
+    if (isDuplicate) {
       setState(() => _imeiError = AppStrings.addDeviceImeiDuplicate);
       return;
     }

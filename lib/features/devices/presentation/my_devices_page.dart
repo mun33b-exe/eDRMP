@@ -325,6 +325,7 @@ class _DeviceCard extends StatelessWidget {
   StatusBadgeVariant _statusVariant(DeviceStatus status) {
     switch (status) {
       case DeviceStatus.approved:
+      case DeviceStatus.unblocked:
         return StatusBadgeVariant.approved;
       case DeviceStatus.pending:
         return StatusBadgeVariant.pending;

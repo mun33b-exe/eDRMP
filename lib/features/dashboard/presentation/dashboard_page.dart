@@ -11,7 +11,7 @@ import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
 import '../../auth/logic/auth_user.dart';
-import '../logic/dashboard_mock_provider.dart';
+import '../logic/dashboard_stats_provider.dart';
 
 /// Citizen home screen — pixel-faithful to `ScreenCitizenHome` variant 'a'
 /// from `design/handoff/project/screens-citizen.jsx`.
@@ -28,7 +28,7 @@ class DashboardPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
-    final stats = ref.watch(dashboardMockProvider);
+    final stats = ref.watch(dashboardStatsProvider);
     final user = ref.watch(currentUserProvider);
 
     return Scaffold(
@@ -523,7 +523,7 @@ class _QuickActionTile extends StatelessWidget {
 class _DeviceRow extends StatelessWidget {
   const _DeviceRow({required this.device, required this.isDark});
 
-  final MockDevice device;
+  final DashboardDevice device;
   final bool isDark;
 
   StatusBadgeVariant get _variant {
@@ -536,6 +536,8 @@ class _DeviceRow extends StatelessWidget {
         return StatusBadgeVariant.rejected;
       case 'blocked':
         return StatusBadgeVariant.blocked;
+      case 'unblocked':
+        return StatusBadgeVariant.approved;
       default:
         return StatusBadgeVariant.active;
     }

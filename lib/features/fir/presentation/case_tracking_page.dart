@@ -149,7 +149,7 @@ class CaseTrackingPage extends ConsumerWidget {
       case CaseStatus.firVerified:
         return 3;
       case CaseStatus.firRejected:
-        return 2; // the next step shows as rejected
+        return 2;
       case CaseStatus.blockPending:
         return 4;
       case CaseStatus.blockApproved:
@@ -160,6 +160,12 @@ class CaseTrackingPage extends ConsumerWidget {
         return 8;
       case CaseStatus.deviceRecovered:
         return 9;
+      case CaseStatus.unblockPending:
+        return 10;
+      case CaseStatus.unblockApproved:
+        return 11;
+      case CaseStatus.unblocked:
+        return 12;
     }
   }
 }

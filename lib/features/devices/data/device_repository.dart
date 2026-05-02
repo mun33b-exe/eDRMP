@@ -1,55 +1,10 @@
-import 'dart:async';
-
+import '../../../core/services/supabase_service.dart';
 import 'device_model.dart';
 
-/// In-memory device store shared across the citizen, police, and PTA modules.
-///
-/// All async ops simulate a 400 ms network round-trip so UI loading states
-/// are exercised. Phase 9 replaces this with a Supabase `devices` table query.
-// TODO(Phase 9): replace with SupabaseDeviceRepository.
 class DeviceRepository {
-  DeviceRepository() : _devices = List.of(_seedDevices);
+  DeviceRepository();
 
-  final List<DeviceModel> _devices;
-
-  // ---------------------------------------------------------------------------
-  // Seed data — 3 devices (2 approved, 1 pending)
-  // Mirrors the Phase 2 dashboardMockProvider counts.
-  // ---------------------------------------------------------------------------
-  static final List<DeviceModel> _seedDevices = [
-    DeviceModel(
-      id: 'dev-001',
-      model: 'iPhone 15 Pro',
-      brand: 'Apple',
-      imei: '356938 09 123456 7',
-      imei2: null,
-      operator: 'Jazz',
-      status: DeviceStatus.approved,
-      registeredAt: DateTime(2026, 3, 12),
-    ),
-    DeviceModel(
-      id: 'dev-002',
-      model: 'Galaxy S24',
-      brand: 'Samsung',
-      imei: '354678 12 654321 9',
-      imei2: '354678 12 654321 0',
-      operator: 'Telenor',
-      status: DeviceStatus.pending,
-      registeredAt: DateTime(2026, 4, 28),
-    ),
-    DeviceModel(
-      id: 'dev-003',
-      model: 'Redmi Note 13',
-      brand: 'Xiaomi',
-      imei: '869912 04 789012 3',
-      imei2: null,
-      operator: 'Zong',
-      status: DeviceStatus.approved,
-      registeredAt: DateTime(2026, 1, 5),
-    ),
-  ];
-
-  /// IMEI → brand/model auto-fill dictionary (Phase 3 mock).
+  // IMEI prefix → brand/model auto-fill (UI convenience, no backend call).
   static const Map<String, ({String brand, String model})> _imeiPrefixMap = {
     '35693809': (brand: 'Apple', model: 'iPhone 15 Pro'),
     '35467812': (brand: 'Samsung', model: 'Galaxy S24'),
@@ -65,38 +20,34 @@ class DeviceRepository {
   // Public API
   // ---------------------------------------------------------------------------
 
+  /// Fetches devices for the current session.
+  /// RLS ensures citizens see only their own; PTA/police see all.
   Future<List<DeviceModel>> fetchAll() async {
-    await _delay();
-    return List.unmodifiable(_devices);
+    final rows = await SupabaseService.client
+        .from('devices')
+        .select()
+        .order('registered_at', ascending: false);
+    return rows.map(DeviceModel.fromJson).toList();
   }
 
   Future<DeviceModel?> fetchById(String id) async {
-    await _delay();
-    try {
-      return _devices.firstWhere((d) => d.id == id);
-    } on StateError {
-      return null;
-    }
+    final rows = await SupabaseService.client
+        .from('devices')
+        .select()
+        .eq('id', id)
+        .limit(1);
+    if (rows.isEmpty) return null;
+    return DeviceModel.fromJson(rows.first);
   }
 
-  /// Returns `null` if no match. Called during IMEI entry auto-fill.
+  /// Returns `null` if no IMEI prefix match. Called during IMEI entry auto-fill.
   ({String brand, String model})? lookupImei(String rawImei) {
     final digits = rawImei.replaceAll(RegExp(r'\D'), '');
     if (digits.length < 8) return null;
     return _imeiPrefixMap[digits.substring(0, 8)];
   }
 
-  /// Checks if [rawImei] already belongs to this user's account.
-  bool isDuplicate(String rawImei) {
-    final normalised = rawImei.replaceAll(RegExp(r'\D'), '');
-    return _devices.any(
-      (d) =>
-          d.imei.replaceAll(RegExp(r'\D'), '') == normalised ||
-          (d.imei2?.replaceAll(RegExp(r'\D'), '') ?? '') == normalised,
-    );
-  }
-
-  /// Adds a new device registration and returns the created model.
+  /// Inserts a new device registration and returns the created model.
   Future<DeviceModel> register({
     required String imei,
     String? imei2,
@@ -104,29 +55,44 @@ class DeviceRepository {
     required String model,
     required String operator,
   }) async {
-    await _delay();
-    final device = DeviceModel(
-      id: 'dev-${DateTime.now().millisecondsSinceEpoch}',
-      model: model,
-      brand: brand,
-      imei: imei,
-      imei2: imei2,
-      operator: operator,
-      status: DeviceStatus.pending,
-      registeredAt: DateTime.now(),
-    );
-    _devices.insert(0, device);
-    return device;
+    final row = await SupabaseService.client
+        .from('devices')
+        .insert({
+          'owner_id': SupabaseService.client.auth.currentUser!.id,
+          'imei1': imei,
+          'imei2': imei2,
+          'brand': brand,
+          'model': model,
+          'operator': operator,
+          'status': 'pending',
+        })
+        .select()
+        .single();
+    return DeviceModel.fromJson(row);
   }
 
   Future<void> updateDeviceStatus(String id, DeviceStatus status) async {
-    await _delay();
-    final index = _devices.indexWhere((d) => d.id == id);
-    if (index >= 0) {
-      _devices[index] = _devices[index].copyWith(status: status);
-    }
+    await SupabaseService.client
+        .from('devices')
+        .update({
+          'status': _deviceStatusToString(status),
+          'updated_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', id);
   }
 
-  static Future<void> _delay() =>
-      Future<void>.delayed(const Duration(milliseconds: 400));
+  static String _deviceStatusToString(DeviceStatus s) {
+    switch (s) {
+      case DeviceStatus.approved:
+        return 'approved';
+      case DeviceStatus.rejected:
+        return 'rejected';
+      case DeviceStatus.blocked:
+        return 'blocked';
+      case DeviceStatus.unblocked:
+        return 'unblocked';
+      default:
+        return 'pending';
+    }
+  }
 }

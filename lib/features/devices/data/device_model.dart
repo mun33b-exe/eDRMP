@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 /// All valid status values for a registered device.
-enum DeviceStatus { approved, pending, rejected, blocked }
+enum DeviceStatus { approved, pending, rejected, blocked, unblocked }
 
 extension DeviceStatusX on DeviceStatus {
   String get displayName {
@@ -14,20 +14,36 @@ extension DeviceStatusX on DeviceStatus {
         return 'Rejected';
       case DeviceStatus.blocked:
         return 'Blocked';
+      case DeviceStatus.unblocked:
+        return 'Unblocked';
     }
   }
 
-  bool get canFileFir => this == DeviceStatus.approved;
+  bool get canFileFir =>
+      this == DeviceStatus.approved || this == DeviceStatus.unblocked;
+
+  static DeviceStatus fromString(String s) {
+    switch (s) {
+      case 'approved':
+        return DeviceStatus.approved;
+      case 'rejected':
+        return DeviceStatus.rejected;
+      case 'blocked':
+        return DeviceStatus.blocked;
+      case 'unblocked':
+        return DeviceStatus.unblocked;
+      default:
+        return DeviceStatus.pending;
+    }
+  }
 }
 
 /// Application-level representation of a citizen-registered device.
-///
-/// Phase 9 will add `fromJson` / `toJson` when the Supabase `devices` table is
-/// wired in. Shape is intentionally flat to mirror the SRDS §4.2 schema.
 @immutable
 class DeviceModel {
   const DeviceModel({
     required this.id,
+    required this.ownerId,
     required this.model,
     required this.brand,
     required this.imei,
@@ -39,6 +55,7 @@ class DeviceModel {
   });
 
   final String id;
+  final String ownerId;
   final String model;
   final String brand;
 
@@ -52,7 +69,7 @@ class DeviceModel {
   final DeviceStatus status;
   final DateTime registeredAt;
 
-  /// Path to the uploaded invoice file (Phase 9 stores in Supabase Storage).
+  /// Path to the uploaded invoice file in Supabase Storage.
   final String? invoicePath;
 
   /// Masked IMEI for display: shows first 9 digits and last 1, hides middle.
@@ -82,9 +99,25 @@ class DeviceModel {
     return '${d.day} ${months[d.month]} ${d.year}';
   }
 
+  factory DeviceModel.fromJson(Map<String, dynamic> json) {
+    return DeviceModel(
+      id: json['id'] as String,
+      ownerId: json['owner_id'] as String,
+      model: (json['model'] as String?) ?? '',
+      brand: (json['brand'] as String?) ?? 'Unknown',
+      imei: json['imei1'] as String,
+      imei2: json['imei2'] as String?,
+      operator: (json['operator'] as String?) ?? '',
+      status: DeviceStatusX.fromString(json['status'] as String),
+      registeredAt: DateTime.parse(json['registered_at'] as String),
+      invoicePath: json['purchase_invoice_url'] as String?,
+    );
+  }
+
   DeviceModel copyWith({DeviceStatus? status}) {
     return DeviceModel(
       id: id,
+      ownerId: ownerId,
       model: model,
       brand: brand,
       imei: imei,

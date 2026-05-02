@@ -3,41 +3,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/fir_model.dart';
 import '../data/fir_repository.dart';
 
-final firRepositoryProvider = Provider<FirRepository>((ref) {
-  return FirRepository();
-});
+final firRepositoryProvider = Provider<FirRepository>((_) => FirRepository());
 
-final firsProvider = AsyncNotifierProvider<FirsNotifier, List<FirModel>>(() {
-  return FirsNotifier();
-});
+final firsProvider = AsyncNotifierProvider<FirsNotifier, List<FirModel>>(
+  FirsNotifier.new,
+);
 
 class FirsNotifier extends AsyncNotifier<List<FirModel>> {
+  FirRepository get _repo => ref.read(firRepositoryProvider);
+
   @override
-  Future<List<FirModel>> build() async {
-    return ref.watch(firRepositoryProvider).fetchUserFirs();
-  }
+  Future<List<FirModel>> build() => _repo.fetchUserFirs();
 
   Future<void> submitFir({
     required String deviceId,
-    required String deviceInfo,
+    required String firNumber,
     required String policeStation,
     required DateTime incidentDate,
     required String description,
   }) async {
     state = const AsyncValue.loading();
     try {
-      await ref
-          .read(firRepositoryProvider)
-          .submitFir(
-            deviceId: deviceId,
-            deviceInfo: deviceInfo,
-            policeStation: policeStation,
-            incidentDate: incidentDate,
-            description: description,
-          );
-      state = AsyncValue.data(
-        await ref.read(firRepositoryProvider).fetchUserFirs(),
+      await _repo.submitFir(
+        deviceId: deviceId,
+        firNumber: firNumber,
+        policeStation: policeStation,
+        incidentDate: incidentDate,
+        description: description,
       );
+      ref.invalidateSelf();
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -50,23 +44,15 @@ class FirsNotifier extends AsyncNotifier<List<FirModel>> {
   ]) async {
     state = const AsyncValue.loading();
     try {
-      await ref
-          .read(firRepositoryProvider)
-          .updateFirStatus(id, status, rejectReason);
-      // Invalidate byId provider to refresh the UI immediately
+      await _repo.updateFirStatus(id, status, rejectReason);
       ref.invalidate(firByIdProvider(id));
-      state = AsyncValue.data(
-        await ref.read(firRepositoryProvider).fetchUserFirs(),
-      );
+      ref.invalidateSelf();
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 }
 
-final firByIdProvider = FutureProvider.family<FirModel, String>((
-  ref,
-  id,
-) async {
+final firByIdProvider = FutureProvider.family<FirModel, String>((ref, id) {
   return ref.watch(firRepositoryProvider).fetchFirById(id);
 });

@@ -54,19 +54,14 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
 
     setState(() => _isLoading = true);
 
-    final devices = ref.read(devicesProvider).valueOrNull ?? [];
-    final device = devices.firstWhere((d) => d.id == _selectedDeviceId);
-    final deviceInfo =
-        '${device.brand} ${device.model} · IMEI ${device.maskedImei}';
-
     await ref
         .read(firsProvider.notifier)
         .submitFir(
           deviceId: _selectedDeviceId!,
-          deviceInfo: deviceInfo,
-          policeStation: _policeStationCtrl.text,
-          incidentDate: DateTime.now(), // Use current for mock
-          description: _descriptionCtrl.text,
+          firNumber: _firNumberCtrl.text.trim(),
+          policeStation: _policeStationCtrl.text.trim(),
+          incidentDate: DateTime.now(),
+          description: _descriptionCtrl.text.trim(),
         );
 
     if (mounted) {
@@ -99,7 +94,11 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                   devicesAsync.when(
                     data: (devices) {
                       final approvedDevices = devices
-                          .where((d) => d.status == DeviceStatus.approved)
+                          .where(
+                            (d) =>
+                                d.status == DeviceStatus.approved ||
+                                d.status == DeviceStatus.unblocked,
+                          )
                           .toList();
 
                       return Column(
