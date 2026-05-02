@@ -23,6 +23,7 @@ import '../../features/pta/presentation/device_approvals_page.dart';
 import '../../features/pta/presentation/pta_dashboard_page.dart';
 import '../../features/pta/presentation/pta_history_page.dart';
 import '../../features/settings/presentation/settings_page.dart';
+import '../../features/map/presentation/theft_map_page.dart';
 import 'route_names.dart';
 
 /// Flat list of every `GoRoute` in the app.
@@ -154,5 +155,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
     name: RouteNames.ptaHistory,
     path: RouteNames.ptaHistory,
     builder: (context, state) => const PtaHistoryPage(),
+  ),
+  GoRoute(
+    name: RouteNames.theftMap,
+    path: RouteNames.theftMap,
+    builder: (context, state) => const TheftMapPage(),
   ),
 ];

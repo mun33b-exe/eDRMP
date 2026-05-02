@@ -15,6 +15,7 @@ migrate_working_dir/
 docs/
 graphify-out/
 design/
+android/app/src/main/AndroidManifest.xml
 
 # IntelliJ related
 *.iml

@@ -136,6 +136,36 @@ class AppStrings {
   static const String titleTheftMap = 'Theft hotspots';
 
   // ---------------------------------------------------------------------------
+  // Theft map (Phase 7)
+  // ---------------------------------------------------------------------------
+  static const String theftMapLegendTitle = 'Risk legend';
+  static const String theftMapLowRisk = 'Low';
+  static const String theftMapMediumRisk = 'Medium';
+  static const String theftMapHighRisk = 'High';
+  static const String theftMapRecenter = 'Recenter map';
+  static const String theftMapZoneDetails = 'Zone details';
+  static const String theftMapRiskLabel = 'Risk level';
+  static const String theftMapFirLabel = 'Active FIRs';
+  static const String theftMapLocationLabel = 'Location';
+
+  // Zone labels
+  static const String theftZoneClifton = 'Clifton Coastal Belt';
+  static const String theftZoneSaddar = 'Saddar Market Loop';
+  static const String theftZoneGulberg = 'Gulberg Boulevard';
+  static const String theftZoneJoharTown = 'Johar Town Sector G';
+  static const String theftZoneBlueArea = 'Blue Area Spine';
+  static const String theftZoneF7 = 'F-7 Civic Grid';
+  static const String theftZoneHayatabad = 'Hayatabad Phase 3';
+  static const String theftZoneSatelliteTown = 'Satellite Town Core';
+
+  // City labels
+  static const String cityKarachi = 'Karachi';
+  static const String cityLahore = 'Lahore';
+  static const String cityIslamabad = 'Islamabad';
+  static const String cityPeshawar = 'Peshawar';
+  static const String cityQuetta = 'Quetta';
+
+  // ---------------------------------------------------------------------------
   // Dashboard (Phase 2)
   // ---------------------------------------------------------------------------
   static const String dashboardGreeting = 'Assalam-o-Alaikum';
