@@ -134,4 +134,66 @@ class AppStrings {
   static const String titlePoliceDashboard = 'Police dashboard';
   static const String titlePtaDashboard = 'PTA dashboard';
   static const String titleTheftMap = 'Theft hotspots';
+
+  // ---------------------------------------------------------------------------
+  // Dashboard (Phase 2)
+  // ---------------------------------------------------------------------------
+  static const String dashboardGreeting = 'Assalam-o-Alaikum';
+  static const String dashboardRegisteredDevices = 'REGISTERED DEVICES';
+  static const String dashboardAllActive = 'ALL ACTIVE';
+  static const String dashboardApproved = 'Approved';
+  static const String dashboardPending = 'Pending';
+  static const String dashboardFirs = 'FIRs';
+  static const String dashboardQuickActions = 'Quick actions';
+  static const String dashboardMyDevices = 'My devices';
+  static const String dashboardSeeAll = 'See all';
+  static const String dashboardRegisterDevice = 'Register device';
+  static const String dashboardReportFir = 'Report FIR';
+  static const String dashboardTransfer = 'Transfer';
+  static const String dashboardVerifyImei = 'Verify IMEI';
+
+  // Bottom nav labels
+  static const String navHome = 'Home';
+  static const String navDevices = 'Devices';
+  static const String navRegister = 'Register';
+  static const String navFir = 'FIR';
+  static const String navProfile = 'Profile';
+
+  // Quick-action bottom sheet
+  static const String qsTitle = 'Quick actions';
+
+  // ---------------------------------------------------------------------------
+  // Profile (Phase 2)
+  // ---------------------------------------------------------------------------
+  static const String profileFullName = 'Full name';
+  static const String profileCnic = 'CNIC';
+  static const String profileEmail = 'Email';
+  static const String profilePhone = 'Mobile';
+  static const String profileRole = 'Role';
+  static const String profileMemberSince = 'Member since';
+  static const String profileSignOut = 'Sign out';
+  static const String profileSignOutConfirm =
+      'Are you sure you want to sign out?';
+
+  // ---------------------------------------------------------------------------
+  // Settings (Phase 2)
+  // ---------------------------------------------------------------------------
+  static const String settingsLanguage = 'Language';
+  static const String settingsLanguageValue = 'English';
+  static const String settingsTheme = 'Theme';
+  static const String settingsThemeSystem = 'System';
+  static const String settingsThemeLight = 'Light';
+  static const String settingsThemeDark = 'Dark';
+  static const String settingsNotifications = 'Notifications';
+  static const String settingsAbout = 'About eDRMP';
+  static const String settingsVersion = 'Version';
+  static const String settingsAboutText =
+      'Electronic Device Registration \u0026 Monitoring Portal — a government initiative by PTA to protect citizens against device theft.';
+
+  // ---------------------------------------------------------------------------
+  // Notifications (Phase 2)
+  // ---------------------------------------------------------------------------
+  static const String notificationsEmptyTitle = "You're all caught up";
+  static const String notificationsEmptyBody =
+      "No new notifications right now. We'll alert you when your device status changes.";
 }
