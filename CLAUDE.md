@@ -2,7 +2,7 @@
 
 > **Read this entire file before writing a single line of code.**
 > This file is the **only** source of truth for the build order and rules.
-> The phase ordering in `docs/implementation_phases.md` is **rejected and superseded** by Section 7 of this file. If anything in the user's prompts conflicts with this file, ask — do not improvise.
+> The phase ordering in `docs/implementation_phases.md` is **rejected and superseded** by Section 8 of this file. If anything in the user's prompts conflicts with this file, ask — do not improvise.
 
 ---
 
@@ -10,11 +10,12 @@
 
 1. The project is delivered in **11 phases (Phase 0 through Phase 10)**. One phase at a time. Period.
 2. Claude Code may **not** start phase N+1 until the user explicitly says *"Begin Phase N+1."*
-3. After every phase, Claude Code writes an **Implementation Report** (template in Section 9) to `docs/reports/PHASE_NN_REPORT.md` and **stops**. No "while I'm here let me also fix X."
-4. Reports go to a separate auditor (the planning Claude). The auditor returns either:
+3. Every phase has a **Graphify pre-implementation read + post-implementation rebuild**, defined in Section 3. Skipping either step is a phase failure.
+4. After every phase, Claude Code writes an **Implementation Report** (template in Section 10) to `docs/reports/PHASE_NN_REPORT.md` and **stops**. No "while I'm here let me also fix X."
+5. Reports go to a separate auditor (the planning Claude). The auditor returns either:
    - ✅ **Approve** → user authorises the next phase.
    - ✏️ **Change requests** → Claude Code applies them as a fix-up on the *same phase*, regenerates the report, stops.
-5. **Designs are authoritative**, not the existing code. See Section 1 below.
+6. **Designs are authoritative**, not the existing code. See Section 1 below.
 
 ---
 
@@ -29,7 +30,7 @@ The current `lib/features/**` tree contains placeholder / non-design-faithful sc
 
 Folder structure is **preserved as-is** (`lib/theme/`, `lib/core/`, `lib/features/<feature>/data|logic|presentation/`). Only file *contents* are scorched.
 
-The Claude Design handoff URL (Section 6) is the visual contract. If a screen Claude Code produces doesn't visually match what's in that handoff, it is wrong and must be redone.
+The Claude Design handoff URL (Section 7) is the visual contract. If a screen Claude Code produces doesn't visually match what's in that handoff, it is wrong and must be redone.
 
 ---
 
@@ -48,7 +49,7 @@ Every phase ends with **`flutter analyze` printing exactly `No issues found!`**.
 - `const` on every widget that allows it.
 - No `ignore_for_file:` directives. No `// ignore:` lines. If a lint fires, fix the cause.
 
-**`analysis_options.yaml` (Claude Code creates / verifies in Phase 0):**
+**`analysis_options.yaml` (Claude Code created / verified in Phase 0):**
 
 ```yaml
 include: package:flutter_lints/flutter.yaml
@@ -90,7 +91,7 @@ linter:
     - avoid_redundant_argument_values
 ```
 
-**Mandatory pre-report sequence** (Claude Code runs all of these and pastes the unedited output into Section 9 of the report):
+**Mandatory pre-report sequence** (Claude Code runs all of these and pastes the unedited output into Section 10 of the report):
 
 ```bash
 dart fix --apply
@@ -103,7 +104,70 @@ If any of those produces output that isn't clean, the phase is **not done** and 
 
 ---
 
-## 3. Project Snapshot
+## 3. Graphify Knowledge Graph Protocol
+
+This project has a **Graphify** knowledge graph already built. Graphify (https://graphify.net, `safishamsi/graphify`) indexes the codebase with Tree-sitter AST + Leiden clustering. The graph artifacts live in `graphify-out/`:
+
+| File | What it is |
+|---|---|
+| `graphify-out/GRAPH_REPORT.md` | One-page audit: god nodes, communities, surprising connections. **Read first.** |
+| `graphify-out/graph.json` | Persistent graph — nodes (functions/classes/concepts) and edges (calls/imports/rationale). Queryable. |
+| `graphify-out/graph.html` | Interactive vis.js visualisation. Open in a browser for orientation. |
+| `graphify-out/wiki/` | Wikipedia-style markdown per community (only if `--wiki` was run). |
+
+**Why this exists:** every phase adds new nodes and edges. The graph is how Claude Code orients itself in a growing codebase without grep-walking the whole tree on every prompt — and how the auditor verifies the build hasn't drifted from the architecture. Graphify reportedly cuts query tokens by ~71×; for this repo the bigger win is structural awareness across phases.
+
+### 3.1 Pre-implementation protocol (MANDATORY for every phase)
+
+Before writing or modifying a single line of code, Claude Code MUST:
+
+1. **Read `graphify-out/GRAPH_REPORT.md` end-to-end.** Note the god nodes, the communities relevant to the current phase, and any surprising connections that touch the phase's *Touches* scope.
+2. **Run targeted queries** for every module the phase will touch. At minimum one of each below:
+   - `/graphify query "<feature or concept>"` — find relevant nodes by meaning (e.g. `/graphify query "auth flow"`).
+   - `/graphify path <node-A> <node-B>` — see how two areas already connect.
+   - `/graphify explain <node>` — plain-English summary of a node and its neighbours.
+3. **Capture the queries and findings** into the phase report under §10 of the report (the new "Graphify pre-implementation queries" heading). Each query gets one line: command run + one-sentence finding.
+4. **If the graph contradicts CLAUDE.md** (reveals an existing helper the phase plan ignored, an undocumented dependency, etc.), pause, surface it to the user, and wait. Do not silently work around it.
+
+### 3.2 Post-implementation protocol (MANDATORY for every phase)
+
+After implementation but **before** writing the phase report, Claude Code MUST:
+
+1. **Rebuild the graph** from the project root:
+   ```
+   /graphify .
+   ```
+   (or `graphify .` from a terminal). This rewrites `graphify-out/graph.json`, `GRAPH_REPORT.md`, and `graph.html`.
+2. **Diff the GRAPH_REPORT.md** before/after the phase. Confirm:
+   - New nodes match the Deliverables list for the phase.
+   - No unexpected new god nodes (signals a shared widget Claude Code didn't extract).
+   - No new community emerged that crosses feature boundaries (signals a leak through `core/`).
+3. **Paste the rebuild output and a short diff summary** into the phase report under §11 of the report ("Graphify post-implementation update").
+4. **Confirm `graphify-out/` is committed** alongside the phase changes so the next phase starts from a current graph.
+
+If `graphify hook install` is active, the post-commit hook will rebuild automatically — but the explicit step above is still required because Claude Code stops *before* the commit.
+
+### 3.3 Slash command cheat sheet
+
+| Command | When to use |
+|---|---|
+| `/graphify .` | Full rebuild after a phase. Always run before writing the report. |
+| `/graphify query "<text>"` | Search the graph by meaning before touching code. |
+| `/graphify path <A> <B>` | Trace the dependency path between two nodes. |
+| `/graphify explain <node>` | Plain-English summary of a node + its edges. |
+| `/graphify --update` | Re-extract docs/images only (faster than full rebuild). Use only if Phase 0 docs change. |
+| `/graphify --watch` | Background auto-sync. Reserved for Phase 9 (long backend integration). |
+| `graphify hook install` | Git post-commit / post-checkout hooks (one-time setup). |
+
+### 3.4 When the graph might be wrong
+
+- **After major file deletions** (e.g. Phase 0's scorched earth): rebuild before querying. The graph may still reference removed nodes for one cycle.
+- **After a rename**: the old node may persist for one rebuild cycle; re-run `/graphify .` to flush.
+- **If `GRAPH_REPORT.md` god nodes disagree with this CLAUDE.md's architecture** (Section 6) — **the architecture wins**. Surface the discrepancy in §11 of the phase report; do not refactor to match the graph's view without auditor approval.
+
+---
+
+## 4. Project Snapshot
 
 **Name:** eDRMP — Electronic Device Registration & Monitoring Portal
 **Type:** Final Year Project, government-grade citizen + admin app (Pakistan / PTA context)
@@ -115,7 +179,7 @@ The build is **UI-first**. Phases 0–8 build the entire app shell with mock/in-
 
 ---
 
-## 4. Tech Stack (Locked)
+## 5. Tech Stack (Locked)
 
 | Layer | Choice |
 |---|---|
@@ -132,29 +196,33 @@ The build is **UI-first**. Phases 0–8 build the entire app shell with mock/in-
 | Images | `cached_network_image` |
 | Codegen | `build_runner` + `freezed` + `json_serializable` + `riverpod_generator` |
 | Lint | `flutter_lints` + the strict overrides in Section 2 |
+| Knowledge graph | Graphify (Section 3) — already installed |
 
 **No new dependency without listing it in the report and getting auditor approval.**
 
 ---
 
-## 5. Document Hierarchy (Source of Truth)
+## 6. Document Hierarchy (Source of Truth)
 
 When in doubt, resolve in this order:
 
 1. **`CLAUDE.md`** (this file) — operational rules and phase plan. Overrides everything else.
-2. **Claude Design handoff** (Section 6) — visual contract.
-3. **`docs/Architecture.md`** — patterns and layers.
-4. **`docs/PRD.md`** — UX intent.
-5. **`docs/MVP Tech Doc.md`** — backend plan (active in Phase 9).
-6. **`docs/System Design.md`** — sequence diagrams, schemas.
-7. **`docs/eDRMP — Design System & Screens.pdf`** — local mirror of the design.
-8. **`docs/Software_Requirement_and_Design_Specification_SRDS.pdf`** — academic SRDS, full feature scope.
+2. **Claude Design handoff** (Section 7) — visual contract.
+3. **`graphify-out/GRAPH_REPORT.md`** — current structural ground truth of the codebase. Read before every phase per Section 3.
+4. **`docs/Architecture.md`** — patterns and layers.
+5. **`docs/PRD.md`** — UX intent.
+6. **`docs/MVP Tech Doc.md`** — backend plan (active in Phase 9).
+7. **`docs/System Design.md`** — sequence diagrams, schemas.
+8. **`docs/eDRMP — Design System & Screens.pdf`** — local mirror of the design.
+9. **`docs/Software_Requirement_and_Design_Specification_SRDS.pdf`** — academic SRDS, full feature scope.
 
-**`docs/implementation_phases.md` is REJECTED.** Use Section 7 of this file instead.
+**`docs/implementation_phases.md` is REJECTED.** Use Section 8 of this file instead.
+
+If `graphify-out/GRAPH_REPORT.md` and `docs/Architecture.md` disagree, the **architecture wins** (per Section 3.4). Surface the disagreement in the phase report.
 
 ---
 
-## 6. Design Handoff Protocol
+## 7. Design Handoff Protocol
 
 **Authoritative design (visual contract):**
 
@@ -210,10 +278,10 @@ The standard prompt to fetch it (use this in every phase that touches UI):
 
 ---
 
-## 7. Phase Plan (the only one that matters)
+## 8. Phase Plan (the only one that matters)
 
 **Why this order beats the rejected plan in `implementation_phases.md`:**
-- Phase 0 added: scorch the placeholder UI and lock the foundation (theme + shared widgets + lint config) **before** any feature screen is touched.
+- Phase 0 added: scorch the placeholder UI and lock the foundation (theme + shared widgets + lint config + Graphify baseline) **before** any feature screen is touched.
 - Profile / Settings / Notifications-shell folded into the Citizen Shell phase — they're the same surface area.
 - Maps split out of "Polish" into its own phase (Google Maps API + real coords ≠ skeleton shimmer).
 - Polish runs **before** Backend Integration so polish lands on stable mock data, not a flaky backend.
@@ -221,7 +289,7 @@ The standard prompt to fetch it (use this in every phase that touches UI):
 
 | # | Phase | Headline |
 |---|---|---|
-| 0 | Scorched Earth + Foundation | Wipe wrong UI, lock theme, ship shared widgets, strict lints |
+| 0 | Scorched Earth + Foundation | Wipe wrong UI, lock theme, ship shared widgets, strict lints, Graphify baseline |
 | 1 | Authentication Suite | Splash, login, register, forgot password (mock auth) |
 | 2 | Citizen Shell + Profile/Settings/Notifications | App shell, dashboard hero, profile, settings, notifications shell |
 | 3 | Citizen Devices Module | My Devices, Add Device flow, Device Details |
@@ -237,81 +305,7 @@ The standard prompt to fetch it (use this in every phase that touches UI):
 
 ### Phase 0 — Scorched Earth + Foundation
 
-**Goal:** Erase the placeholder UI in `lib/features/**`. Lock the design tokens, lint config, routing skeleton, and shared widget kit. After this phase the app must compile, launch, navigate to placeholder feature pages (each just a centered title), and toggle light/dark.
-
-**Touches (allowed paths):**
-- `analysis_options.yaml`
-- `pubspec.yaml`
-- `lib/main.dart`
-- `lib/theme/colors.dart`, `lib/theme/theme.dart`
-- `lib/core/constants/*`
-- `lib/core/routes/*`
-- `lib/core/utils/*`
-- `lib/core/widgets/*` (create files here)
-- `lib/features/**` — **only** to replace existing screen file contents with a stub `<FeatureName>Page` widget that renders a centered title (so routing works). Real content comes in later phases.
-
-**Deliverables:**
-1. `analysis_options.yaml` exactly as specified in Section 2.
-2. `theme/colors.dart` — every token from Section 6 declared as `static const Color`. Light + dark groups separated. Comment each group.
-3. `theme/theme.dart` — `ThemeData lightTheme` and `ThemeData darkTheme` built from the tokens. Full `TextTheme` covering the 7 type roles. `InputDecorationTheme`, `ElevatedButtonTheme`, `OutlinedButtonTheme`, `TextButtonTheme`, `CardTheme`, `AppBarTheme` all themed for both modes.
-4. `core/constants/`:
-   - `app_durations.dart` — `static const Duration short = Duration(milliseconds: 200);` etc.
-   - `app_padding.dart` — `static const double xs = 4, sm = 8, md = 12, lg = 16, xl = 20, xxl = 24;`
-   - `app_radius.dart` — 6, 9, 11, 14, pill.
-   - `app_spacing.dart` — `SizedBox` helpers.
-   - `app_strings.dart` — every UI string lives here. No literals in widgets.
-5. `core/routes/`:
-   - `route_names.dart` — every route as a `static const String`.
-   - `app_routes.dart` — `GoRoute` definitions.
-   - `app_router.dart` — `GoRouter` with auth-gate redirect (returns `null` for now; Phase 1 fills it in).
-6. `core/widgets/` — full shared kit, every widget production-quality:
-   - `app_button.dart` — variants: primary, success, reject, ghost, disabled. Loading state.
-   - `app_input.dart` — labelled text field, validator, prefix/suffix, error text.
-   - `app_password_input.dart` — toggle visibility.
-   - `status_badge.dart` — variants: pending, approved, rejected, verified, blocked, active, info.
-   - `app_card.dart` — surface card with consistent padding/radius/shadow.
-   - `app_loading.dart` — inline + full-screen.
-   - `empty_state.dart` — icon + title + body + optional action.
-   - `app_app_bar.dart` — themed app bar with back button + actions slot.
-   - `app_bottom_sheet.dart` — themed modal bottom sheet.
-   - `confirm_dialog.dart` — destructive action confirmation.
-7. `lib/features/**/presentation/**.dart` — every existing screen file overwritten with a minimal placeholder:
-   ```dart
-   class <Name>Page extends StatelessWidget {
-     const <Name>Page({super.key});
-     @override
-     Widget build(BuildContext context) => Scaffold(
-       appBar: const AppAppBar(title: '<Name>'),
-       body: const Center(child: Text('<Name> — Phase X')),
-     );
-   }
-   ```
-   This is intentional — every feature page is just a stub until its phase arrives.
-8. `main.dart` — `ProviderScope`, `MaterialApp.router`, `themeMode: ThemeMode.system`, locale `en_US`, `go_router` wired.
-9. Splash placeholder that auto-routes to `/login` after 1.2 s.
-
-**Acceptance criteria:**
-- `dart fix --apply` produces no changes.
-- `dart format .` produces no changes.
-- `flutter analyze` → exactly `No issues found!`
-- `flutter run` launches without errors on Android emulator.
-- Toggling system dark mode flips the theme instantly with no jank.
-- Every route name in `route_names.dart` navigates to its stub page.
-- No feature page contains real UI — they are all stubs.
-
-**Prompt to send to Claude Code:**
-
-```
-Read CLAUDE.md in the repo root. Execute Phase 0 — Scorched Earth + Foundation
-exactly as specified in Section 7. The existing UI in lib/features/** is wrong
-and must be replaced with stubs as described in Phase 0 Deliverable #7. Do not
-preserve any existing widget bodies. Stay strictly inside the Touches scope.
-Run dart fix --apply, dart format ., and flutter analyze before declaring done.
-flutter analyze must say exactly "No issues found!" — anything else is a fail.
-When done, write docs/reports/PHASE_00_REPORT.md per Section 9 and stop.
-
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
-```
+*Already complete and approved. Graphify baseline rebuilt at end of phase.*
 
 ---
 
@@ -324,12 +318,12 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 - `lib/core/routes/app_router.dart` — auth-gate redirect logic
 - `lib/core/widgets/**` — only to add a genuinely shared widget that emerged in Phase 0 review
 
-**Replacement note:** the existing `auth/presentation/login_page.dart`, `register_page.dart`, `forgot_password_page.dart`, `splash_page.dart` are stubs from Phase 0. **Overwrite their bodies completely** with the new design-faithful UI.
+**Replacement note:** the existing auth pages are Phase 0 stubs. Overwrite their bodies completely.
 
 **Deliverables:**
-1. **Splash page** — eDRMP wordmark, 1.2 s artificial delay, redirects based on mock auth state.
+1. **Splash** → already exists (Phase 0). Update only to use the real `currentUser` provider once mock auth is wired.
 2. **Login page** — email + password, "Forgot password?" link, "Don't have an account? Register" link. Light + dark.
-3. **Register page** — full name, CNIC (`xxxxx-xxxxxxx-x` format with input mask), email, phone (`+92 3xx xxxxxxx` mask), password, confirm password, terms checkbox.
+3. **Register page** — full name, CNIC (`xxxxx-xxxxxxx-x` mask), email, phone (`+92 3xx xxxxxxx` mask), password, confirm password, terms checkbox.
 4. **Forgot password page** — email entry, "Send reset link" CTA, success state.
 5. **Mock `AuthController` (Riverpod `AsyncNotifier`)** — `login`, `register`, `forgotPassword`, `logout`, `currentUser`. All async ops use `Future.delayed(const Duration(milliseconds: 400))`. Hard-coded demo accounts:
    ```
@@ -337,34 +331,56 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
    demo.police@edrmp.pk  / Demo@1234  → role: police
    demo.pta@edrmp.pk     / Demo@1234  → role: pta
    ```
-6. **Validators** in `core/utils/app_validators.dart`: email, CNIC, Pakistani phone, password strength.
+6. **Validators** in `core/utils/app_validators.dart`: email, CNIC, Pakistani phone, password strength (most already present from Phase 0; verify and complete).
 7. **Auth-gate redirect** in `go_router` — unauthenticated → `/login`; authenticated → role-based home.
 
 **Acceptance criteria:**
-- All four screens visually match the design system handoff (Citizen — light + dark sections).
+- All screens visually match the design system handoff (Citizen — light + dark).
 - Validation triggers on submit, errors render under the relevant field with humanised text.
-- Each demo account routes to its correct shell (user/police/PTA — destinations are still stubs from Phase 0).
+- Each demo account routes to its correct shell stub.
 - Logout returns to login.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt and committed; new auth nodes/community visible in `GRAPH_REPORT.md`.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phase 0 is approved. Execute Phase 1 — Authentication Suite.
+Read CLAUDE.md. Phase 0 is approved. You are starting Phase 1 — Authentication Suite.
+
+GRAPHIFY PRE-IMPLEMENTATION (per CLAUDE.md §3.1):
+1. Read graphify-out/GRAPH_REPORT.md end-to-end.
+2. Run /graphify query "auth", /graphify query "AuthController", and
+   /graphify explain <auth feature node> for the auth-related nodes.
+3. Capture queries + findings into the report under "Graphify
+   pre-implementation queries".
+
+IMPLEMENTATION:
 The auth stub files from Phase 0 must be fully replaced with design-faithful
 UI matching the Claude Design handoff. Mock data only. No Supabase calls.
 Follow the AuthController spec in CLAUDE.md exactly.
-Run dart fix --apply, dart format ., flutter analyze. Must end at "No issues found!".
-Write docs/reports/PHASE_01_REPORT.md and stop.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY POST-IMPLEMENTATION (per CLAUDE.md §3.2):
+After code is done, before writing the report:
+1. Run /graphify .
+2. Diff GRAPH_REPORT.md vs the pre-phase version.
+3. Paste rebuild output + diff summary into the report under "Graphify
+   post-implementation update".
+
+GATES:
+Run dart fix --apply, dart format ., flutter analyze. Must end at "No issues found!".
+
+REPORT:
+Write docs/reports/PHASE_01_REPORT.md per CLAUDE.md §10 and stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
 
 ### Phase 2 — Citizen Shell + Profile / Settings / Notifications
 
-**Goal:** Citizen home shell with bottom nav + FAB, the dashboard hero from the design, plus the profile / settings / notifications-shell pages.
+**Goal:** Citizen home shell with bottom nav + FAB, the dashboard hero from the design, plus profile / settings / notifications-shell pages.
 
 **Touches:**
 - `lib/features/dashboard/**`
@@ -372,34 +388,53 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 - `lib/features/settings/**`
 - `lib/features/notifications/**`
 
-**Replacement note:** all existing files in these features are Phase 0 stubs. Replace fully.
+**Replacement note:** existing files in these features are Phase 0 stubs. Replace fully.
 
 **Deliverables:**
-1. `app_shell_page.dart` — bottom nav: Home / Devices / [+ FAB] / FIR / Profile (matches the dark+light hero screens). FAB opens a quick-action bottom sheet.
+1. `app_shell_page.dart` — bottom nav: Home / Devices / [+ FAB] / FIR / Profile (matches dark+light hero). FAB opens a quick-action bottom sheet.
 2. `dashboard_page.dart` — greeting (`"Assalam-o-Alaikum, {firstName}"`), notifications icon, profile icon, summary card (REGISTERED DEVICES count + ALL ACTIVE chip + APPROVED / PENDING / FIRS sub-stats), Quick Actions grid (Register device, Report FIR, Transfer, Verify IMEI), "My devices" preview list (max 2, "See all" link).
 3. `profile_page.dart` — read-only profile (name, masked CNIC, email, phone, role badge, member-since), Sign out button.
-4. `settings_page.dart` — language (English locked for MVP), theme (System/Light/Dark with proper UI), notifications toggle (UI only), about, version.
+4. `settings_page.dart` — language (English locked for MVP), theme (System/Light/Dark), notifications toggle (UI only), about, version.
 5. `notifications_page.dart` — empty-state shell ("You're all caught up").
 6. `dashboardMockProvider` (Riverpod) — 3 devices, 2 approved, 1 pending, 0 FIRs.
 
 **Acceptance criteria:**
-- Bottom nav navigates correctly; selected tab visually distinct per the design.
+- Bottom nav navigates correctly; selected tab visually distinct.
 - Light + dark both match the design.
-- Greeting reads from `currentUser` provider.
+- Greeting reads from `currentUser`.
 - "See all" navigates to the Phase 3 stub.
 - Theme switcher in settings actually flips themes.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; new dashboard/profile/settings/notifications communities visible.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-1 approved. Execute Phase 2 — Citizen Shell +
-Profile/Settings/Notifications. Replace all stub files in these features
-fully. Mock data only. Match the Citizen — dark home hero and the light variant.
-Run dart fix --apply, dart format ., flutter analyze. End at "No issues found!".
-Write docs/reports/PHASE_02_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-1 approved. Starting Phase 2 — Citizen Shell +
+Profile/Settings/Notifications.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY PRE-IMPLEMENTATION:
+Read graphify-out/GRAPH_REPORT.md.
+Run /graphify query "dashboard", /graphify query "profile",
+/graphify query "AuthController" (to know what currentUser exposes),
+and /graphify path <auth node> <dashboard node>.
+Capture into the report.
+
+IMPLEMENTATION:
+Replace all stub files in these features fully. Mock data only.
+Match Citizen — dark home hero and the light variant.
+
+GRAPHIFY POST-IMPLEMENTATION:
+Run /graphify ., diff GRAPH_REPORT.md, paste into the report.
+
+GATES:
+dart fix --apply, dart format ., flutter analyze → "No issues found!".
+
+REPORT:
+docs/reports/PHASE_02_REPORT.md per §10. Stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
@@ -414,28 +449,43 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 
 **Deliverables:**
 1. `my_devices_page.dart` — list of devices, each card: device icon, brand+model, masked IMEI (`356938 09 *** 7`), registration date, network operator, status badge. Filter chips (All / Active / Pending / Blocked). Empty state.
-2. `add_device_page.dart` — multi-step form: Step 1 IMEI entry + auto-fill brand/model (mock dictionary lookup), Step 2 confirm details, Step 3 success. Inline Luhn validation. "Continue" disabled until valid.
-3. `device_details_page.dart` — full device record, IMEI in mono font, status timeline (registered → pending → approved), action button "Report FIR" (only enabled when status `approved`).
+2. `add_device_page.dart` — multi-step form: Step 1 IMEI entry + auto-fill brand/model (mock dictionary lookup), Step 2 confirm, Step 3 success. Inline Luhn validation. "Continue" disabled until valid.
+3. `device_details_page.dart` — full device record, IMEI in mono, status timeline, "Report FIR" CTA (enabled only when status `approved`).
 4. Real Luhn validator in `app_validators.dart`.
-5. Mock `DeviceRepository` with in-memory list + 400 ms delays.
-6. Auto-fill brand/model dictionary covering at least: Apple iPhone 15 Pro, Samsung Galaxy S24, Xiaomi Redmi Note 13.
+5. Mock `DeviceRepository` — in-memory list + 400 ms delays.
+6. Auto-fill dictionary covering at least: Apple iPhone 15 Pro, Samsung Galaxy S24, Xiaomi Redmi Note 13.
 
 **Acceptance criteria:**
-- Adding a duplicate IMEI shows a duplicate-error dialog.
-- Adding a valid IMEI walks through 3 steps and lands on `my_devices` with the new card on top.
-- Status badges colored from the domain-status tokens.
+- Duplicate IMEI shows duplicate-error dialog.
+- Valid IMEI walks through 3 steps, lands on `my_devices` with new card on top.
+- Status badges colored from domain-status tokens.
 - All async ops have loading + error states.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; device community visible.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-2 approved. Execute Phase 3 — Citizen Devices Module.
-Replace all stub device files. Mock data only. Real Luhn validation now.
-Match the device-related screens in the design.
-End at "No issues found!". Write docs/reports/PHASE_03_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-2 approved. Starting Phase 3 — Citizen Devices Module.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md.
+Run /graphify query "device", /graphify query "IMEI",
+/graphify query "validator", /graphify explain <app_validators node>.
+Capture into report.
+
+IMPLEMENTATION:
+Replace all stub device files. Mock data only. Real Luhn validation now.
+Match device-related screens in the design.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_03_REPORT.md, stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
@@ -450,25 +500,41 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 
 **Deliverables:**
 1. `submit_fir_page.dart` — form: select device (only `approved` devices), FIR number, police station, FIR date (date picker), description (multiline), proof upload (placeholder picker — real upload Phase 9), location capture (map picker placeholder — real map Phase 7). Sticky bottom Submit.
-2. `fir_history_page.dart` — list of FIRs with status badges (Pending / Verified / Rejected). Tappable → case tracking.
-3. `case_tracking_page.dart` — vertical stepper timeline using the State Dynamics diagram (Section 5.5 of the SRDS PDF) as the canonical state list: Device Registered → FIR Submitted → FIR Under Review → FIR Verified/Rejected → Block Pending → Block Approved/Rejected → Device Blocked / Recovered. Each step: icon, title, timestamp, optional note. Past = solid, current = highlighted, future = muted.
-4. Mock `FirRepository` + `CaseStatusRepository` with 2 seeded FIRs across statuses to demonstrate the timeline.
+2. `fir_history_page.dart` — list of FIRs with status badges. Tappable → case tracking.
+3. `case_tracking_page.dart` — vertical stepper using the State Dynamics diagram (SRDS PDF §5.5) as canonical: Device Registered → FIR Submitted → FIR Under Review → FIR Verified/Rejected → Block Pending → Block Approved/Rejected → Device Blocked / Recovered. Each step: icon, title, timestamp, optional note. Past = solid, current = highlighted, future = muted.
+4. Mock `FirRepository` + `CaseStatusRepository` — 2 seeded FIRs across statuses.
 
 **Acceptance criteria:**
-- Submitting a FIR adds it to history with `Pending` status.
-- Timeline correctly renders past / current / future states.
+- Submitting a FIR adds it to history with `Pending`.
+- Timeline correctly renders past / current / future.
 - Empty state when no FIRs.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; FIR community visible, links to device community.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-3 approved. Execute Phase 4 — Citizen FIR +
-Case Tracking. Replace all stub FIR files. Mock data only. Use the State
-Dynamics diagram in the SRDS PDF as the canonical state list.
-End at "No issues found!". Write docs/reports/PHASE_04_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-3 approved. Starting Phase 4 — Citizen FIR + Case Tracking.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md.
+Run /graphify query "FIR", /graphify query "case status",
+/graphify path <DeviceRepository node> <FirRepository node would-be>,
+/graphify explain <DeviceRepository node>.
+Capture into report.
+
+IMPLEMENTATION:
+Replace all stub FIR files. Mock data only. Use the State Dynamics diagram in
+docs/Software_Requirement_and_Design_Specification_SRDS.pdf as the canonical state list.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_04_REPORT.md, stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
@@ -482,25 +548,39 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 
 **Deliverables:**
 1. `police_dashboard_page.dart` — summary tiles (Pending / Verified Today / Rejected Today), CTA "Open Pending Queue".
-2. `pending_fir_queue_page.dart` — list of FIRs needing verification, sorted desc, filter chips (All / Pending / Verified / Rejected).
-3. `fir_review_page.dart` — full FIR detail, citizen info, attached proof (placeholder viewer), Verify / Reject sticky bottom CTA pair. Reject must capture a reason. Both actions show a confirmation dialog (`confirm_dialog.dart` from Phase 0).
-4. Police-side mock data: 5 FIRs (3 pending, 1 verified, 1 rejected).
+2. `pending_fir_queue_page.dart` — list of FIRs needing verification, sorted desc, filter chips.
+3. `fir_review_page.dart` — full FIR detail, citizen info, attached proof (placeholder viewer), Verify / Reject sticky bottom CTA pair. Reject captures non-empty reason. Both actions show `confirm_dialog`.
+4. Police-side mock data: 5 FIRs (3 pending, 1 verified, 1 rejected), shared store with Phase 4.
 
 **Acceptance criteria:**
-- Verifying a FIR updates its status and removes it from the pending queue.
-- Rejecting requires a non-empty reason; reason persists in the case timeline (shared mock store with Phase 4).
-- Lists use the `Approval queue` typography spec.
+- Verifying updates status, removes from pending queue.
+- Reject reason persists in case timeline (shared mock store).
+- Lists use `Approval queue` typography spec.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; police community visible, edges into FIR community.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-4 approved. Execute Phase 5 — Police Admin Module.
-Replace police stub. Mock data only. Match police screens. Confirmation
-dialog required for both verify and reject.
-End at "No issues found!". Write docs/reports/PHASE_05_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-4 approved. Starting Phase 5 — Police Admin Module.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md.
+Run /graphify query "FirRepository", /graphify query "case status",
+/graphify path <FirRepository> <case_tracking node>.
+Confirm the shared mock store is reachable. Capture into report.
+
+IMPLEMENTATION:
+Replace police stub. Mock data only. Match police screens. confirm_dialog for both verify and reject.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_05_REPORT.md, stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
@@ -513,27 +593,42 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 - `lib/features/pta/**`
 
 **Deliverables:**
-1. `pta_dashboard_page.dart` — analytics tiles (Total devices, Approvals, Active FIRs, Blocked) per the Analytics screen in the design. Static placeholder numbers/charts.
-2. `device_approvals_page.dart` — list of pending device registrations, approve/reject with confirmation.
-3. `block_requests_page.dart` — list of pending block requests, approve/reject with confirmation. Reject captures reason.
+1. `pta_dashboard_page.dart` — analytics tiles (Total devices, Approvals, Active FIRs, Blocked) per the Analytics screen. Static placeholder numbers/charts.
+2. `device_approvals_page.dart` — pending registrations list, approve/reject with confirmation.
+3. `block_requests_page.dart` — pending block requests, approve/reject with confirmation. Reject captures reason.
 4. `pta_history_page.dart` — audit log of all PTA decisions with timestamps.
-5. Mock data covering all four lists; shared store with citizen-side so approvals reflect there.
+5. Mock data covering all four lists; shared store with citizen + police sides.
 
 **Acceptance criteria:**
-- Analytics tiles match the design (light + dark).
-- Approving a device flips its status in the shared mock store; citizen `my_devices` reflects it.
+- Analytics tiles match design (light + dark).
+- Approving a device flips its status in the shared store; citizen `my_devices` reflects.
 - All admin actions create case_tracking audit entries.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; PTA community visible, edges into device + block-request communities.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-5 approved. Execute Phase 6 — PTA Admin Module.
-Replace pta stub. Mock data only. Match the Analytics light + dark
-screens for the dashboard.
-End at "No issues found!". Write docs/reports/PHASE_06_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-5 approved. Starting Phase 6 — PTA Admin Module.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md.
+Run /graphify query "DeviceRepository", /graphify query "block request",
+/graphify path <DeviceRepository> <device_details_page>,
+/graphify explain <case_status_log-equivalent node>.
+Capture into report.
+
+IMPLEMENTATION:
+Replace pta stub. Mock data only. Match Analytics light + dark for the dashboard.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_06_REPORT.md, stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
@@ -546,56 +641,85 @@ Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?o
 - `lib/features/map/**`
 
 **Deliverables:**
-1. `theft_map_page.dart` — `google_maps_flutter` with 5–10 mock theft zones (markers + colored circles by risk: low/medium/high).
+1. `theft_map_page.dart` — `google_maps_flutter` with 5–10 mock zones (markers + colored circles by risk: low/medium/high).
 2. Tap marker → bottom sheet with FIR count + risk level.
 3. Legend + recenter button.
-4. Map style tuned for both light + dark mode.
+4. Map style tuned for both light + dark.
 
 **Acceptance criteria:**
-- Map renders on a real device / emulator with the placeholder API key configuration documented in the report (key not committed).
-- Markers are accessible (semantic labels).
+- Map renders on emulator with placeholder API key (key not committed; setup documented).
+- Markers semantically labelled.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; map community visible.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-6 approved. Execute Phase 7 — Theft Hotspot Map.
-Document the Google Maps API key setup in the report without committing the key.
-End at "No issues found!". Write docs/reports/PHASE_07_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-6 approved. Starting Phase 7 — Theft Hotspot Map.
 
-Design reference: https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md.
+Run /graphify query "map", /graphify query "FIR location",
+/graphify explain <FirRepository node>.
+Capture into report.
+
+IMPLEMENTATION:
+Document Google Maps API key setup in the report without committing the key.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_07_REPORT.md, stop.
+
+Design reference:
+https://api.anthropic.com/v1/design/h/JJg-PlJiNm5iCJzi5GqmjA?open_file=eDRMP+Design+System.html
 ```
 
 ---
 
 ### Phase 8 — Polish Pass
 
-**Goal:** Apply animation, skeleton, and interaction polish across every existing screen. Visual lift only — no new features.
+**Goal:** Apply animation, skeleton, and interaction polish across every existing screen. Visual lift only.
 
 **Touches:** widgets and effects across all features. **No** changes to repositories, providers, or routing logic. **No** new screens.
 
 **Deliverables:**
-1. Skeleton shimmer for all async lists (use `shimmer` package, document if added).
-2. Hero animation on device cards → device details.
-3. Page transitions consistent across the app (slide + fade).
-4. Pull-to-refresh on every list view.
-5. Connectivity banner widget (offline indicator, mocked toggle for now).
+1. Skeleton shimmer for all async lists (`shimmer` package — declare in §5 of report).
+2. Hero animation device card → device details.
+3. Page transitions consistent (slide + fade).
+4. Pull-to-refresh on every list.
+5. Connectivity banner widget (offline indicator, mocked toggle).
 6. Empty / error states uniform across features.
 7. Subtle micro-animations (status badge pulse on `pending`, button press scale).
 
 **Acceptance criteria:**
 - 60 fps scroll on a mid-tier Android emulator.
 - All lists show skeleton on load → empty state on no data.
-- No regression in earlier phases — every prior screen still passes its own acceptance criteria.
+- No regression in earlier phases.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; god nodes should NOT shift dramatically (polish ≠ structural change).
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-7 approved. Execute Phase 8 — Polish Pass.
+Read CLAUDE.md. Phases 0-7 approved. Starting Phase 8 — Polish Pass.
+
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md. Note current god nodes — they should NOT change.
+Run /graphify query "shared widget", /graphify query "AppCard",
+/graphify query "ListView".
+Capture into report.
+
+IMPLEMENTATION:
 No new screens. No repository or routing changes. Only animation, skeleton,
-transition, refresh, and uniform empty/error state work.
-End at "No issues found!". Write docs/reports/PHASE_08_REPORT.md and stop.
+transition, refresh, and uniform empty/error states.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report. Confirm god nodes are unchanged.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_08_REPORT.md, stop.
 ```
 
 ---
@@ -604,38 +728,41 @@ End at "No issues found!". Write docs/reports/PHASE_08_REPORT.md and stop.
 
 **Goal:** Replace every mock with real Supabase + FCM. Presentation layer is **frozen** — UI must not visibly change.
 
-**Touches:** all `data/` layers in every feature, `core/network/`, `core/errors/`, new `core/services/supabase_service.dart`, `core/services/fcm_service.dart`, `main.dart`. Provider signatures stay identical so widgets don't change.
+**Touches:** all `data/` layers in every feature, `core/network/`, `core/errors/`, new `core/services/supabase_service.dart`, `core/services/fcm_service.dart`, `main.dart`. Provider signatures stay identical.
 
-**Deliverables (per `docs/MVP Tech Doc.md` and `docs/System Design.md`):**
-1. Supabase project initialised (dev + prod), env via `--dart-define`.
-2. Schema deployed: `profiles`, `devices`, `firs`, `block_requests`, `case_status_log`, `notifications`, `theft_zones`. RLS for each.
-3. `supabase_flutter` initialised in `main.dart`.
-4. Real `AuthRepository` replacing mock — signup, login, logout, session restore, role from `profiles`.
-5. Real `DeviceRepository`, `FirRepository`, `BlockRepository`, `CaseStatusRepository`, `NotificationRepository` — same public interfaces as mocks.
-6. Supabase Storage bucket `fir-documents` configured. Real upload with retry (3 attempts, exponential backoff).
-7. Firebase initialised. FCM token saved to `profiles.fcm_token` on login. Foreground + background handlers.
-8. Edge Function (or DB trigger) pushing notifications on FIR status change and block status change.
-9. Realtime subscription on `case_status_log` filtered by current user — pushes into the existing `caseStatusProvider`.
-10. Connectivity middleware around all repositories — surfaces `NoConnectionFailure` properly.
-11. Sentry initialised.
+**Deliverables:** see `docs/MVP Tech Doc.md` and `docs/System Design.md`. Schema, RLS, Edge Functions, FCM token, Realtime subscription, connectivity middleware, Sentry — all per spec.
 
 **Acceptance criteria:**
 - All three demo accounts work end-to-end on real backend.
-- Full flow: register device → PTA approves → submit FIR → police verifies → request block → PTA approves → device shows blocked. Push notifications fire at each transition.
-- RLS verified: a user cannot read another user's devices/FIRs.
+- Full flow: register device → PTA approves → submit FIR → police verifies → request block → PTA approves → device blocked. Push fires at each transition.
+- RLS verified.
 - No `// MOCK` comments remain.
 - `flutter analyze` → `No issues found!`
+- Graphify rebuilt; communities should remain stable, but new data-layer nodes appear under each feature's `data/`.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-8 approved. Execute Phase 9 — Supabase + FCM
-Backend Integration. Replace every mock with real Supabase implementations.
-Presentation layer must not change. Follow docs/MVP Tech Doc.md and
-docs/System Design.md exactly for schema, RLS, and Edge Functions.
-Document Supabase project URL and bucket setup in the report. No secrets
-committed. End at "No issues found!".
-Write docs/reports/PHASE_09_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-8 approved. Starting Phase 9 — Supabase + FCM Backend Integration.
+
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md. Note that every Mock<X>Repository node will be replaced.
+Run /graphify query "MockDeviceRepository", /graphify query "MockFirRepository",
+/graphify query "AuthController", and for each, /graphify explain <node>
+to surface every caller.
+Optionally start /graphify --watch in a separate terminal for the duration of this phase.
+Capture queries into the report.
+
+IMPLEMENTATION:
+Replace every mock with real Supabase. Presentation layer must not change.
+Follow docs/MVP Tech Doc.md and docs/System Design.md for schema, RLS, Edge Functions.
+Document Supabase project URL and bucket setup in the report. No secrets committed.
+
+GRAPHIFY POST-IMPLEMENTATION:
+/graphify . — diff — paste into report. Confirm presentation-layer god nodes unchanged.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_09_REPORT.md, stop.
 ```
 
 ---
@@ -647,37 +774,53 @@ Write docs/reports/PHASE_09_REPORT.md and stop.
 **Touches:** test files, lint config, build config, `README.md`.
 
 **Deliverables:**
-1. Unit tests for all use cases / validators (≥ 70 % coverage).
+1. Unit tests: all use cases / validators (≥ 70 % coverage).
 2. Widget tests: login, register, device add, FIR submit, case timeline, police review, PTA approval.
-3. One integration test running the happy path end-to-end against a Supabase test project.
+3. One integration test running happy path against a Supabase test project.
 4. Whole-tree lint sweep — `flutter analyze` clean, `dart format .` applied, `dart fix --apply` no-op.
 5. App icon + splash screen finalised.
-6. Signed release APK built; keystore in CI secrets, documented.
-7. `README.md` with setup, env vars, demo credentials, build command, screenshots.
+6. Signed release APK; keystore in CI secrets, documented.
+7. `README.md` with setup, env vars, demo credentials, build command, screenshots, **and a "Knowledge graph" section pointing to `graphify-out/GRAPH_REPORT.md`**.
 8. Demo seed-data script committed.
 
 **Acceptance criteria:**
-- CI pipeline (GitHub Actions) green.
-- Zero crash-blocking bugs in the happy path.
+- CI green.
+- Zero crash-blocking bugs in happy path.
 - Tested on Android 8 + Android 14.
+- Graphify graph committed and current.
 
 **Prompt to send to Claude Code:**
 
 ```
-Read CLAUDE.md. Phases 0-9 approved. Execute Phase 10 — QA, Lint Sweep, Release.
-Hit coverage targets. Build signed release APK. Update README.md.
-End at "No issues found!". Write docs/reports/PHASE_10_REPORT.md and stop.
+Read CLAUDE.md. Phases 0-9 approved. Starting Phase 10 — QA, Lint Sweep, Release.
+
+GRAPHIFY PRE-IMPLEMENTATION:
+Read GRAPH_REPORT.md. Note all god nodes — they will be referenced from README.md.
+Run /graphify query "test", /graphify explain <build_runner node if any>.
+Capture into report.
+
+IMPLEMENTATION:
+Hit coverage targets. Build signed release APK. Update README.md with the
+"Knowledge graph" section pointing to graphify-out/GRAPH_REPORT.md.
+
+GRAPHIFY POST-IMPLEMENTATION:
+Final /graphify . — diff — paste into report.
+
+GATES: → "No issues found!".
+REPORT: docs/reports/PHASE_10_REPORT.md, stop.
 ```
 
 ---
 
-## 8. What Claude Code MUST Refuse
+## 9. What Claude Code MUST Refuse
 
 Without explicit out-of-band instruction, refuse and point back here:
 
 - Working on a phase not yet authorised.
 - Touching files outside the current phase's *Touches* scope.
-- Adding a dependency not in Section 4.
+- **Skipping the Graphify pre-implementation read or queries (Section 3.1).**
+- **Skipping the Graphify post-implementation rebuild (Section 3.2).**
+- Adding a dependency not in Section 5.
 - Real backend calls before Phase 9.
 - Hardcoded colors, paddings, durations, or strings outside the constants/theme files.
 - Suppressing a lint with `// ignore:` or `ignore_for_file:`.
@@ -685,10 +828,11 @@ Without explicit out-of-band instruction, refuse and point back here:
 - Skipping the Implementation Report.
 - Committing secrets, API keys, or `.env` files.
 - Declaring a phase complete when `flutter analyze` shows anything other than `No issues found!`.
+- Declaring a phase complete when `graphify-out/` is stale or uncommitted.
 
 ---
 
-## 9. Implementation Report Format
+## 10. Implementation Report Format
 
 Claude Code writes one of these to `docs/reports/PHASE_NN_REPORT.md` at the end of every phase. Do not skip any heading.
 
@@ -722,7 +866,16 @@ Claude Code writes one of these to `docs/reports/PHASE_NN_REPORT.md` at the end 
 - Screen → matches design? (yes / partial — explain)
 - Light + dark both verified? (yes / no)
 
-## 9. Lint / format / analyze output (paste verbatim)
+## 9. Graphify pre-implementation queries
+List every Graphify command run before writing code, with one-sentence findings:
+- `/graphify query "auth"` → found AuthController node in `lib/features/auth/logic/`,
+  3 callers, no current edges to dashboard.
+- `/graphify path AuthController DashboardPage` → no path; will create one this phase.
+- `/graphify explain AppButton` → reused by 4 stub pages already, safe to rely on.
+
+(If zero queries — phase status is **Blocked**, not Complete.)
+
+## 10. Lint / format / analyze output (paste verbatim)
 
     $ dart fix --apply
     (no changes)
@@ -736,47 +889,65 @@ Claude Code writes one of these to `docs/reports/PHASE_NN_REPORT.md` at the end 
 
 If anything other than "No issues found!" appears here, status above MUST be Partial or Blocked.
 
-## 10. Manual test log
+## 11. Graphify post-implementation update
+Paste verbatim:
+
+    $ /graphify .
+    <output>
+
+Then summarise the diff vs the previous GRAPH_REPORT.md:
+- New nodes added: …
+- New community formed: …  (or: no new community)
+- God nodes changed? (yes / no — if yes, explain)
+- Cross-feature edges leaked through `core/`? (yes / no)
+
+(If `graphify .` was not run — phase status is **Blocked**.)
+
+## 12. Manual test log
 - Step-by-step what you ran and what happened. Screenshots if possible.
 
-## 11. Known issues / debt
+## 13. Known issues / debt
 - List anything intentionally deferred. Each item references a future phase.
 
-## 12. What I touched outside Touches scope (should be empty)
+## 14. What I touched outside Touches scope (should be empty)
 - If non-empty, explain why and ask the auditor to bless it.
 
-## 13. Ready for auditor?
+## 15. Ready for auditor?
 - [ ] Yes — please review.
 ```
 
 ---
 
-## 10. Audit Loop
+## 11. Audit Loop
 
 ```
-USER ↦ Claude Code:  "Begin Phase N." (copy the Prompt block from Section 7)
-Claude Code:         implements + writes PHASE_NN_REPORT.md, stops.
+USER ↦ Claude Code:  "Begin Phase N." (copy the Prompt block from Section 8)
+Claude Code:         §3.1 reads + queries → implements → §3.2 rebuild
+                     → writes PHASE_NN_REPORT.md → stops.
 USER ↦ Auditor:      pastes the report (and any concerning code).
 Auditor:             returns ✅ Approve  OR  ✏️ Change list.
   Approve   →  USER ↦ Claude Code: "Begin Phase N+1."
   Changes   →  USER ↦ Claude Code: "Apply these changes to Phase N: <list>.
+                                     Re-run §3.2 if code changed.
                                      Update PHASE_NN_REPORT.md and stop."
 Repeat.
 ```
 
-**Auditor rejects on:** scope creep, theme/constants violations, hardcoded literals, dead code, unused imports, missing loading/empty states, design drift from the handoff, missing report sections, new deps without justification, untested validators, `flutter analyze` showing anything other than `No issues found!`, or any rule in Sections 1, 2, or 8 broken.
+**Auditor rejects on:** scope creep, theme/constants violations, hardcoded literals, dead code, unused imports, missing loading/empty states, design drift from the handoff, missing report sections, **missing Graphify §9 or §11 of the report**, **stale `graphify-out/`**, new deps without justification, untested validators, `flutter analyze` showing anything other than `No issues found!`, or any rule in Sections 1, 2, 3, or 9 broken.
 
 ---
 
-## 11. Quick Reference Card
+## 12. Quick Reference Card
 
 - **Section 1 first:** existing UI is wrong → rebuild from the design handoff.
 - **Section 2 always:** zero analyzer issues, zero unused imports, zero suppressions.
+- **Section 3 every phase:** read GRAPH_REPORT.md and query before coding; rebuild after.
 - **One phase at a time.** Stop at the report.
 - **`theme/colors.dart` + `core/constants/*` are the only sources of style atoms.**
 - **`core/widgets/` for anything reused on more than one screen.**
 - **Mock until Phase 9. Real from Phase 9.**
 - **`flutter analyze` must say `No issues found!` before claiming done.**
+- **`graphify-out/` must be current and committed before claiming done.**
 
 ---
 

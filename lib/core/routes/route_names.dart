@@ -1,20 +1,37 @@
+/// Single source of truth for navigation paths.
+///
+/// Use these constants whenever calling `context.go(...)` or wiring a
+/// `GoRoute(path: ...)`. Do not duplicate the literal anywhere else.
 class RouteNames {
-  static const String splash = 'splash';
-  static const String login = 'login';
-  static const String register = 'register';
-  static const String forgotPassword = 'forgotPassword';
-  static const String appShell = 'appShell';
-  static const String dashboard = 'dashboard';
-  static const String myDevices = 'myDevices';
-  static const String addDevice = 'addDevice';
-  static const String deviceDetails = 'deviceDetails';
-  static const String firHistory = 'firHistory';
-  static const String submitFir = 'submitFir';
-  static const String caseTracking = 'caseTracking';
-  static const String profile = 'profile';
-  static const String settings = 'settings';
-  static const String policeDashboard = 'policeDashboard';
-  static const String ptaDashboard = 'ptaDashboard';
-  static const String notifications = 'notifications';
-  static const String map = 'map';
+  RouteNames._();
+
+  // Auth
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String forgotPassword = '/forgot-password';
+
+  // Citizen shell
+  static const String appShell = '/app-shell';
+  static const String dashboard = '/dashboard';
+  static const String notifications = '/notifications';
+  static const String profile = '/profile';
+  static const String settings = '/settings';
+
+  // Devices
+  static const String myDevices = '/devices';
+  static const String addDevice = '/devices/add';
+  static const String deviceDetails = '/devices/details';
+
+  // FIR
+  static const String firHistory = '/fir';
+  static const String submitFir = '/fir/submit';
+  static const String caseTracking = '/fir/case';
+
+  // Admin
+  static const String policeDashboard = '/police';
+  static const String ptaDashboard = '/pta';
+
+  // Misc
+  static const String theftMap = '/map';
 }

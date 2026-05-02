@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'app_padding.dart';
+
+/// Reusable `SizedBox` spacers built from the [AppPadding] scale.
 class AppSpacing {
-  static const double xxs = 4.0;
-  static const double xs = 8.0;
-  static const double s = 12.0;
-  static const double m = 16.0;
-  static const double l = 20.0;
-  static const double xl = 24.0;
-  static const double xxl = 32.0;
-  static const double xxxl = 48.0;
+  AppSpacing._();
 
-  // Vertical Spacers
-  static const SizedBox vXXS = SizedBox(height: xxs);
-  static const SizedBox vXS = SizedBox(height: xs);
-  static const SizedBox vS = SizedBox(height: s);
-  static const SizedBox vM = SizedBox(height: m);
-  static const SizedBox vL = SizedBox(height: l);
-  static const SizedBox vXL = SizedBox(height: xl);
-  static const SizedBox vXXL = SizedBox(height: xxl);
+  static const SizedBox vXs = SizedBox(height: AppPadding.xs);
+  static const SizedBox vSm = SizedBox(height: AppPadding.sm);
+  static const SizedBox vMd = SizedBox(height: AppPadding.md);
+  static const SizedBox vLg = SizedBox(height: AppPadding.lg);
+  static const SizedBox vXl = SizedBox(height: AppPadding.xl);
+  static const SizedBox vXxl = SizedBox(height: AppPadding.xxl);
 
-  // Horizontal Spacers
-  static const SizedBox hXXS = SizedBox(width: xxs);
-  static const SizedBox hXS = SizedBox(width: xs);
-  static const SizedBox hS = SizedBox(width: s);
-  static const SizedBox hM = SizedBox(width: m);
-  static const SizedBox hL = SizedBox(width: l);
-  static const SizedBox hXL = SizedBox(width: xl);
-  static const SizedBox hXXL = SizedBox(width: xxl);
+  static const SizedBox hXs = SizedBox(width: AppPadding.xs);
+  static const SizedBox hSm = SizedBox(width: AppPadding.sm);
+  static const SizedBox hMd = SizedBox(width: AppPadding.md);
+  static const SizedBox hLg = SizedBox(width: AppPadding.lg);
+  static const SizedBox hXl = SizedBox(width: AppPadding.xl);
 }

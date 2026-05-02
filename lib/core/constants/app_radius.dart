@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 
+/// Border-radius scale — only the values declared here may be used in the UI.
 class AppRadius {
-  static const double xs = 4.0;
-  static const double s = 8.0;
-  static const double m = 12.0;
-  static const double l = 16.0;
-  static const double xl = 20.0;
-  static const double xxl = 24.0;
+  AppRadius._();
 
-  static const Radius radiusXS = Radius.circular(xs);
-  static const Radius radiusS = Radius.circular(s);
-  static const Radius radiusM = Radius.circular(m);
-  static const Radius radiusL = Radius.circular(l);
-  static const Radius radiusXL = Radius.circular(xl);
+  static const double xs = 6;
+  static const double sm = 9;
+  static const double md = 11;
+  static const double lg = 14;
+  static const double pill = 999;
 
-  static BorderRadius get allXS => BorderRadius.circular(xs);
-  static BorderRadius get allS => BorderRadius.circular(s);
-  static BorderRadius get allM => BorderRadius.circular(m);
-  static BorderRadius get allL => BorderRadius.circular(l);
-  static BorderRadius get allXL => BorderRadius.circular(xl);
-  static BorderRadius get allXXL => BorderRadius.circular(xxl);
+  static const Radius radiusXs = Radius.circular(xs);
+  static const Radius radiusSm = Radius.circular(sm);
+  static const Radius radiusMd = Radius.circular(md);
+  static const Radius radiusLg = Radius.circular(lg);
+  static const Radius radiusPill = Radius.circular(pill);
+
+  static const BorderRadius allXs = BorderRadius.all(radiusXs);
+  static const BorderRadius allSm = BorderRadius.all(radiusSm);
+  static const BorderRadius allMd = BorderRadius.all(radiusMd);
+  static const BorderRadius allLg = BorderRadius.all(radiusLg);
+  static const BorderRadius allPill = BorderRadius.all(radiusPill);
 }
