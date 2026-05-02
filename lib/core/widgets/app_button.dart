@@ -86,19 +86,19 @@ class AppButton extends StatelessWidget {
           background: brightness == Brightness.dark
               ? AppColors.primaryLight
               : AppColors.primary,
-          foreground: AppColors.onPrimary,
+          foreground: AppColors.buttonTextLight,
           border: AppColors.border,
         );
       case AppButtonVariant.success:
         return const _ButtonPalette(
           background: AppColors.success,
-          foreground: AppColors.onPrimary,
+          foreground: AppColors.buttonTextLight,
           border: AppColors.success,
         );
       case AppButtonVariant.reject:
         return const _ButtonPalette(
           background: AppColors.error,
-          foreground: AppColors.onPrimary,
+          foreground: AppColors.buttonTextLight,
           border: AppColors.error,
         );
       case AppButtonVariant.ghost:

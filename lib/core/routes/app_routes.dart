@@ -14,6 +14,7 @@ import '../../features/fir/presentation/fir_history_page.dart';
 import '../../features/fir/presentation/submit_fir_page.dart';
 import '../../features/map/presentation/theft_map_page.dart';
 import '../../features/notifications/presentation/notifications_page.dart';
+import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/police/presentation/police_dashboard_page.dart';
 import '../../features/profile/presentation/profile_page.dart';
 import '../../features/pta/presentation/pta_dashboard_page.dart';
@@ -28,6 +29,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
   GoRoute(
     path: RouteNames.splash,
     builder: (context, state) => const SplashPage(),
+  ),
+  GoRoute(
+    path: RouteNames.onboarding,
+    builder: (context, state) => const OnboardingPage(),
   ),
   GoRoute(
     path: RouteNames.login,

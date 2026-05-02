@@ -86,7 +86,7 @@ class AppTheme {
     const colorScheme = ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
-      onSecondary: AppColors.onPrimary,
+      onSecondary: AppColors.buttonTextLight,
       tertiary: AppColors.tertiary,
       onSurface: AppColors.textPrimary,
       surfaceContainerHighest: AppColors.inputFill,
@@ -172,7 +172,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onPrimary,
+          foregroundColor: AppColors.buttonTextLight,
           disabledBackgroundColor: AppColors.border,
           disabledForegroundColor: AppColors.textMuted,
           elevation: 0,
@@ -220,7 +220,7 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.primaryDark,
         contentTextStyle: textTheme.bodyLarge?.copyWith(
-          color: AppColors.onPrimary,
+          color: AppColors.buttonTextLight,
         ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
@@ -246,15 +246,15 @@ class AppTheme {
   static ThemeData get darkTheme {
     const colorScheme = ColorScheme.dark(
       primary: AppColors.primaryLight,
-      onPrimary: AppColors.onPrimary,
+      onPrimary: AppColors.buttonTextLight,
       secondary: AppColors.secondary,
-      onSecondary: AppColors.onPrimary,
+      onSecondary: AppColors.buttonTextLight,
       tertiary: AppColors.tertiary,
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkTextPrimary,
       surfaceContainerHighest: AppColors.darkCard,
       error: AppColors.error,
-      onError: AppColors.onPrimary,
+      onError: AppColors.buttonTextLight,
       outline: AppColors.darkBorder,
       outlineVariant: AppColors.darkDivider,
     );
@@ -338,7 +338,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryLight,
-          foregroundColor: AppColors.onPrimary,
+          foregroundColor: AppColors.buttonTextLight,
           disabledBackgroundColor: AppColors.darkBorder,
           disabledForegroundColor: AppColors.darkTextMuted,
           elevation: 0,

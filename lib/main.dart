@@ -10,17 +10,18 @@ void main() {
   runApp(const ProviderScope(child: EdrmpApp()));
 }
 
-class EdrmpApp extends StatelessWidget {
+class EdrmpApp extends ConsumerWidget {
   const EdrmpApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }

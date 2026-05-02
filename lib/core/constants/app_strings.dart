@@ -40,7 +40,6 @@ class AppStrings {
   // Phase labels — placeholder copy for stub screens (Phase 0 only)
   // ---------------------------------------------------------------------------
   static const String stubPhaseFoundation = 'Phase 0 — Foundation';
-  static const String stubPhaseAuth = 'Phase 1 — Authentication';
   static const String stubPhaseShell = 'Phase 2 — Citizen Shell';
   static const String stubPhaseDevices = 'Phase 3 — Devices';
   static const String stubPhaseFir = 'Phase 4 — FIR & Case Tracking';
@@ -50,6 +49,69 @@ class AppStrings {
   static const String stubPhaseProfile = 'Phase 2 — Profile';
   static const String stubPhaseSettings = 'Phase 2 — Settings';
   static const String stubPhaseNotifications = 'Phase 2 — Notifications';
+
+  // ---------------------------------------------------------------------------
+  // Authentication
+  // ---------------------------------------------------------------------------
+  static const String authLoginTitle = 'Welcome back';
+  static const String authLoginSubtitle =
+      'Sign in to manage your devices and track active cases.';
+  static const String authLoginCta = 'Sign in';
+  static const String authLoginEmailLabel = 'Email address';
+  static const String authLoginEmailHint = 'you@example.com';
+  static const String authPasswordLabel = 'Password';
+  static const String authPasswordHint = 'Enter your password';
+  static const String authForgotPasswordLink = 'Forgot password?';
+  static const String authNoAccountPrompt = 'New to eDRMP?';
+  static const String authNoAccountCta = 'Create an account';
+
+  static const String authRegisterTitle = 'Create your account';
+  static const String authRegisterSubtitle =
+      'Register to protect your devices and report incidents securely.';
+  static const String authRegisterCta = 'Create account';
+  static const String authFullNameLabel = 'Full name';
+  static const String authFullNameHint = 'As on your CNIC';
+  static const String authCnicLabel = 'CNIC';
+  static const String authCnicHint = '35202-1234567-9';
+  static const String authPhoneLabel = 'Mobile number';
+  static const String authPhoneHint = '3xx xxxxxxx';
+  static const String authPhonePrefix = '+92 ';
+  static const String authConfirmPasswordLabel = 'Confirm password';
+  static const String authConfirmPasswordHint = 'Re-enter your password';
+  static const String authTermsAccept =
+      'I agree to the Terms of Service and Privacy Policy.';
+  static const String authHasAccountPrompt = 'Already registered?';
+  static const String authHasAccountCta = 'Sign in';
+
+  static const String authForgotTitle = 'Reset your password';
+  static const String authForgotSubtitle =
+      'Enter the email associated with your account. We will send you a secure link to set a new password.';
+  static const String authForgotCta = 'Send reset link';
+  static const String authForgotSuccessTitle = 'Check your inbox';
+  static const String authForgotSuccessBody =
+      'If an eDRMP account exists for this email, a reset link is on its way.';
+  static const String authForgotBackToLogin = 'Back to sign in';
+
+  static const String authShowPassword = 'Show password';
+  static const String authHidePassword = 'Hide password';
+  static const String authPasswordRules =
+      'At least 8 characters, with one uppercase letter and one number.';
+
+  static const String authDemoAccountsTitle = 'Demo accounts (mock data)';
+  static const String authDemoAccountsBody =
+      'demo.user@edrmp.pk · demo.police@edrmp.pk · demo.pta@edrmp.pk\nPassword for all: Demo@1234';
+  static const String authUseDemoUserCta = 'Fill citizen demo';
+
+  // ---------------------------------------------------------------------------
+  // Onboarding
+  // ---------------------------------------------------------------------------
+  static const String onboardingSkip = 'Skip';
+  static const String onboardingTitle = 'Register your phone with PTA';
+  static const String onboardingBody =
+      'Verify your IMEI, link it to your CNIC, and protect your device against theft and blocking.';
+  static const String onboardingCta = 'Get started';
+  static const String onboardingAlreadyRegistered = 'Already registered?';
+  static const String onboardingSignInLink = 'Sign in';
 
   // ---------------------------------------------------------------------------
   // Screen titles
