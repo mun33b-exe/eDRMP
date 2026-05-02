@@ -116,7 +116,7 @@ class _CitizenBottomNav extends StatelessWidget {
     final bg = isDark ? AppColors.darkSurface : AppColors.surface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
     const selected = AppColors.primary;
-    final unselected = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+    final unselected = isDark ? AppColors.darkTextPrimary : AppColors.textMuted;
 
     return Container(
       decoration: BoxDecoration(

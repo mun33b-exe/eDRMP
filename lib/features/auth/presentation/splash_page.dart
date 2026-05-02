@@ -63,57 +63,79 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final brightness = Theme.of(context).brightness;
-    final chipBg = brightness == Brightness.dark
-        ? AppColors.primaryDark
-        : AppColors.primarySoft;
-    final chipFg = brightness == Brightness.dark
-        ? AppColors.buttonTextLight
-        : AppColors.primary;
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.xxl),
-          child: Column(
-            children: [
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.lg,
-                  vertical: AppPadding.md,
+      backgroundColor: AppColors.darkBackground,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 180,
+                    minHeight: 56,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppPadding.lg,
+                    vertical: AppPadding.md,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryDark,
+                    borderRadius: AppRadius.allLg,
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.shield_outlined,
+                        size: 24,
+                        color: AppColors.buttonTextLight,
+                      ),
+                      AppSpacing.hSm,
+                      Text(
+                        AppStrings.appName,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.buttonTextLight,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                decoration: BoxDecoration(
-                  color: chipBg,
-                  borderRadius: AppRadius.allLg,
+                AppSpacing.vSm,
+                const Text(
+                  AppStrings.appTagline,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.darkTextMuted,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.shield_outlined, size: 22, color: chipFg),
-                    AppSpacing.hSm,
-                    Text(
-                      AppStrings.appName,
-                      style: textTheme.titleLarge?.copyWith(color: chipFg),
-                    ),
-                  ],
-                ),
-              ),
-              AppSpacing.vLg,
-              Text(
-                AppStrings.appTagline,
-                style: textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(),
-              const SizedBox(
-                height: 22,
-                width: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.4),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          const Positioned(
+            bottom: 80,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.4,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.darkTextMuted,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

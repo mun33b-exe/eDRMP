@@ -160,7 +160,7 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
           brand: _brand,
           model: _model,
           onViewDevices: () {
-            context.go(RouteNames.myDevices);
+            context.go(RouteNames.appShell);
           },
         );
     }

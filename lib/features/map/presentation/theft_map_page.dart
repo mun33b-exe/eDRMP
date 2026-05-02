@@ -367,11 +367,20 @@ const String _lightMapStyle =
     '  {"featureType":"water","elementType":"geometry","stylers":[{"color":"#C7DCFB"}]}\n'
     ']';
 
-const String _darkMapStyle =
-    '[\n'
-    '  {"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#DDE6F3"}]},\n'
-    '  {"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#0B162E"}]},\n'
-    '  {"featureType":"poi","elementType":"geometry","stylers":[{"color":"#101C36"}]},\n'
-    '  {"featureType":"road","elementType":"geometry","stylers":[{"color":"#1A2A4A"}]},\n'
-    '  {"featureType":"water","elementType":"geometry","stylers":[{"color":"#0F2346"}]}\n'
-    ']';
+const String _darkMapStyle = '''
+[
+  {"elementType":"geometry","stylers":[{"color":"#0a1628"}]},
+  {"elementType":"labels.text.fill","stylers":[{"color":"#8ec3b9"}]},
+  {"elementType":"labels.text.stroke","stylers":[{"color":"#0a1628"}]},
+  {"featureType":"administrative","elementType":"geometry","stylers":[{"color":"#1b2a4a"}]},
+  {"featureType":"administrative.country","elementType":"labels.text.fill","stylers":[{"color":"#9da5b3"}]},
+  {"featureType":"road","elementType":"geometry","stylers":[{"color":"#152544"}]},
+  {"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#212a37"}]},
+  {"featureType":"road.highway","elementType":"geometry","stylers":[{"color":"#0f1b33"}]},
+  {"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#1f2835"}]},
+  {"featureType":"road.highway","elementType":"labels.text.fill","stylers":[{"color":"#f3d19c"}]},
+  {"featureType":"transit","elementType":"geometry","stylers":[{"color":"#0f1b33"}]},
+  {"featureType":"water","elementType":"geometry","stylers":[{"color":"#071428"}]},
+  {"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#515c6d"}]}
+]
+''';

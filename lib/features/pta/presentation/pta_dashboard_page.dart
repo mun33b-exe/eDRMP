@@ -58,49 +58,6 @@ class PtaDashboardPage extends ConsumerWidget {
           ),
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: AppPadding.lg),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCard : AppColors.inputFill,
-              borderRadius: BorderRadius.circular(9),
-              border: Border.all(
-                color: isDark ? AppColors.darkBorder : AppColors.border,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: const BoxDecoration(
-                    color: AppColors.success,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                AppSpacing.hSm,
-                Text(
-                  'Last 30 days',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.textPrimary,
-                  ),
-                ),
-                AppSpacing.hXs,
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 14,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.textPrimary,
-                ),
-              ],
-            ),
-          ),
           IconButton(
             onPressed: () async {
               final confirmed = await showDialog<bool>(

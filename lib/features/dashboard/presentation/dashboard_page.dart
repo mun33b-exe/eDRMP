@@ -255,7 +255,7 @@ class _RegisteredDevicesCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white70,
+                      color: Colors.white,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -277,16 +277,16 @@ class _RegisteredDevicesCard extends StatelessWidget {
                   vertical: AppPadding.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0x4D0E7C5A),
+                  color: AppColors.dashboardApproved,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0x665DD3A8)),
+                  border: Border.all(color: AppColors.dashboardApproved),
                 ),
                 child: const Text(
                   AppStrings.dashboardAllActive,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.dashboardApproved,
+                    color: AppColors.approvedBg,
                   ),
                 ),
               ),
@@ -469,9 +469,6 @@ class _QuickActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = isDark ? AppColors.darkCard : AppColors.card;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
-    final iconBg = isDark
-        ? toneColor.withValues(alpha: 0.2)
-        : toneColor.withValues(alpha: 0.1);
 
     return Material(
       color: bg,
@@ -488,13 +485,13 @@ class _QuickActionTile extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: iconBg,
-                  borderRadius: BorderRadius.circular(10),
+                  color: toneColor,
+                  borderRadius: AppRadius.allMd,
                 ),
-                child: Icon(icon, size: 17, color: toneColor),
+                child: Icon(icon, size: 22, color: Colors.white),
               ),
               AppSpacing.hMd,
               Expanded(

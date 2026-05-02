@@ -171,9 +171,9 @@ class AppColors {
   // -------------------------------------------------------------
   // MISSING TOKENS FROM PHASE IMPL
   // -------------------------------------------------------------
-  static const Color dashboardApproved = Color(0xFF5DD3A8);
-  static const Color dashboardPending = Color(0xFFE5B863);
-  static const Color dashboardFirs = Color(0xFFF08A7E);
+  static const Color dashboardApproved = Color(0xFF12A86C);
+  static const Color dashboardPending = Color(0xFFFCB102);
+  static const Color dashboardFirs = Color(0xFFEF411A);
 
   static const Color warningBorder = Color(0xFFF5C6C0);
   static const Color errorTextDark = Color(0xFFF08A7E);
