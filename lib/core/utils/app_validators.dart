@@ -94,4 +94,38 @@ class AppValidators {
 
     return null;
   }
+
+  /// Validates an IMEI using the Luhn algorithm (ISO/IEC 7812).
+  ///
+  /// Accepts digits with optional spaces or dashes as separators.
+  /// Returns `null` if valid; an error string otherwise.
+  static String? imei(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'IMEI is required';
+    }
+    final digits = value.replaceAll(RegExp(r'[\s\-]'), '');
+    if (!RegExp(r'^\d{15}$').hasMatch(digits)) {
+      return 'IMEI must be exactly 15 digits';
+    }
+    if (!_luhnCheck(digits)) {
+      return 'IMEI failed Luhn check — verify the number';
+    }
+    return null;
+  }
+
+  /// Returns `true` if [digits] passes the Luhn-10 check (ISO/IEC 7812).
+  static bool _luhnCheck(String digits) {
+    var sum = 0;
+    var alternate = false;
+    for (var i = digits.length - 1; i >= 0; i--) {
+      var n = int.parse(digits[i]);
+      if (alternate) {
+        n *= 2;
+        if (n > 9) n -= 9;
+      }
+      sum += n;
+      alternate = !alternate;
+    }
+    return sum % 10 == 0;
+  }
 }

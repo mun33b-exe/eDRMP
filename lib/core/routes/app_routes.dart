@@ -64,7 +64,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
   ),
   GoRoute(
     path: RouteNames.deviceDetails,
-    builder: (context, state) => const DeviceDetailsPage(),
+    builder: (context, state) {
+      final deviceId = state.extra as String? ?? '';
+      return DeviceDetailsPage(deviceId: deviceId);
+    },
   ),
   GoRoute(
     path: RouteNames.firHistory,

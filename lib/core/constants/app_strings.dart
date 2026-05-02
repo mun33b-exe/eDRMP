@@ -196,4 +196,70 @@ class AppStrings {
   static const String notificationsEmptyTitle = "You're all caught up";
   static const String notificationsEmptyBody =
       "No new notifications right now. We'll alert you when your device status changes.";
+
+  // ---------------------------------------------------------------------------
+  // Devices (Phase 3)
+  // ---------------------------------------------------------------------------
+  // My Devices
+  static const String myDevicesEmpty = 'No devices yet';
+  static const String myDevicesEmptyBody =
+      'Register your first device to protect it against theft and blocking.';
+  static const String myDevicesFilterAll = 'All';
+  static const String myDevicesFilterActive = 'Active';
+  static const String myDevicesFilterPending = 'Pending';
+  static const String myDevicesFilterBlocked = 'Blocked';
+  static const String myDevicesImeiLabel = 'IMEI';
+
+  // Add Device flow
+  static const String addDeviceTitle = 'Register device';
+  static const String addDeviceStep1Title = 'Enter IMEI';
+  static const String addDeviceStep1Subtitle = 'Step 1 of 3';
+  static const String addDeviceStep2Title = 'Confirm device';
+  static const String addDeviceStep2Subtitle = 'Step 2 of 3';
+  static const String addDeviceStep3Title = 'Submitted!';
+  static const String addDeviceStep3Subtitle = 'Step 3 of 3';
+  static const String addDeviceImeiLabel = 'IMEI 1';
+  static const String addDeviceImei2Label = 'IMEI 2 (dual-SIM)';
+  static const String addDeviceImeiHint = 'e.g. 356938 09 123456 7';
+  static const String addDeviceImeiHelper =
+      '15-digit number found in Settings › About or dial *#06#';
+  static const String addDeviceImeiError =
+      'IMEI failed Luhn check — verify the number';
+  static const String addDeviceImeiDuplicate =
+      'This IMEI is already registered to your account.';
+  static const String addDeviceOperatorLabel = 'Operator / Network';
+  static const String addDeviceOperatorHint = 'e.g. Jazz';
+  static const String addDeviceDetected = 'DETECTED';
+  static const String addDeviceAutoFilled = 'Auto-filled from IMEI lookup';
+  static const String addDeviceInvoiceLabel = 'Purchase invoice';
+  static const String addDeviceInvoiceHint = 'Tap to upload PDF or photo';
+  static const String addDeviceInfoBanner =
+      'Devices imported into Pakistan must be registered within 60 days. PTA tax may apply.';
+  static const String addDeviceContinue = 'Continue';
+  static const String addDeviceSubmit = 'Submit for approval';
+  static const String addDeviceSaveDraft = 'Save draft';
+  static const String addDeviceSuccessTitle = 'Application submitted!';
+  static const String addDeviceSuccessBody =
+      'Your device has been submitted for PTA review. You will be notified once the status changes.';
+  static const String addDeviceSuccessAction = 'View my devices';
+  static const String addDeviceDuplicateTitle = 'Duplicate IMEI';
+  static const String addDeviceDuplicateBody =
+      'This IMEI is already registered in your account.';
+
+  // Device Details
+  static const String deviceDetailsTitle = 'Device';
+  static const String deviceDetailsImei = 'IMEI';
+  static const String deviceDetailsOperator = 'Operator';
+  static const String deviceDetailsDate = 'Registered';
+  static const String deviceDetailsTimeline = 'Application timeline';
+  static const String deviceDetailsTransfer = 'Transfer';
+  static const String deviceDetailsReportFir = 'Report FIR';
+  static const String deviceDetailsReportFirDisabled =
+      'FIR can only be filed for approved devices';
+
+  // Timeline step titles
+  static const String timelineSubmitted = 'Application submitted';
+  static const String timelineDocVerified = 'Documents verified';
+  static const String timelinePtaReview = 'PTA review in progress';
+  static const String timelineApproved = 'Approval & registration';
 }
