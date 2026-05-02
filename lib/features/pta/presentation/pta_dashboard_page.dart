@@ -309,22 +309,30 @@ class PtaDashboardPage extends StatelessWidget {
                     ),
                   ),
                   AppSpacing.vMd,
-                  Container(
-                    height: 160,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkInput
-                          : AppColors.scaffoldBackground,
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => context.push(RouteNames.theftMap),
                       borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Risk Map Placeholder',
-                        style: TextStyle(
+                      child: Ink(
+                        height: 160,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
                           color: isDark
-                              ? AppColors.darkTextMuted
-                              : AppColors.textMuted,
+                              ? AppColors.darkInput
+                              : AppColors.scaffoldBackground,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Tap to view hotspot map',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.textMuted,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -332,11 +340,15 @@ class PtaDashboardPage extends StatelessWidget {
                   AppSpacing.vMd,
                   Row(
                     children: [
-                      _buildRiskLegend('Low', AppColors.success, isDark),
+                      _buildRiskLegend('Low', AppColors.analyticsGreen, isDark),
                       AppSpacing.hMd,
-                      _buildRiskLegend('Medium', AppColors.warning, isDark),
+                      _buildRiskLegend(
+                        'Medium',
+                        AppColors.analyticsOrange,
+                        isDark,
+                      ),
                       AppSpacing.hMd,
-                      _buildRiskLegend('High', AppColors.error, isDark),
+                      _buildRiskLegend('High', AppColors.analyticsRed, isDark),
                     ],
                   ),
                 ],
