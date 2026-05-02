@@ -29,42 +29,52 @@ import 'route_names.dart';
 /// stub pages — real screens land in their respective feature phases.
 final List<RouteBase> appRoutes = <RouteBase>[
   GoRoute(
+    name: RouteNames.splash,
     path: RouteNames.splash,
     builder: (context, state) => const SplashPage(),
   ),
   GoRoute(
+    name: RouteNames.onboarding,
     path: RouteNames.onboarding,
     builder: (context, state) => const OnboardingPage(),
   ),
   GoRoute(
+    name: RouteNames.login,
     path: RouteNames.login,
     builder: (context, state) => const LoginPage(),
   ),
   GoRoute(
+    name: RouteNames.register,
     path: RouteNames.register,
     builder: (context, state) => const RegisterPage(),
   ),
   GoRoute(
+    name: RouteNames.forgotPassword,
     path: RouteNames.forgotPassword,
     builder: (context, state) => const ForgotPasswordPage(),
   ),
   GoRoute(
+    name: RouteNames.dashboard,
     path: RouteNames.dashboard,
     builder: (context, state) => const DashboardPage(),
   ),
   GoRoute(
+    name: RouteNames.appShell,
     path: RouteNames.appShell,
     builder: (context, state) => const AppShellPage(),
   ),
   GoRoute(
+    name: RouteNames.myDevices,
     path: RouteNames.myDevices,
     builder: (context, state) => const MyDevicesPage(),
   ),
   GoRoute(
+    name: RouteNames.addDevice,
     path: RouteNames.addDevice,
     builder: (context, state) => const AddDevicePage(),
   ),
   GoRoute(
+    name: RouteNames.deviceDetails,
     path: RouteNames.deviceDetails,
     builder: (context, state) {
       final deviceId = state.extra as String? ?? '';
@@ -72,14 +82,17 @@ final List<RouteBase> appRoutes = <RouteBase>[
     },
   ),
   GoRoute(
+    name: RouteNames.firHistory,
     path: RouteNames.firHistory,
     builder: (context, state) => const FirHistoryPage(),
   ),
   GoRoute(
+    name: RouteNames.submitFir,
     path: RouteNames.submitFir,
     builder: (context, state) => const SubmitFirPage(),
   ),
   GoRoute(
+    name: RouteNames.caseTracking,
     path: RouteNames.caseTracking,
     builder: (context, state) {
       final firId = state.extra as String?;
@@ -87,14 +100,17 @@ final List<RouteBase> appRoutes = <RouteBase>[
     },
   ),
   GoRoute(
+    name: RouteNames.policeDashboard,
     path: RouteNames.policeDashboard,
     builder: (context, state) => const PoliceDashboardPage(),
   ),
   GoRoute(
+    name: RouteNames.pendingFirQueue,
     path: RouteNames.pendingFirQueue,
     builder: (context, state) => const PendingFirQueuePage(),
   ),
   GoRoute(
+    name: RouteNames.firReview,
     path: RouteNames.firReview,
     builder: (context, state) {
       final firId = state.extra as String?;
@@ -102,26 +118,28 @@ final List<RouteBase> appRoutes = <RouteBase>[
     },
   ),
   GoRoute(
+    name: RouteNames.profile,
     path: RouteNames.profile,
     builder: (context, state) => const ProfilePage(),
   ),
   GoRoute(
+    name: RouteNames.settings,
     path: RouteNames.settings,
     builder: (context, state) => const SettingsPage(),
   ),
   GoRoute(
+    name: RouteNames.notifications,
     path: RouteNames.notifications,
     builder: (context, state) => const NotificationsPage(),
   ),
+
   GoRoute(
-    path: RouteNames.policeDashboard,
-    builder: (context, state) => const PoliceDashboardPage(),
-  ),
-  GoRoute(
+    name: RouteNames.ptaDashboard,
     path: RouteNames.ptaDashboard,
     builder: (context, state) => const PtaDashboardPage(),
   ),
   GoRoute(
+    name: RouteNames.theftMap,
     path: RouteNames.theftMap,
     builder: (context, state) => const TheftMapPage(),
   ),
