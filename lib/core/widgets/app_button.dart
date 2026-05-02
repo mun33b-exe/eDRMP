@@ -75,7 +75,11 @@ class AppButton extends StatelessWidget {
             child: child,
           );
 
-    return expand ? SizedBox(width: double.infinity, child: button) : button;
+    final wrappedButton = _PressScale(enabled: !_isDisabled, child: button);
+
+    return expand
+        ? SizedBox(width: double.infinity, child: wrappedButton)
+        : wrappedButton;
   }
 
   _ButtonPalette _palette(BuildContext context) {
@@ -157,4 +161,38 @@ class _ButtonPalette {
   final Color background;
   final Color foreground;
   final Color border;
+}
+
+class _PressScale extends StatefulWidget {
+  const _PressScale({required this.child, required this.enabled});
+
+  final Widget child;
+  final bool enabled;
+
+  @override
+  State<_PressScale> createState() => _PressScaleState();
+}
+
+class _PressScaleState extends State<_PressScale> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (!widget.enabled) return;
+    if (_pressed == value) return;
+    setState(() => _pressed = value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: (_) => _setPressed(true),
+      onPointerUp: (_) => _setPressed(false),
+      onPointerCancel: (_) => _setPressed(false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        child: widget.child,
+      ),
+    );
+  }
 }

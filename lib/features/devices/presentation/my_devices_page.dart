@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
@@ -8,6 +9,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/app_app_bar.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../data/device_model.dart';
@@ -48,8 +50,9 @@ class _MyDevicesPageState extends ConsumerState<MyDevicesPage> {
         ],
       ),
       body: asyncDevices.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(e.toString())),
+        loading: () => const _DeviceListSkeleton(),
+        error: (e, _) =>
+            const Center(child: Text(AppStrings.somethingWentWrong)),
         data: (devices) {
           final filtered = _applyFilter(devices);
           return Column(
@@ -64,22 +67,32 @@ class _MyDevicesPageState extends ConsumerState<MyDevicesPage> {
               // Device list or empty state
               Expanded(
                 child: filtered.isEmpty
-                    ? _EmptyState(isDark: isDark)
-                    : ListView.separated(
-                        padding: AppPadding.screen,
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, _) => AppSpacing.vMd,
-                        itemBuilder: (context, i) {
-                          final device = filtered[i];
-                          return _DeviceCard(
-                            device: device,
-                            isDark: isDark,
-                            onTap: () => context.push(
-                              RouteNames.deviceDetails,
-                              extra: device.id,
-                            ),
-                          );
+                    ? const EmptyState(
+                        icon: Icons.phone_android_outlined,
+                        title: AppStrings.myDevicesEmpty,
+                        message: AppStrings.myDevicesEmptyBody,
+                      )
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          ref.invalidate(devicesProvider);
+                          await ref.read(devicesProvider.future);
                         },
+                        child: ListView.separated(
+                          padding: AppPadding.screen,
+                          itemCount: filtered.length,
+                          separatorBuilder: (_, _) => AppSpacing.vMd,
+                          itemBuilder: (context, i) {
+                            final device = filtered[i];
+                            return _DeviceCard(
+                              device: device,
+                              isDark: isDark,
+                              onTap: () => context.push(
+                                RouteNames.deviceDetails,
+                                extra: device.id,
+                              ),
+                            );
+                          },
+                        ),
                       ),
               ),
             ],
@@ -236,17 +249,22 @@ class _DeviceCard extends StatelessWidget {
         child: Row(
           children: [
             // Phone glyph
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkBackground : AppColors.inputFill,
-                borderRadius: AppRadius.allMd,
-              ),
-              child: Icon(
-                Icons.smartphone_outlined,
-                size: 24,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+            Hero(
+              tag: 'device-${device.id}',
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkBackground
+                      : AppColors.inputFill,
+                  borderRadius: AppRadius.allMd,
+                ),
+                child: Icon(
+                  Icons.smartphone_outlined,
+                  size: 24,
+                  color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                ),
               ),
             ),
             AppSpacing.hMd,
@@ -320,54 +338,78 @@ class _DeviceCard extends StatelessWidget {
 // Empty state
 // ---------------------------------------------------------------------------
 
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.isDark});
-
-  final bool isDark;
+class _DeviceListSkeleton extends StatelessWidget {
+  const _DeviceListSkeleton();
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: AppPadding.horizontalXl,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkCard : AppColors.primarySoft,
-                shape: BoxShape.circle,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final highlightColor = isDark
+        ? AppColors.darkSurface.withValues(alpha: 0.6)
+        : AppColors.scaffoldBackground;
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      child: ListView.separated(
+        padding: AppPadding.screen,
+        itemCount: 4,
+        separatorBuilder: (_, _) => AppSpacing.vMd,
+        itemBuilder: (context, index) => Container(
+          height: 72,
+          padding: const EdgeInsets.all(AppPadding.md),
+          decoration: BoxDecoration(
+            color: baseColor,
+            borderRadius: AppRadius.allLg,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: AppRadius.allMd,
+                ),
               ),
-              child: Icon(
-                Icons.phone_android_outlined,
-                size: 32,
-                color: isDark ? AppColors.darkTextMuted : AppColors.primary,
+              AppSpacing.hMd,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 12,
+                      width: 140,
+                      decoration: BoxDecoration(
+                        color: highlightColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    AppSpacing.vSm,
+                    Container(
+                      height: 10,
+                      width: 180,
+                      decoration: BoxDecoration(
+                        color: highlightColor,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            AppSpacing.vXl,
-            Text(
-              AppStrings.myDevicesEmpty,
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.textPrimary,
+              AppSpacing.hMd,
+              Container(
+                height: 24,
+                width: 56,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(999),
+                ),
               ),
-            ),
-            AppSpacing.vSm,
-            Text(
-              AppStrings.myDevicesEmptyBody,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.5,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

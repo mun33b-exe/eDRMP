@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../fir/data/fir_model.dart';
@@ -21,7 +24,7 @@ class PendingFirQueuePage extends ConsumerStatefulWidget {
 }
 
 class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
-  String _filter = 'Pending'; // Pending, All
+  String _filter = AppStrings.policeQueuePending; // Pending, All
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,7 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
           : AppColors.scaffoldBackground,
       appBar: AppBar(
         title: const Text(
-          'Approval queue',
+          AppStrings.policeQueueTitle,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
         backgroundColor: isDark
@@ -45,7 +48,7 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
       body: firsAsync.when(
         data: (firs) {
           final filteredFirs = firs.where((f) {
-            if (_filter == 'Pending') {
+            if (_filter == AppStrings.policeQueuePending) {
               return f.caseStatus == CaseStatus.firUnderReview;
             }
             return true;
@@ -69,38 +72,49 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
                 ),
                 child: Row(
                   children: [
-                    _buildChip('Pending', isDark),
+                    _buildChip(AppStrings.policeQueuePending, isDark),
                     AppSpacing.hSm,
-                    _buildChip('All', isDark),
+                    _buildChip(AppStrings.policeQueueAll, isDark),
                   ],
                 ),
               ),
               Expanded(
                 child: filteredFirs.isEmpty
-                    ? const Center(child: Text('No FIRs in queue.'))
-                    : ListView.separated(
-                        padding: const EdgeInsets.all(AppPadding.lg),
-                        itemCount: filteredFirs.length,
-                        separatorBuilder: (context, index) => AppSpacing.vMd,
-                        itemBuilder: (context, index) {
-                          return _FirQueueCard(
-                            fir: filteredFirs[index],
-                            isDark: isDark,
-                            onTap: () {
-                              context.push(
-                                RouteNames.firReview,
-                                extra: filteredFirs[index].id,
-                              );
-                            },
-                          );
+                    ? const EmptyState(
+                        icon: Icons.shield_outlined,
+                        title: AppStrings.policeQueueEmptyTitle,
+                        message: AppStrings.policeQueueEmptyBody,
+                      )
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          ref.invalidate(firsProvider);
+                          await ref.read(firsProvider.future);
                         },
+                        child: ListView.separated(
+                          padding: const EdgeInsets.all(AppPadding.lg),
+                          itemCount: filteredFirs.length,
+                          separatorBuilder: (context, index) => AppSpacing.vMd,
+                          itemBuilder: (context, index) {
+                            return _FirQueueCard(
+                              fir: filteredFirs[index],
+                              isDark: isDark,
+                              onTap: () {
+                                context.push(
+                                  RouteNames.firReview,
+                                  extra: filteredFirs[index].id,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
               ),
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () => const _FirQueueSkeleton(),
+        error: (e, _) =>
+            const Center(child: Text(AppStrings.somethingWentWrong)),
       ),
     );
   }
@@ -182,7 +196,7 @@ class _FirQueueCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Case ${fir.id.toUpperCase()}',
+                    '${AppStrings.policeQueueCasePrefix} ${fir.id.toUpperCase()}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -211,7 +225,7 @@ class _FirQueueCard extends StatelessWidget {
             ),
             AppSpacing.vXs,
             Text(
-              'Station: ${fir.policeStation}',
+              '${AppStrings.policeQueueStationPrefix} ${fir.policeStation}',
               style: TextStyle(
                 fontSize: 12,
                 color: isDark
@@ -223,7 +237,7 @@ class _FirQueueCard extends StatelessWidget {
             Divider(color: isDark ? AppColors.darkBorder : AppColors.border),
             AppSpacing.vXs,
             Text(
-              'Filed: $dateStr',
+              '${AppStrings.policeQueueFiledPrefix} $dateStr',
               style: TextStyle(
                 fontSize: 11,
                 color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
@@ -243,9 +257,85 @@ class _FirQueueCard extends StatelessWidget {
   }
 
   String _statusText(CaseStatus s) {
-    if (s == CaseStatus.firUnderReview) return 'Pending Review';
-    if (s == CaseStatus.firVerified) return 'Verified';
-    if (s == CaseStatus.firRejected) return 'Rejected';
-    return 'Other';
+    if (s == CaseStatus.firUnderReview) {
+      return AppStrings.policeQueuePendingReview;
+    }
+    if (s == CaseStatus.firVerified) return AppStrings.policeQueueVerified;
+    if (s == CaseStatus.firRejected) return AppStrings.policeQueueRejected;
+    return AppStrings.policeQueueOther;
+  }
+}
+
+class _FirQueueSkeleton extends StatelessWidget {
+  const _FirQueueSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final highlightColor = isDark
+        ? AppColors.darkSurface.withValues(alpha: 0.6)
+        : AppColors.scaffoldBackground;
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      child: ListView.separated(
+        padding: const EdgeInsets.all(AppPadding.lg),
+        itemCount: 4,
+        separatorBuilder: (_, _) => AppSpacing.vMd,
+        itemBuilder: (context, index) => Container(
+          padding: const EdgeInsets.all(AppPadding.md),
+          decoration: BoxDecoration(
+            color: baseColor,
+            borderRadius: AppRadius.allMd,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 12,
+                    width: 140,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  Container(
+                    height: 22,
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ],
+              ),
+              AppSpacing.vSm,
+              Container(
+                height: 10,
+                width: 220,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              AppSpacing.vSm,
+              Container(
+                height: 10,
+                width: 160,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

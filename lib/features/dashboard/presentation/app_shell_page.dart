@@ -7,6 +7,8 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/logic/connectivity_notifier.dart';
+import '../../../core/widgets/connectivity_banner.dart';
 import '../../../theme/colors.dart';
 import '../../devices/presentation/my_devices_page.dart';
 import '../../notifications/presentation/notifications_page.dart';
@@ -68,14 +70,22 @@ class _AppShellPageState extends ConsumerState<AppShellPage> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
+    final isOnline = ref.watch(connectivityProvider);
 
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.scaffoldBackground,
-      body: IndexedStack(
-        index: _selectedTab == 2 ? 0 : _selectedTab,
-        children: _pages,
+      body: Column(
+        children: [
+          ConnectivityBanner(isOnline: isOnline),
+          Expanded(
+            child: IndexedStack(
+              index: _selectedTab == 2 ? 0 : _selectedTab,
+              children: _pages,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: _CitizenBottomNav(
         selectedIndex: _selectedTab,

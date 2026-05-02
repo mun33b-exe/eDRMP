@@ -154,19 +154,24 @@ class _DeviceDetailCard extends StatelessWidget {
           // Top row: phone glyph + model + status badge
           Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkBackground
-                      : AppColors.inputFill,
-                  borderRadius: AppRadius.allMd,
-                ),
-                child: Icon(
-                  Icons.smartphone_outlined,
-                  size: 26,
-                  color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              Hero(
+                tag: 'device-${device.id}',
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkBackground
+                        : AppColors.inputFill,
+                    borderRadius: AppRadius.allMd,
+                  ),
+                  child: Icon(
+                    Icons.smartphone_outlined,
+                    size: 26,
+                    color: isDark
+                        ? AppColors.darkTextMuted
+                        : AppColors.textMuted,
+                  ),
                 ),
               ),
               AppSpacing.hMd,

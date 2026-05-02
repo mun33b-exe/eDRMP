@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../devices/data/device_model.dart';
@@ -22,7 +25,7 @@ class DeviceApprovalsPage extends ConsumerStatefulWidget {
 }
 
 class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
-  String _filter = 'Pending';
+  String _filter = AppStrings.ptaFilterPending;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
         title: Column(
           children: [
             const Text(
-              'PTA REGULATORY',
+              AppStrings.ptaRegulatoryLabel,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -46,7 +49,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
               ),
             ),
             Text(
-              'Approval queue',
+              AppStrings.ptaApprovalQueueTitle,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
@@ -77,9 +80,15 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
       body: devicesAsync.when(
         data: (devices) {
           final filtered = devices.where((d) {
-            if (_filter == 'Pending') return d.status == DeviceStatus.pending;
-            if (_filter == 'Approved') return d.status == DeviceStatus.approved;
-            if (_filter == 'Rejected') return d.status == DeviceStatus.rejected;
+            if (_filter == AppStrings.ptaFilterPending) {
+              return d.status == DeviceStatus.pending;
+            }
+            if (_filter == AppStrings.ptaFilterApproved) {
+              return d.status == DeviceStatus.approved;
+            }
+            if (_filter == AppStrings.ptaFilterRejected) {
+              return d.status == DeviceStatus.rejected;
+            }
             return true; // All
           }).toList();
 
@@ -97,7 +106,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                   child: Row(
                     children: [
                       _buildChip(
-                        'Pending',
+                        AppStrings.ptaFilterPending,
                         devices
                             .where((d) => d.status == DeviceStatus.pending)
                             .length,
@@ -105,7 +114,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                       ),
                       AppSpacing.hSm,
                       _buildChip(
-                        'Approved',
+                        AppStrings.ptaFilterApproved,
                         devices
                             .where((d) => d.status == DeviceStatus.approved)
                             .length,
@@ -113,40 +122,57 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                       ),
                       AppSpacing.hSm,
                       _buildChip(
-                        'Rejected',
+                        AppStrings.ptaFilterRejected,
                         devices
                             .where((d) => d.status == DeviceStatus.rejected)
                             .length,
                         isDark,
                       ),
                       AppSpacing.hSm,
-                      _buildChip('All', devices.length, isDark),
+                      _buildChip(
+                        AppStrings.ptaFilterAll,
+                        devices.length,
+                        isDark,
+                      ),
                     ],
                   ),
                 ),
               ),
               Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(AppPadding.lg),
-                  itemCount: filtered.length,
-                  separatorBuilder: (context, index) => AppSpacing.vMd,
-                  itemBuilder: (context, index) {
-                    final d = filtered[index];
-                    return _DeviceApprovalCard(
-                      device: d,
-                      isDark: isDark,
-                      onApprove: () => _handleApprove(context, ref, d),
-                      onReject: () => _handleReject(context, ref, d),
-                      onReview: () => context.push(RouteNames.ptaHistory),
-                    );
-                  },
-                ),
+                child: filtered.isEmpty
+                    ? const EmptyState(
+                        icon: Icons.checklist,
+                        title: AppStrings.ptaApprovalsEmpty,
+                      )
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          ref.invalidate(devicesProvider);
+                          await ref.read(devicesProvider.future);
+                        },
+                        child: ListView.separated(
+                          padding: const EdgeInsets.all(AppPadding.lg),
+                          itemCount: filtered.length,
+                          separatorBuilder: (context, index) => AppSpacing.vMd,
+                          itemBuilder: (context, index) {
+                            final d = filtered[index];
+                            return _DeviceApprovalCard(
+                              device: d,
+                              isDark: isDark,
+                              onApprove: () => _handleApprove(context, ref, d),
+                              onReject: () => _handleReject(context, ref, d),
+                              onReview: () =>
+                                  context.push(RouteNames.ptaHistory),
+                            );
+                          },
+                        ),
+                      ),
               ),
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () => const _DeviceApprovalSkeleton(),
+        error: (e, _) =>
+            const Center(child: Text(AppStrings.somethingWentWrong)),
       ),
     );
   }
@@ -369,7 +395,7 @@ class _DeviceApprovalCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    label: 'Approve',
+                    label: AppStrings.ptaApprove,
                     onPressed: onApprove,
                     variant: AppButtonVariant.success,
                     icon: Icons.check,
@@ -378,7 +404,7 @@ class _DeviceApprovalCard extends StatelessWidget {
                 AppSpacing.hSm,
                 Expanded(
                   child: AppButton(
-                    label: 'Reject',
+                    label: AppStrings.ptaReject,
                     onPressed: onReject,
                     variant: AppButtonVariant.reject,
                     icon: Icons.close,
@@ -387,7 +413,7 @@ class _DeviceApprovalCard extends StatelessWidget {
                 AppSpacing.hSm,
                 Expanded(
                   child: AppButton(
-                    label: 'Review',
+                    label: AppStrings.ptaReviewCta,
                     onPressed: onReview,
                     variant: AppButtonVariant.ghost,
                     icon: Icons.visibility,
@@ -412,5 +438,103 @@ class _DeviceApprovalCard extends StatelessWidget {
       return StatusBadgeVariant.rejected;
     }
     return StatusBadgeVariant.info;
+  }
+}
+
+class _DeviceApprovalSkeleton extends StatelessWidget {
+  const _DeviceApprovalSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final highlightColor = isDark
+        ? AppColors.darkSurface.withValues(alpha: 0.6)
+        : AppColors.scaffoldBackground;
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      child: ListView.separated(
+        padding: const EdgeInsets.all(AppPadding.lg),
+        itemCount: 4,
+        separatorBuilder: (_, _) => AppSpacing.vMd,
+        itemBuilder: (context, index) => Container(
+          padding: const EdgeInsets.all(AppPadding.md),
+          decoration: BoxDecoration(
+            color: baseColor,
+            borderRadius: AppRadius.allMd,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 12,
+                    width: 160,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  Container(
+                    height: 22,
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ],
+              ),
+              AppSpacing.vMd,
+              Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              AppSpacing.vMd,
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: highlightColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  AppSpacing.hSm,
+                  Expanded(
+                    child: Container(
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: highlightColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  AppSpacing.hSm,
+                  Expanded(
+                    child: Container(
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: highlightColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

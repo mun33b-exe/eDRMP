@@ -322,4 +322,43 @@ class AppStrings {
   static const String caseTimelineBlockRejected = 'Block Rejected';
   static const String caseTimelineDeviceBlocked = 'Device Blocked';
   static const String caseTimelineDeviceRecovered = 'Device Recovered';
+
+  // ---------------------------------------------------------------------------
+  // Admin / PTA / Police (Phase 5-8)
+  // ---------------------------------------------------------------------------
+  static const String ptaRegulatoryLabel = 'PTA REGULATORY';
+  static const String ptaApprovalQueueTitle = 'Approval queue';
+  static const String ptaBlockRequestsTitle = 'Block requests';
+  static const String ptaFilterPending = 'Pending';
+  static const String ptaFilterApproved = 'Approved';
+  static const String ptaFilterRejected = 'Rejected';
+  static const String ptaFilterBlocked = 'Blocked';
+  static const String ptaFilterAll = 'All';
+  static const String ptaApprovalsEmpty = 'No devices awaiting approval.';
+  static const String ptaBlockEmpty = 'No block requests right now.';
+  static const String ptaReviewCta = 'Review';
+  static const String ptaApprove = 'Approve';
+  static const String ptaReject = 'Reject';
+  static const String ptaBlock = 'Block device';
+
+  static const String policeQueueTitle = 'Approval queue';
+  static const String policeQueuePending = 'Pending';
+  static const String policeQueueAll = 'All';
+  static const String policeQueueEmptyTitle = 'No FIRs in queue';
+  static const String policeQueueEmptyBody =
+      'New FIR verifications will appear here once submitted.';
+  static const String policeQueueCasePrefix = 'Case';
+  static const String policeQueueStationPrefix = 'Station:';
+  static const String policeQueueFiledPrefix = 'Filed:';
+  static const String policeQueuePendingReview = 'Pending Review';
+  static const String policeQueueVerified = 'Verified';
+  static const String policeQueueRejected = 'Rejected';
+  static const String policeQueueOther = 'Other';
+  static const String caseIdLabel = 'Case ID:';
+
+  // ---------------------------------------------------------------------------
+  // Connectivity
+  // ---------------------------------------------------------------------------
+  static const String connectivityOffline =
+      'Offline — reconnecting to the network.';
 }

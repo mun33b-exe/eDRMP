@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../fir/data/fir_model.dart';
@@ -21,7 +24,7 @@ class BlockRequestsPage extends ConsumerStatefulWidget {
 }
 
 class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
-  String _filter = 'Pending';
+  String _filter = AppStrings.ptaFilterPending;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
         title: Column(
           children: [
             const Text(
-              'PTA REGULATORY',
+              AppStrings.ptaRegulatoryLabel,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -45,7 +48,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
               ),
             ),
             Text(
-              'Block requests',
+              AppStrings.ptaBlockRequestsTitle,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
@@ -78,9 +81,9 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                 f.caseStatus == CaseStatus.deviceBlocked;
             final isRejected = f.caseStatus == CaseStatus.blockRejected;
 
-            if (_filter == 'Pending') return isPending;
-            if (_filter == 'Blocked') return isBlocked;
-            if (_filter == 'Rejected') return isRejected;
+            if (_filter == AppStrings.ptaFilterPending) return isPending;
+            if (_filter == AppStrings.ptaFilterBlocked) return isBlocked;
+            if (_filter == AppStrings.ptaFilterRejected) return isRejected;
 
             // "All" filter excludes initial citizen/police stages to keep list relevant to PTA
             return isPending || isBlocked || isRejected;
@@ -100,7 +103,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                   child: Row(
                     children: [
                       _buildChip(
-                        'Pending',
+                        AppStrings.ptaFilterPending,
                         firs
                             .where(
                               (f) =>
@@ -112,7 +115,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                       ),
                       AppSpacing.hSm,
                       _buildChip(
-                        'Blocked',
+                        AppStrings.ptaFilterBlocked,
                         firs
                             .where(
                               (f) =>
@@ -124,7 +127,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                       ),
                       AppSpacing.hSm,
                       _buildChip(
-                        'Rejected',
+                        AppStrings.ptaFilterRejected,
                         firs
                             .where(
                               (f) => f.caseStatus == CaseStatus.blockRejected,
@@ -134,7 +137,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                       ),
                       AppSpacing.hSm,
                       _buildChip(
-                        'All',
+                        AppStrings.ptaFilterAll,
                         firs
                             .where(
                               (f) => [
@@ -154,28 +157,39 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
               ),
               Expanded(
                 child: filtered.isEmpty
-                    ? const Center(child: Text('No block requests.'))
-                    : ListView.separated(
-                        padding: const EdgeInsets.all(AppPadding.lg),
-                        itemCount: filtered.length,
-                        separatorBuilder: (context, index) => AppSpacing.vMd,
-                        itemBuilder: (context, index) {
-                          final f = filtered[index];
-                          return _BlockRequestCard(
-                            fir: f,
-                            isDark: isDark,
-                            onBlock: () => _handleBlock(context, ref, f),
-                            onReject: () => _handleReject(context, ref, f),
-                            onReview: () => context.push(RouteNames.ptaHistory),
-                          );
+                    ? const EmptyState(
+                        icon: Icons.lock_outline,
+                        title: AppStrings.ptaBlockEmpty,
+                      )
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          ref.invalidate(firsProvider);
+                          await ref.read(firsProvider.future);
                         },
+                        child: ListView.separated(
+                          padding: const EdgeInsets.all(AppPadding.lg),
+                          itemCount: filtered.length,
+                          separatorBuilder: (context, index) => AppSpacing.vMd,
+                          itemBuilder: (context, index) {
+                            final f = filtered[index];
+                            return _BlockRequestCard(
+                              fir: f,
+                              isDark: isDark,
+                              onBlock: () => _handleBlock(context, ref, f),
+                              onReject: () => _handleReject(context, ref, f),
+                              onReview: () =>
+                                  context.push(RouteNames.ptaHistory),
+                            );
+                          },
+                        ),
                       ),
               ),
             ],
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () => const _BlockRequestsSkeleton(),
+        error: (e, _) =>
+            const Center(child: Text(AppStrings.somethingWentWrong)),
       ),
     );
   }
@@ -241,7 +255,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
         .updateFirStatus(
           fir.id,
           CaseStatus.blockRejected,
-          'Insufficient PTA validation',
+          AppStrings.ptaReject,
         );
   }
 }
@@ -423,5 +437,79 @@ class _BlockRequestCard extends StatelessWidget {
       return 'Rejected';
     }
     return 'Other';
+  }
+}
+
+class _BlockRequestsSkeleton extends StatelessWidget {
+  const _BlockRequestsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final highlightColor = isDark
+        ? AppColors.darkSurface.withValues(alpha: 0.6)
+        : AppColors.scaffoldBackground;
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      child: ListView.separated(
+        padding: const EdgeInsets.all(AppPadding.lg),
+        itemCount: 4,
+        separatorBuilder: (_, _) => AppSpacing.vMd,
+        itemBuilder: (context, index) => Container(
+          padding: const EdgeInsets.all(AppPadding.md),
+          decoration: BoxDecoration(
+            color: baseColor,
+            borderRadius: AppRadius.allMd,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 12,
+                    width: 140,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  Container(
+                    height: 22,
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ],
+              ),
+              AppSpacing.vSm,
+              Container(
+                height: 10,
+                width: 220,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              AppSpacing.vSm,
+              Container(
+                height: 10,
+                width: 160,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

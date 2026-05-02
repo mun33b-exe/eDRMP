@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
@@ -9,6 +10,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/app_app_bar.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../data/fir_model.dart';
@@ -27,26 +29,40 @@ class FirHistoryPage extends ConsumerWidget {
       body: firsAsync.when(
         data: (firs) {
           if (firs.isEmpty) {
-            return const _EmptyState();
+            return const EmptyState(
+              icon: Icons.shield_outlined,
+              title: AppStrings.firHistoryEmpty,
+              message: AppStrings.firHistoryEmptyBody,
+            );
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppPadding.lg),
-            itemCount: firs.length,
-            separatorBuilder: (context, index) => AppSpacing.vMd,
-            itemBuilder: (context, index) {
-              return _FirCard(
-                fir: firs[index],
-                isDark: isDark,
-                onTap: () {
-                  context.push(RouteNames.caseTracking, extra: firs[index].id);
-                },
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(firsProvider);
+              await ref.read(firsProvider.future);
             },
+            child: ListView.separated(
+              padding: const EdgeInsets.all(AppPadding.lg),
+              itemCount: firs.length,
+              separatorBuilder: (context, index) => AppSpacing.vMd,
+              itemBuilder: (context, index) {
+                return _FirCard(
+                  fir: firs[index],
+                  isDark: isDark,
+                  onTap: () {
+                    context.push(
+                      RouteNames.caseTracking,
+                      extra: firs[index].id,
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () => const _FirListSkeleton(),
+        error: (e, _) =>
+            const Center(child: Text(AppStrings.somethingWentWrong)),
       ),
     );
   }
@@ -85,25 +101,25 @@ class _FirCard extends StatelessWidget {
   String _statusText(CaseStatus s) {
     switch (s) {
       case CaseStatus.deviceRegistered:
-        return 'Registered';
+        return AppStrings.caseTimelineDeviceRegistered;
       case CaseStatus.firSubmitted:
-        return 'Submitted';
+        return AppStrings.caseTimelineFirSubmitted;
       case CaseStatus.firUnderReview:
-        return 'Under Review';
+        return AppStrings.caseTimelineFirUnderReview;
       case CaseStatus.firVerified:
-        return 'Verified';
+        return AppStrings.caseTimelineFirVerified;
       case CaseStatus.firRejected:
-        return 'Rejected';
+        return AppStrings.caseTimelineFirRejected;
       case CaseStatus.blockPending:
-        return 'Block Pending';
+        return AppStrings.caseTimelineBlockPending;
       case CaseStatus.blockApproved:
-        return 'Block Approved';
+        return AppStrings.caseTimelineBlockApproved;
       case CaseStatus.blockRejected:
-        return 'Block Rejected';
+        return AppStrings.caseTimelineBlockRejected;
       case CaseStatus.deviceBlocked:
-        return 'Blocked';
+        return AppStrings.caseTimelineDeviceBlocked;
       case CaseStatus.deviceRecovered:
-        return 'Recovered';
+        return AppStrings.caseTimelineDeviceRecovered;
     }
   }
 
@@ -161,7 +177,7 @@ class _FirCard extends StatelessWidget {
             ),
             AppSpacing.vXs,
             Text(
-              'Case ID: ${fir.id.toUpperCase()}',
+              '${AppStrings.caseIdLabel} ${fir.id.toUpperCase()}',
               style: TextStyle(
                 fontSize: 12,
                 fontFamily: 'monospace',
@@ -208,50 +224,74 @@ class _FirCard extends StatelessWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+class _FirListSkeleton extends StatelessWidget {
+  const _FirListSkeleton();
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final highlightColor = isDark
+        ? AppColors.darkSurface.withValues(alpha: 0.6)
+        : AppColors.scaffoldBackground;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.xl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              height: 110,
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : Colors.white,
-                borderRadius: AppRadius.allMd,
-                border: Border.all(color: AppColors.primary, width: 2),
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      child: ListView.separated(
+        padding: const EdgeInsets.all(AppPadding.lg),
+        itemCount: 4,
+        separatorBuilder: (_, _) => AppSpacing.vMd,
+        itemBuilder: (context, index) => Container(
+          padding: const EdgeInsets.all(AppPadding.md),
+          decoration: BoxDecoration(
+            color: baseColor,
+            borderRadius: AppRadius.allMd,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 12,
+                    width: 180,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  Container(
+                    height: 22,
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: highlightColor,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ],
               ),
-              child: const Center(
-                child: Icon(
-                  Icons.shield_outlined,
-                  size: 40,
-                  color: AppColors.primary,
+              AppSpacing.vSm,
+              Container(
+                height: 10,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(6),
                 ),
               ),
-            ),
-            AppSpacing.vXl,
-            Text(
-              AppStrings.firHistoryEmpty,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            AppSpacing.vSm,
-            Text(
-              AppStrings.firHistoryEmptyBody,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
-                height: 1.4,
+              AppSpacing.vSm,
+              Container(
+                height: 10,
+                width: 220,
+                decoration: BoxDecoration(
+                  color: highlightColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

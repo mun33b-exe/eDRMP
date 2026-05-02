@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/forgot_password_page.dart';
@@ -30,135 +31,186 @@ import 'route_names.dart';
 ///
 /// Wired into `appRouter` (see [app_router.dart]). Phase 0 routes resolve to
 /// stub pages — real screens land in their respective feature phases.
+CustomTransitionPage<void> _buildTransitionPage(
+  GoRouterState state,
+  Widget child,
+) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 260),
+    reverseTransitionDuration: const Duration(milliseconds: 220),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+      final slideTween = Tween<Offset>(
+        begin: const Offset(0.08, 0),
+        end: Offset.zero,
+      );
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: slideTween.animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
 final List<RouteBase> appRoutes = <RouteBase>[
   GoRoute(
     name: RouteNames.splash,
     path: RouteNames.splash,
-    builder: (context, state) => const SplashPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const SplashPage()),
   ),
   GoRoute(
     name: RouteNames.onboarding,
     path: RouteNames.onboarding,
-    builder: (context, state) => const OnboardingPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const OnboardingPage()),
   ),
   GoRoute(
     name: RouteNames.login,
     path: RouteNames.login,
-    builder: (context, state) => const LoginPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const LoginPage()),
   ),
   GoRoute(
     name: RouteNames.register,
     path: RouteNames.register,
-    builder: (context, state) => const RegisterPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const RegisterPage()),
   ),
   GoRoute(
     name: RouteNames.forgotPassword,
     path: RouteNames.forgotPassword,
-    builder: (context, state) => const ForgotPasswordPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const ForgotPasswordPage()),
   ),
   GoRoute(
     name: RouteNames.dashboard,
     path: RouteNames.dashboard,
-    builder: (context, state) => const DashboardPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const DashboardPage()),
   ),
   GoRoute(
     name: RouteNames.appShell,
     path: RouteNames.appShell,
-    builder: (context, state) => const AppShellPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const AppShellPage()),
   ),
   GoRoute(
     name: RouteNames.myDevices,
     path: RouteNames.myDevices,
-    builder: (context, state) => const MyDevicesPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const MyDevicesPage()),
   ),
   GoRoute(
     name: RouteNames.addDevice,
     path: RouteNames.addDevice,
-    builder: (context, state) => const AddDevicePage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const AddDevicePage()),
   ),
   GoRoute(
     name: RouteNames.deviceDetails,
     path: RouteNames.deviceDetails,
-    builder: (context, state) {
+    pageBuilder: (context, state) {
       final deviceId = state.extra as String? ?? '';
-      return DeviceDetailsPage(deviceId: deviceId);
+      return _buildTransitionPage(state, DeviceDetailsPage(deviceId: deviceId));
     },
   ),
   GoRoute(
     name: RouteNames.firHistory,
     path: RouteNames.firHistory,
-    builder: (context, state) => const FirHistoryPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const FirHistoryPage()),
   ),
   GoRoute(
     name: RouteNames.submitFir,
     path: RouteNames.submitFir,
-    builder: (context, state) => const SubmitFirPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const SubmitFirPage()),
   ),
   GoRoute(
     name: RouteNames.caseTracking,
     path: RouteNames.caseTracking,
-    builder: (context, state) {
+    pageBuilder: (context, state) {
       final firId = state.extra as String?;
-      return CaseTrackingPage(firId: firId ?? '');
+      return _buildTransitionPage(state, CaseTrackingPage(firId: firId ?? ''));
     },
   ),
   GoRoute(
     name: RouteNames.policeDashboard,
     path: RouteNames.policeDashboard,
-    builder: (context, state) => const PoliceDashboardPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const PoliceDashboardPage()),
   ),
   GoRoute(
     name: RouteNames.pendingFirQueue,
     path: RouteNames.pendingFirQueue,
-    builder: (context, state) => const PendingFirQueuePage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const PendingFirQueuePage()),
   ),
   GoRoute(
     name: RouteNames.firReview,
     path: RouteNames.firReview,
-    builder: (context, state) {
+    pageBuilder: (context, state) {
       final firId = state.extra as String?;
-      return FirReviewPage(firId: firId ?? '');
+      return _buildTransitionPage(state, FirReviewPage(firId: firId ?? ''));
     },
   ),
   GoRoute(
     name: RouteNames.profile,
     path: RouteNames.profile,
-    builder: (context, state) => const ProfilePage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const ProfilePage()),
   ),
   GoRoute(
     name: RouteNames.settings,
     path: RouteNames.settings,
-    builder: (context, state) => const SettingsPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const SettingsPage()),
   ),
   GoRoute(
     name: RouteNames.notifications,
     path: RouteNames.notifications,
-    builder: (context, state) => const NotificationsPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const NotificationsPage()),
   ),
 
   GoRoute(
     name: RouteNames.ptaDashboard,
     path: RouteNames.ptaDashboard,
-    builder: (context, state) => const PtaDashboardPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const PtaDashboardPage()),
   ),
   GoRoute(
     name: RouteNames.deviceApprovals,
     path: RouteNames.deviceApprovals,
-    builder: (context, state) => const DeviceApprovalsPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const DeviceApprovalsPage()),
   ),
   GoRoute(
     name: RouteNames.blockRequests,
     path: RouteNames.blockRequests,
-    builder: (context, state) => const BlockRequestsPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const BlockRequestsPage()),
   ),
   GoRoute(
     name: RouteNames.ptaHistory,
     path: RouteNames.ptaHistory,
-    builder: (context, state) => const PtaHistoryPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const PtaHistoryPage()),
   ),
   GoRoute(
     name: RouteNames.theftMap,
     path: RouteNames.theftMap,
-    builder: (context, state) => const TheftMapPage(),
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const TheftMapPage()),
   ),
 ];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_padding.dart';
-import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../theme/colors.dart';
 
 /// Notification shell — empty state only for Phase 2.
@@ -38,67 +38,32 @@ class NotificationsPage extends StatelessWidget {
                       : AppColors.textPrimary,
                 ),
               ),
-              Expanded(child: _EmptyState(isDark: isDark)),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    // No-op for now.
+                    await Future<void>.delayed(
+                      const Duration(milliseconds: 500),
+                    );
+                  },
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: const EmptyState(
+                          icon: Icons.notifications_none_outlined,
+                          title: AppStrings.notificationsEmptyTitle,
+                          message: AppStrings.notificationsEmptyBody,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Empty state — centred bell illustration + copy
-// ---------------------------------------------------------------------------
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.isDark});
-
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Bell illustration
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCard : AppColors.primarySoft,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.notifications_none_outlined,
-              size: 36,
-              color: isDark ? AppColors.darkTextMuted : AppColors.primary,
-            ),
-          ),
-          AppSpacing.vXl,
-          Text(
-            AppStrings.notificationsEmptyTitle,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
-            ),
-          ),
-          AppSpacing.vSm,
-          Padding(
-            padding: AppPadding.horizontalXl,
-            child: Text(
-              AppStrings.notificationsEmptyBody,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.5,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
