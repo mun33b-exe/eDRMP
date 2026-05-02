@@ -212,13 +212,13 @@ class PtaDashboardPage extends StatelessWidget {
                         children: [
                           _buildLegendDot(
                             'Registered',
-                            const Color(0xFF6366F1),
+                            AppColors.analyticsViolet,
                             isDark,
                           ),
                           AppSpacing.hSm,
                           _buildLegendDot(
                             'Blocked',
-                            const Color(0xFFEF4444),
+                            AppColors.analyticsRed,
                             isDark,
                           ),
                         ],
@@ -256,35 +256,35 @@ class PtaDashboardPage extends StatelessWidget {
                     'Apple iPhone 15 / Pro',
                     '412K',
                     0.92,
-                    const Color(0xFF6366F1),
+                    AppColors.analyticsViolet,
                     isDark,
                   ),
                   _buildDeviceRow(
                     'Samsung Galaxy S24',
                     '318K',
                     0.71,
-                    const Color(0xFF8B5CF6),
+                    AppColors.analyticsViolet,
                     isDark,
                   ),
                   _buildDeviceRow(
                     'Xiaomi Redmi Note 13',
                     '267K',
                     0.59,
-                    const Color(0xFFEC4899),
+                    AppColors.error,
                     isDark,
                   ),
                   _buildDeviceRow(
                     'Tecno Camon 30',
                     '198K',
                     0.44,
-                    const Color(0xFF14B8A6),
+                    AppColors.analyticsGreen,
                     isDark,
                   ),
                   _buildDeviceRow(
                     'Other',
                     '1.21M',
                     0.32,
-                    isDark ? const Color(0xFF3A4A6A) : const Color(0xFFC5CDDB),
+                    isDark ? AppColors.darkBorder : AppColors.border,
                     isDark,
                   ),
                 ],
@@ -315,7 +315,7 @@ class PtaDashboardPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: isDark
                           ? AppColors.darkInput
-                          : const Color(0xFFEEF2F8),
+                          : AppColors.scaffoldBackground,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -660,8 +660,8 @@ class _ChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          const Color(0xFF6366F1).withValues(alpha: 0.3),
-          const Color(0xFF6366F1).withValues(alpha: 0.0),
+          AppColors.analyticsViolet.withValues(alpha: 0.3),
+          AppColors.analyticsViolet.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
 
@@ -673,7 +673,7 @@ class _ChartPainter extends CustomPainter {
     canvas.drawPath(fillPath, gradientPaint);
 
     final line1Paint = Paint()
-      ..color = const Color(0xFF6366F1)
+      ..color = AppColors.analyticsViolet
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round;
@@ -682,7 +682,7 @@ class _ChartPainter extends CustomPainter {
 
     // Simple dashed line implementation
     final dashPaint = Paint()
-      ..color = const Color(0xFFEF4444)
+      ..color = AppColors.analyticsRed
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round;

@@ -733,10 +733,14 @@ class _InfoBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0x1F1F6FEB) : AppColors.infoLight,
+        color: isDark
+            ? AppColors.info.withValues(alpha: 0.3)
+            : AppColors.infoLight,
         borderRadius: AppRadius.allMd,
         border: Border.all(
-          color: isDark ? const Color(0x4D1F6FEB) : const Color(0xFFC7DCFB),
+          color: isDark
+              ? AppColors.info.withValues(alpha: 0.3)
+              : AppColors.infoBorderLight,
         ),
       ),
       child: Row(
@@ -750,9 +754,7 @@ class _InfoBanner extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 height: 1.45,
-                color: isDark
-                    ? const Color(0xFF7FAEF5)
-                    : const Color(0xFF0F4DB3),
+                color: isDark ? AppColors.infoTextDark : AppColors.infoTextDeep,
               ),
             ),
           ),

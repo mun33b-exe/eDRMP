@@ -169,6 +169,24 @@ class AppColors {
   static const Color highRiskZone = Color(0xFFDC2626);
 
   // -------------------------------------------------------------
+  // MISSING TOKENS FROM PHASE IMPL
+  // -------------------------------------------------------------
+  static const Color dashboardApproved = Color(0xFF5DD3A8);
+  static const Color dashboardPending = Color(0xFFE5B863);
+  static const Color dashboardFirs = Color(0xFFF08A7E);
+
+  static const Color warningBorder = Color(0xFFF5C6C0);
+  static const Color errorTextDark = Color(0xFFF08A7E);
+  static const Color errorTextDeep = Color(0xFF8A1810);
+
+  static const Color infoBorderLight = Color(0xFFC7DCFB);
+  static const Color infoTextDark = Color(0xFF7FAEF5);
+  static const Color infoTextDeep = Color(0xFF0F4DB3);
+
+  static const Color inactiveDot = Color(0xFFD4DBE7);
+  static const Color illustrationBg = Color(0xFFEEF2F8);
+
+  // -------------------------------------------------------------
   // SKELETON / SHIMMER
   // -------------------------------------------------------------
   static const Color shimmerBase = Color(0xFFEAEEF5);

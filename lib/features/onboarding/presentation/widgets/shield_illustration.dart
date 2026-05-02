@@ -18,7 +18,7 @@ class ShieldIllustration extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     final wash = brightness == Brightness.dark
         ? AppColors.darkCard
-        : const Color(0xFFEEF2F8);
+        : AppColors.illustrationBg;
     return SizedBox(
       width: size,
       height: size,

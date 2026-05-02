@@ -267,7 +267,7 @@ class _WarningCard extends StatelessWidget {
         border: Border.all(
           color: isDark
               ? AppColors.rejected.withValues(alpha: 0.32)
-              : const Color(0xFFF5C6C0),
+              : AppColors.warningBorder,
         ),
       ),
       child: Row(
@@ -286,8 +286,8 @@ class _WarningCard extends StatelessWidget {
                 fontSize: 12,
                 height: 1.45,
                 color: isDark
-                    ? const Color(0xFFF08A7E)
-                    : const Color(0xFF8A1810),
+                    ? AppColors.errorTextDark
+                    : AppColors.errorTextDeep,
               ),
             ),
           ),

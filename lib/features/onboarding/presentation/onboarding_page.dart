@@ -48,7 +48,7 @@ class OnboardingPage extends ConsumerWidget {
         ? AppColors.darkTextSecondary
         : AppColors.textSecondary;
     final mutedColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
-    final inactiveDot = isDark ? AppColors.darkBorder : const Color(0xFFD4DBE7);
+    final inactiveDot = isDark ? AppColors.darkBorder : AppColors.inactiveDot;
 
     return Scaffold(
       backgroundColor: background,

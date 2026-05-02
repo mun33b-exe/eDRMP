@@ -283,7 +283,7 @@ class _RegisteredDevicesCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF5DD3A8),
+                    color: AppColors.dashboardApproved,
                   ),
                 ),
               ),
@@ -300,17 +300,17 @@ class _RegisteredDevicesCard extends StatelessWidget {
               _MiniStat(
                 label: AppStrings.dashboardApproved,
                 value: '${stats.approved}',
-                color: const Color(0xFF5DD3A8),
+                color: AppColors.dashboardApproved,
               ),
               _MiniStat(
                 label: AppStrings.dashboardPending,
                 value: '${stats.pending}',
-                color: const Color(0xFFE5B863),
+                color: AppColors.dashboardPending,
               ),
               _MiniStat(
                 label: AppStrings.dashboardFirs,
                 value: '${stats.firs}',
-                color: const Color(0xFFF08A7E),
+                color: AppColors.dashboardFirs,
               ),
             ],
           ),

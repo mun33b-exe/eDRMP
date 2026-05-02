@@ -12,7 +12,6 @@ import '../../features/devices/presentation/my_devices_page.dart';
 import '../../features/fir/presentation/case_tracking_page.dart';
 import '../../features/fir/presentation/fir_history_page.dart';
 import '../../features/fir/presentation/submit_fir_page.dart';
-import '../../features/map/presentation/theft_map_page.dart';
 import '../../features/notifications/presentation/notifications_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/police/presentation/fir_review_page.dart';
@@ -155,10 +154,5 @@ final List<RouteBase> appRoutes = <RouteBase>[
     name: RouteNames.ptaHistory,
     path: RouteNames.ptaHistory,
     builder: (context, state) => const PtaHistoryPage(),
-  ),
-  GoRoute(
-    name: RouteNames.theftMap,
-    path: RouteNames.theftMap,
-    builder: (context, state) => const TheftMapPage(),
   ),
 ];
