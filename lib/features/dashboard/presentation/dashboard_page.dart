@@ -439,11 +439,7 @@ class _QuickActionsGrid extends StatelessWidget {
           label: AppStrings.dashboardVerifyImei,
           toneColor: AppColors.secondary,
           isDark: isDark,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(AppStrings.featureComingSoon)),
-            );
-          },
+          onTap: () => context.push(RouteNames.verifyImei),
         ),
       ],
     );

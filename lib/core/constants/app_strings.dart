@@ -366,4 +366,27 @@ class AppStrings {
   // ---------------------------------------------------------------------------
   static const String connectivityOffline =
       'Offline — reconnecting to the network.';
+
+  // ---------------------------------------------------------------------------
+  // Verification (Phase 9C)
+  // ---------------------------------------------------------------------------
+  static const String verifyImeiTitle = 'Verify IMEI';
+  static const String verifyTabScan = 'Scan QR';
+  static const String verifyTabEnter = 'Enter IMEI';
+  static const String verifyImeiHint = 'Enter 15-digit IMEI';
+  static const String verifyButton = 'Verify';
+  static const String verifyNotFound = 'IMEI not registered';
+  static const String verifyNotFoundBody =
+      'This device is not in the eDRMP registry.';
+  static const String verifyRegisterCta = 'Register this device';
+  static const String verifyBlockedWarning =
+      'This device has been reported stolen and blocked.';
+  static const String verifyCameraPermission = 'Camera permission required';
+  static const String verifyCameraPermissionBody =
+      'Enable camera access in your device settings to scan QR codes.';
+  static const String verifyImeiCopied = 'IMEI copied to clipboard';
+  static const String deviceQrTitle = 'Device QR code';
+  static const String deviceQrSubtitle =
+      'Show this to verify your device registration.';
+  static const String deviceQrShareTooltip = 'Copy IMEI';
 }

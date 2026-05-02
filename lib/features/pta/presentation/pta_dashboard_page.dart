@@ -59,6 +59,11 @@ class PtaDashboardPage extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.qr_code_scanner_outlined),
+            tooltip: AppStrings.verifyImeiTitle,
+            onPressed: () => context.push(RouteNames.verifyImei),
+          ),
+          IconButton(
             onPressed: () async {
               final confirmed = await showDialog<bool>(
                 context: context,

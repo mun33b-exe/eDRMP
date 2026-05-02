@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
@@ -112,6 +116,11 @@ class DeviceDetailsPage extends ConsumerWidget {
             ),
             AppSpacing.vMd,
             _TimelineCard(device: device, isDark: isDark),
+            if (device.status == DeviceStatus.approved ||
+                device.status == DeviceStatus.unblocked) ...[
+              AppSpacing.vXl,
+              _QrCard(device: device, isDark: isDark),
+            ],
           ],
         ),
       ),
@@ -407,5 +416,104 @@ class _TimelineCard extends StatelessWidget {
           ),
         ];
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// QR code card — shown only for approved/unblocked devices
+// ---------------------------------------------------------------------------
+
+class _QrCard extends StatelessWidget {
+  const _QrCard({required this.device, required this.isDark});
+
+  final DeviceModel device;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final qrData = jsonEncode({'imei': device.imei, 'deviceId': device.id});
+
+    return Container(
+      padding: AppPadding.allLg,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkCard : AppColors.card,
+        borderRadius: AppRadius.allLg,
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.border,
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                const BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
+                ),
+              ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppStrings.deviceQrTitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.textPrimary,
+                      ),
+                    ),
+                    AppSpacing.vXs,
+                    Text(
+                      AppStrings.deviceQrSubtitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark
+                            ? AppColors.darkTextMuted
+                            : AppColors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.copy_outlined, size: 20),
+                tooltip: AppStrings.deviceQrShareTooltip,
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: device.imei));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(AppStrings.verifyImeiCopied),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          AppSpacing.vLg,
+          Center(
+            child: QrImageView(
+              data: qrData,
+              size: 180,
+              backgroundColor: Colors.white,
+              eyeStyle: const QrEyeStyle(color: AppColors.primary),
+              dataModuleStyle: const QrDataModuleStyle(
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          // TODO(Phase 9D): upload QR to device-qr-codes storage + insert device_qr_codes row.
+        ],
+      ),
+    );
   }
 }
