@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
@@ -61,12 +63,12 @@ class PtaHistoryPage extends ConsumerWidget {
           children: [
             Text(
               'Application #APP-${now.year}-${device?.id.split('-').last ?? '???'}',
-              style: const TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: AppSizes.bodyLarge(context)),
             ),
             Text(
               '${device?.status.displayName ?? 'Review'} · ${DateFormat('dd MMM yyyy').format(now)}',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
               ),
             ),
@@ -77,7 +79,10 @@ class PtaHistoryPage extends ConsumerWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppPadding.lg),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsiveHorizontalPadding,
+                vertical: AppPadding.lg,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -87,8 +92,8 @@ class PtaHistoryPage extends ConsumerWidget {
                     child: Row(
                       children: [
                         Container(
-                          width: 46,
-                          height: 46,
+                          width: AppSizes.iconMd(context),
+                          height: AppSizes.iconMd(context),
                           decoration: const BoxDecoration(
                             color: AppColors.primarySoft,
                             shape: BoxShape.circle,
@@ -96,10 +101,10 @@ class PtaHistoryPage extends ConsumerWidget {
                           alignment: Alignment.center,
                           child: Text(
                             initials.isEmpty ? '?' : initials,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.success,
                               fontWeight: FontWeight.w800,
-                              fontSize: 16,
+                              fontSize: AppSizes.bodyLarge(context),
                             ),
                           ),
                         ),
@@ -111,7 +116,7 @@ class PtaHistoryPage extends ConsumerWidget {
                               Text(
                                 ownerName,
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: AppSizes.bodyRegular(context),
                                   fontWeight: FontWeight.w700,
                                   color: isDark
                                       ? AppColors.darkTextPrimary
@@ -122,7 +127,7 @@ class PtaHistoryPage extends ConsumerWidget {
                               Text(
                                 'CNIC $ownerCnic · $ownerPhone',
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: context.responsiveFontSize(11),
                                   fontFamily: 'monospace',
                                   color: isDark
                                       ? AppColors.darkTextTertiary
@@ -145,7 +150,7 @@ class PtaHistoryPage extends ConsumerWidget {
                   Text(
                     'DEVICE',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: context.responsiveFontSize(11),
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
                       color: isDark
@@ -165,13 +170,13 @@ class PtaHistoryPage extends ConsumerWidget {
                           child: Row(
                             children: [
                               Container(
-                                width: 40,
-                                height: 40,
+                                width: AppSizes.iconSm(context),
+                                height: AppSizes.iconSm(context),
                                 decoration: BoxDecoration(
                                   color: isDark
                                       ? AppColors.darkSurface
                                       : AppColors.inputFill,
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: AppRadius.allSm,
                                 ),
                                 child: Icon(
                                   Icons.smartphone,
@@ -188,7 +193,7 @@ class PtaHistoryPage extends ConsumerWidget {
                                     Text(
                                       deviceLabel,
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: context.responsiveFontSize(13),
                                         fontWeight: FontWeight.w700,
                                         color: isDark
                                             ? AppColors.darkTextPrimary
@@ -199,7 +204,7 @@ class PtaHistoryPage extends ConsumerWidget {
                                     Text(
                                       imei.isEmpty ? '—' : 'IMEI $imei',
                                       style: TextStyle(
-                                        fontSize: 11,
+                                        fontSize: context.responsiveFontSize(11),
                                         fontFamily: 'monospace',
                                         color: isDark
                                             ? AppColors.darkTextSecondary
@@ -220,7 +225,7 @@ class PtaHistoryPage extends ConsumerWidget {
                   Text(
                     'VERIFICATION CHECKS',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: context.responsiveFontSize(11),
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
                       color: isDark
@@ -238,6 +243,7 @@ class PtaHistoryPage extends ConsumerWidget {
                           'IMEI format valid (Luhn)',
                           isImeiValid ? 'pass' : 'warn',
                           isDark,
+                          context: context,
                         ),
                         _buildCheckRow(
                           'IMEI not previously registered',
@@ -245,16 +251,19 @@ class PtaHistoryPage extends ConsumerWidget {
                               ? 'warn'
                               : 'pass',
                           isDark,
+                          context: context,
                         ),
                         _buildCheckRow(
                           'CNIC matches NADRA',
                           ownerCnic == '—' ? 'warn' : 'pass',
                           isDark,
+                          context: context,
                         ),
                         _buildCheckRow(
                           'Invoice matches authorized dealer',
                           device?.invoicePath != null ? 'pass' : 'warn',
                           isDark,
+                          context: context,
                         ),
                         _buildCheckRow(
                           'Device not on stolen list',
@@ -262,6 +271,7 @@ class PtaHistoryPage extends ConsumerWidget {
                               ? 'warn'
                               : 'pass',
                           isDark,
+                          context: context,
                           isLast: true,
                         ),
                       ],
@@ -274,7 +284,10 @@ class PtaHistoryPage extends ConsumerWidget {
 
           // Action Buttons
           Container(
-            padding: const EdgeInsets.all(AppPadding.lg),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsiveHorizontalPadding,
+              vertical: AppPadding.lg,
+            ),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkSurface : Colors.white,
               border: Border(
@@ -365,6 +378,7 @@ class PtaHistoryPage extends ConsumerWidget {
     String status,
     bool isDark, {
     bool isLast = false,
+    required BuildContext context,
   }) {
     final isPass = status == 'pass';
     return Container(
@@ -388,7 +402,7 @@ class PtaHistoryPage extends ConsumerWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: context.responsiveFontSize(13),
                 color: isDark
                     ? AppColors.darkTextPrimary
                     : AppColors.textPrimary,
@@ -406,7 +420,7 @@ class PtaHistoryPage extends ConsumerWidget {
               Text(
                 isPass ? 'PASS' : 'REVIEW',
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: context.responsiveFontSize(11),
                   fontWeight: FontWeight.w700,
                   color: isPass ? AppColors.success : AppColors.warning,
                 ),

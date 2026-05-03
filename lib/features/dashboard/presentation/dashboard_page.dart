@@ -81,7 +81,7 @@ class DashboardPage extends ConsumerWidget {
                         child: Text(
                           AppStrings.dashboardSeeAll,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: AppSizes.bodySmall(context),
                             fontWeight: FontWeight.w600,
                             color: isDark
                                 ? AppColors.successSoft
@@ -144,10 +144,10 @@ class _HeroHeader extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       AppStrings.dashboardGreeting,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: AppSizes.bodySmall(context),
                         fontWeight: FontWeight.w500,
                         color: Colors.white70,
                       ),
@@ -155,8 +155,8 @@ class _HeroHeader extends StatelessWidget {
                     AppSpacing.vXs,
                     Text(
                       displayName,
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: TextStyle(
+                        fontSize: AppSizes.bodyLarge(context) + 2,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -205,11 +205,11 @@ class _IconBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 38,
-        height: 38,
+        width: AppSizes.iconSm(context),
+        height: AppSizes.iconSm(context),
         decoration: BoxDecoration(
           color: const Color(0x24FFFFFF),
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: AppRadius.allMd,
           border: Border.all(color: const Color(0x2EFFFFFF)),
         ),
         child: Stack(
@@ -264,10 +264,10 @@ class _RegisteredDevicesCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     AppStrings.dashboardRegisteredDevices,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: context.responsiveFontSize(11),
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                       letterSpacing: 0.5,
@@ -276,8 +276,8 @@ class _RegisteredDevicesCard extends StatelessWidget {
                   AppSpacing.vXs,
                   Text(
                     '${stats.totalDevices}',
-                    style: const TextStyle(
-                      fontSize: 34,
+                    style: TextStyle(
+                      fontSize: AppSizes.h1(context),
                       fontWeight: FontWeight.w800,
                       color: Colors.white,
                       letterSpacing: -1,
@@ -295,10 +295,10 @@ class _RegisteredDevicesCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: AppColors.approved),
                 ),
-                child: const Text(
+                child: Text(
                   AppStrings.dashboardAllActive,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: context.responsiveFontSize(11),
                     fontWeight: FontWeight.w700,
                     color: AppColors.approvedBg,
                   ),
@@ -359,8 +359,8 @@ class _MiniStat extends StatelessWidget {
       children: [
         Text(
           label.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 11,
+          style: TextStyle(
+            fontSize: context.responsiveFontSize(11),
             color: Colors.white60,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.4,
@@ -370,7 +370,7 @@ class _MiniStat extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: context.responsiveFontSize(18),
             fontWeight: FontWeight.w800,
             color: color,
           ),
@@ -395,7 +395,7 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        fontSize: 14,
+        fontSize: AppSizes.bodyRegular(context),
         fontWeight: FontWeight.w700,
         color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
       ),
@@ -495,8 +495,8 @@ class _QuickActionTile extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: AppSizes.iconMd(context),
+                height: AppSizes.iconMd(context),
                 decoration: BoxDecoration(
                   color: toneColor,
                   borderRadius: AppRadius.allMd,
@@ -508,7 +508,7 @@ class _QuickActionTile extends StatelessWidget {
                 child: Text(
                   label,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: AppSizes.bodySmall(context),
                     fontWeight: FontWeight.w700,
                     color: isDark
                         ? AppColors.darkTextPrimary
@@ -579,11 +579,11 @@ class _DeviceRow extends StatelessWidget {
         children: [
           // Phone glyph — JSX PhoneGlyph
           Container(
-            width: 44,
-            height: 44,
+            width: AppSizes.iconMd(context),
+            height: AppSizes.iconMd(context),
             decoration: BoxDecoration(
               color: iconBg,
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: AppRadius.allMd,
             ),
             child: Icon(
               Icons.smartphone_outlined,
@@ -599,7 +599,7 @@ class _DeviceRow extends StatelessWidget {
                 Text(
                   device.model,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: AppSizes.bodyRegular(context),
                     fontWeight: FontWeight.w700,
                     color: isDark
                         ? AppColors.darkTextPrimary
@@ -610,7 +610,7 @@ class _DeviceRow extends StatelessWidget {
                 Text(
                   'IMEI ${device.imei}',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: AppSizes.bodySmall(context),
                     fontFamily: 'monospace',
                     letterSpacing: 0.3,
                     color: isDark
@@ -622,7 +622,7 @@ class _DeviceRow extends StatelessWidget {
                 Text(
                   '${device.date} · ${device.operator}',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: context.responsiveFontSize(11),
                     color: isDark
                         ? AppColors.darkTextTertiary
                         : AppColors.textTertiary,

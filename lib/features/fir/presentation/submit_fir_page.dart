@@ -9,6 +9,8 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_input.dart';
@@ -109,8 +111,8 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppPadding.lg,
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsiveHorizontalPadding,
                 vertical: AppPadding.md,
               ),
               child: Column(
@@ -132,10 +134,10 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             AppStrings.submitFirDeviceLabel,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: AppSizes.bodySmall(context),
                               fontWeight: FontWeight.w600,
                               color: AppColors.textSecondary,
                             ),
@@ -178,7 +180,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                                 value: d.id,
                                 child: Text(
                                   '${d.brand} ${d.model} · ${d.maskedImei}',
-                                  style: const TextStyle(fontSize: 13),
+                                  style: TextStyle(fontSize: context.responsiveFontSize(13)),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               );
@@ -264,7 +266,10 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
 
           // Sticky Bottom Button
           Container(
-            padding: const EdgeInsets.all(AppPadding.lg),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsiveHorizontalPadding,
+              vertical: AppPadding.lg,
+            ),
             decoration: BoxDecoration(
               color: isDark
                   ? AppColors.darkBackground
@@ -298,7 +303,7 @@ class _WarningCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppPadding.sm + 4),
       decoration: BoxDecoration(
         color: isDark
             ? AppColors.rejected.withValues(alpha: 0.14)
@@ -323,7 +328,7 @@ class _WarningCard extends StatelessWidget {
             child: Text(
               AppStrings.submitFirWarning,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 height: 1.45,
                 color: isDark
                     ? AppColors.error

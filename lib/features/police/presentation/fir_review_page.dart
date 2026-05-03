@@ -7,6 +7,7 @@ import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_input.dart';
@@ -37,7 +38,10 @@ class FirReviewPage extends ConsumerWidget {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppPadding.lg),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.responsiveHorizontalPadding,
+                    vertical: AppPadding.lg,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -75,8 +79,8 @@ class FirReviewPage extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    width: 42,
-                                    height: 42,
+                                    width: AppSizes.iconMd(context),
+                                    height: AppSizes.iconMd(context),
                                     decoration: BoxDecoration(
                                       color: Colors.white.withValues(
                                         alpha: 0.18,
@@ -211,7 +215,10 @@ class FirReviewPage extends ConsumerWidget {
               // Action Buttons
               if (isPending)
                 Container(
-                  padding: const EdgeInsets.all(AppPadding.lg),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.responsiveHorizontalPadding,
+                    vertical: AppPadding.lg,
+                  ),
                   decoration: BoxDecoration(
                     color: isDark
                         ? AppColors.darkBackground
@@ -380,7 +387,7 @@ class _DetailRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100,
+            width: context.responsive(mobile: 90.0, tablet: 110.0, desktop: 120.0),
             child: Text(
               label,
               style: TextStyle(

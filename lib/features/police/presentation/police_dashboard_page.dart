@@ -7,6 +7,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../theme/colors.dart';
 import '../../../core/constants/app_strings.dart';
@@ -93,7 +94,10 @@ class PoliceDashboardPage extends ConsumerWidget {
               await ref.read(firsProvider.future);
             },
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppPadding.lg),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsiveHorizontalPadding,
+                vertical: AppPadding.lg,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

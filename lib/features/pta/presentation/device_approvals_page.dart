@@ -10,6 +10,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -155,10 +156,10 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
               if (_showSearch)
                 Container(
                   color: isDark ? AppColors.darkSurface : Colors.white,
-                  padding: const EdgeInsets.fromLTRB(
-                    AppPadding.lg,
+                  padding: EdgeInsets.fromLTRB(
+                    context.responsiveHorizontalPadding,
                     AppPadding.sm,
-                    AppPadding.lg,
+                    context.responsiveHorizontalPadding,
                     0,
                   ),
                   child: TextField(
@@ -196,8 +197,8 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                 ),
               Container(
                 color: isDark ? AppColors.darkSurface : Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.lg,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.responsiveHorizontalPadding,
                   vertical: AppPadding.md,
                 ),
                 child: SingleChildScrollView(
@@ -249,7 +250,10 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                           await ref.read(devicesProvider.future);
                         },
                         child: ListView.separated(
-                          padding: const EdgeInsets.all(AppPadding.lg),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.responsiveHorizontalPadding,
+                            vertical: AppPadding.lg,
+                          ),
                           itemCount: filtered.length,
                           separatorBuilder: (context, index) => AppSpacing.vMd,
                           itemBuilder: (context, index) {
@@ -284,11 +288,11 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 36,
-        height: 36,
+        width: AppSizes.iconSm(context),
+        height: AppSizes.iconSm(context),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurfaceElevated : AppColors.inputFill,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: AppRadius.allMd,
         ),
         child: Icon(
           icon,
@@ -305,7 +309,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
       onTap: () => setState(() => _filter = label),
       borderRadius: BorderRadius.circular(99),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm + 4, vertical: 6),
         decoration: BoxDecoration(
           color: isOn
               ? AppColors.success
@@ -448,10 +452,10 @@ class _DeviceApprovalCard extends StatelessWidget {
           ),
           AppSpacing.vMd,
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm + 2, vertical: AppPadding.sm),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkSurface : AppColors.inputFill,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.allSm,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

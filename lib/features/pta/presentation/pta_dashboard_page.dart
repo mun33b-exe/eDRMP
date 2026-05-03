@@ -9,6 +9,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
@@ -97,18 +98,21 @@ class PtaDashboardPage extends ConsumerWidget {
           await ref.read(ptaStatsProvider.future);
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppPadding.lg),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.responsiveHorizontalPadding,
+            vertical: AppPadding.lg,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Top Grid Stats
               GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: context.isMobile ? 2 : 4,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.6,
+                crossAxisSpacing: AppPadding.sm,
+                mainAxisSpacing: AppPadding.sm,
+                childAspectRatio: context.responsive(mobile: 1.6, tablet: 1.8, desktop: 2.0),
                 children: [
                   _buildStatTile(
                     context,
@@ -182,6 +186,7 @@ class PtaDashboardPage extends ConsumerWidget {
 
               // Registrations vs Blocks Chart
               _buildCard(
+                context: context,
                 isDark: isDark,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,29 +195,31 @@ class PtaDashboardPage extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Registrations vs. Blocks',
-                              style: TextStyle(
-                                fontSize: AppSizes.bodyRegular(context),
-                                fontWeight: FontWeight.w700,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.textPrimary,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Registrations vs. Blocks',
+                                style: TextStyle(
+                                  fontSize: AppSizes.bodyRegular(context),
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.textPrimary,
+                                ),
                               ),
-                            ),
-                            Text(
-                              '30-day trend',
-                              style: TextStyle(
-                                fontSize: AppSizes.bodySmall(context),
-                                color: isDark
-                                    ? AppColors.darkTextTertiary
-                                    : AppColors.textTertiary,
+                              Text(
+                                '30-day trend',
+                                style: TextStyle(
+                                  fontSize: AppSizes.bodySmall(context),
+                                  color: isDark
+                                      ? AppColors.darkTextTertiary
+                                      : AppColors.textTertiary,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Row(
                           children: [
@@ -245,6 +252,7 @@ class PtaDashboardPage extends ConsumerWidget {
 
               // Top Devices
               _buildCard(
+                context: context,
                 isDark: isDark,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,6 +315,7 @@ class PtaDashboardPage extends ConsumerWidget {
 
               // Risk Map
               _buildCard(
+                context: context,
                 isDark: isDark,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,7 +407,7 @@ class PtaDashboardPage extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppPadding.md),
+        padding: EdgeInsets.all(context.responsive(mobile: AppPadding.md, tablet: AppPadding.lg)),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
@@ -477,7 +486,7 @@ class PtaDashboardPage extends ConsumerWidget {
       onTap: onTap,
       borderRadius: AppRadius.allMd,
       child: Container(
-        padding: const EdgeInsets.all(AppPadding.md),
+        padding: EdgeInsets.all(context.responsive(mobile: AppPadding.md, tablet: AppPadding.lg)),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
@@ -509,9 +518,9 @@ class PtaDashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildCard({required Widget child, required bool isDark}) {
+  Widget _buildCard({required BuildContext context, required Widget child, required bool isDark}) {
     return Container(
-      padding: const EdgeInsets.all(AppPadding.lg),
+      padding: EdgeInsets.all(context.responsive(mobile: AppPadding.lg, tablet: AppPadding.xl)),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allMd,

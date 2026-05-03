@@ -10,6 +10,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
@@ -66,8 +67,8 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
             children: [
               // Filter Chips
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.lg,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.responsiveHorizontalPadding,
                   vertical: AppPadding.md,
                 ),
                 decoration: BoxDecoration(
@@ -106,7 +107,10 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
                           await ref.read(firsProvider.future);
                         },
                         child: ListView.separated(
-                          padding: const EdgeInsets.all(AppPadding.lg),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.responsiveHorizontalPadding,
+                            vertical: AppPadding.lg,
+                          ),
                           itemCount: filteredFirs.length,
                           separatorBuilder: (context, index) => AppSpacing.vMd,
                           itemBuilder: (context, index) {

@@ -8,7 +8,9 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/utils/app_validators.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_input.dart';
 import '../../../theme/colors.dart';
@@ -91,10 +93,10 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
               padding: const EdgeInsets.only(right: AppPadding.md),
               child: TextButton(
                 onPressed: () => context.pop(),
-                child: const Text(
+                child: Text(
                   AppStrings.addDeviceSaveDraft,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: AppSizes.bodySmall(context),
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary,
                   ),
@@ -274,7 +276,10 @@ class _Step1 extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: AppPadding.screen,
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsiveHorizontalPadding,
+                vertical: AppPadding.lg,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -381,7 +386,10 @@ class _Step2 extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: AppPadding.screen,
+              padding: EdgeInsets.symmetric(
+                horizontal: context.responsiveHorizontalPadding,
+                vertical: AppPadding.lg,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -485,21 +493,25 @@ class _Step3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconSize = AppSizes.iconLg(context) + 16;
     return Padding(
-      padding: AppPadding.screen,
+      padding: EdgeInsets.symmetric(
+        horizontal: context.responsiveHorizontalPadding,
+        vertical: AppPadding.lg,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 80,
-            height: 80,
+            width: iconSize,
+            height: iconSize,
             decoration: const BoxDecoration(
               color: AppColors.successSoft,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.check_circle_outline,
-              size: 40,
+              size: iconSize * 0.5,
               color: AppColors.success,
             ),
           ),
@@ -507,7 +519,7 @@ class _Step3 extends StatelessWidget {
           Text(
             AppStrings.addDeviceSuccessTitle,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: AppSizes.h3(context),
               fontWeight: FontWeight.w800,
               color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
             ),
@@ -517,7 +529,7 @@ class _Step3 extends StatelessWidget {
             Text(
               '$brand $model',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: AppSizes.bodyRegular(context),
                 fontWeight: FontWeight.w600,
                 color: isDark
                     ? AppColors.darkTextSecondary
@@ -529,7 +541,7 @@ class _Step3 extends StatelessWidget {
             AppStrings.addDeviceSuccessBody,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: context.responsiveFontSize(13),
               height: 1.5,
               color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
@@ -567,7 +579,7 @@ class _StepIndicator extends StatelessWidget {
         Text(
           'Step $step of $total',
           style: TextStyle(
-            fontSize: 12,
+            fontSize: AppSizes.bodySmall(context),
             fontWeight: FontWeight.w600,
             color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
           ),
@@ -616,8 +628,8 @@ class _DetectedCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: AppSizes.iconSm(context),
+            height: AppSizes.iconSm(context),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkBackground : AppColors.inputFill,
               borderRadius: AppRadius.allMd,
@@ -636,7 +648,7 @@ class _DetectedCard extends StatelessWidget {
                 Text(
                   AppStrings.addDeviceDetected,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: context.responsiveFontSize(11),
                     fontWeight: FontWeight.w600,
                     color: isDark
                         ? AppColors.darkTextTertiary
@@ -646,7 +658,7 @@ class _DetectedCard extends StatelessWidget {
                 Text(
                   '$brand $model',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: AppSizes.bodyRegular(context),
                     fontWeight: FontWeight.w700,
                     color: isDark
                         ? AppColors.darkTextPrimary
@@ -656,7 +668,7 @@ class _DetectedCard extends StatelessWidget {
                 Text(
                   AppStrings.addDeviceAutoFilled,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: context.responsiveFontSize(11),
                     color: isDark
                         ? AppColors.darkTextTertiary
                         : AppColors.textTertiary,
@@ -708,7 +720,7 @@ class _ReadOnlyField extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 11,
+              fontSize: context.responsiveFontSize(11),
               fontWeight: FontWeight.w600,
               color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
@@ -720,7 +732,7 @@ class _ReadOnlyField extends StatelessWidget {
                 child: Text(
                   value,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: AppSizes.bodyRegular(context),
                     fontWeight: FontWeight.w600,
                     fontFamily: mono ? 'monospace' : null,
                     letterSpacing: mono ? 0.3 : 0,
@@ -772,7 +784,7 @@ class _InfoBanner extends StatelessWidget {
             child: Text(
               AppStrings.addDeviceInfoBanner,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 height: 1.45,
                 color: isDark ? AppColors.primaryAccent : AppColors.primaryDark,
               ),
@@ -792,11 +804,12 @@ class _StickyBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hp = context.responsiveHorizontalPadding;
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.lg,
+      padding: EdgeInsets.fromLTRB(
+        hp,
         AppPadding.sm,
-        AppPadding.lg,
+        hp,
         AppPadding.lg,
       ),
       decoration: BoxDecoration(

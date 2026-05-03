@@ -9,6 +9,8 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -38,10 +40,10 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
       appBar: AppBar(
         title: Column(
           children: [
-            const Text(
+            Text(
               AppStrings.ptaRegulatoryLabel,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: context.responsiveFontSize(11),
                 fontWeight: FontWeight.w600,
                 color: AppColors.success,
                 letterSpacing: 0.5,
@@ -50,7 +52,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
             Text(
               AppStrings.ptaBlockRequestsTitle,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: context.responsiveFontSize(18),
                 fontWeight: FontWeight.w800,
                 color: isDark
                     ? AppColors.darkTextPrimary
@@ -94,8 +96,8 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
             children: [
               Container(
                 color: isDark ? AppColors.darkSurface : Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.lg,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.responsiveHorizontalPadding,
                   vertical: AppPadding.md,
                 ),
                 child: SingleChildScrollView(
@@ -167,7 +169,10 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                           await ref.read(firsProvider.future);
                         },
                         child: ListView.separated(
-                          padding: const EdgeInsets.all(AppPadding.lg),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.responsiveHorizontalPadding,
+                            vertical: AppPadding.lg,
+                          ),
                           itemCount: filtered.length,
                           separatorBuilder: (context, index) => AppSpacing.vMd,
                           itemBuilder: (context, index) {
@@ -200,7 +205,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
       onTap: () => setState(() => _filter = label),
       borderRadius: BorderRadius.circular(99),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm + 4, vertical: 6),
         decoration: BoxDecoration(
           color: isOn
               ? AppColors.success
@@ -217,7 +222,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w600,
                 color: isOn
                     ? Colors.white
@@ -230,7 +235,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
             Text(
               '$count',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w500,
                 color: isOn
                     ? Colors.white70
@@ -314,7 +319,7 @@ class _BlockRequestCard extends StatelessWidget {
                   Text(
                     'Case ${fir.id.toUpperCase()}',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: context.responsiveFontSize(13),
                       fontWeight: FontWeight.w700,
                       color: isDark
                           ? AppColors.darkTextPrimary
@@ -325,7 +330,7 @@ class _BlockRequestCard extends StatelessWidget {
                   Text(
                     fir.policeStation,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: context.responsiveFontSize(11),
                       color: isDark
                           ? AppColors.darkTextTertiary
                           : AppColors.textTertiary,
@@ -341,10 +346,10 @@ class _BlockRequestCard extends StatelessWidget {
           ),
           AppSpacing.vMd,
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm + 2, vertical: AppPadding.sm),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkSurface : AppColors.inputFill,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.allSm,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -353,7 +358,7 @@ class _BlockRequestCard extends StatelessWidget {
                   child: Text(
                     fir.deviceInfo,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: AppSizes.bodySmall(context),
                       fontWeight: FontWeight.w600,
                       color: isDark
                           ? AppColors.darkTextPrimary
@@ -366,7 +371,7 @@ class _BlockRequestCard extends StatelessWidget {
                 Text(
                   dateStr,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: context.responsiveFontSize(11),
                     color: isDark
                         ? AppColors.darkTextTertiary
                         : AppColors.textTertiary,
