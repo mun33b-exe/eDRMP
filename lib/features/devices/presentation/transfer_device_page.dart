@@ -555,19 +555,63 @@ class _TransferHistoryTab extends ConsumerWidget {
                 isDark: isDark,
                 isOutgoing: isOutgoing,
                 onAccept: t.status == TransferStatus.pending && !isOutgoing
-                    ? () => ref
-                          .read(transfersProvider.notifier)
-                          .accept(t.id)
+                    ? () async {
+                        try {
+                          await ref
+                              .read(transfersProvider.notifier)
+                              .accept(t.id);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(AppStrings.transferAccepted),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        }
+                      }
                     : null,
                 onReject: t.status == TransferStatus.pending && !isOutgoing
-                    ? () => ref
-                          .read(transfersProvider.notifier)
-                          .reject(t.id)
+                    ? () async {
+                        try {
+                          await ref
+                              .read(transfersProvider.notifier)
+                              .reject(t.id);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(AppStrings.transferRejected),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        }
+                      }
                     : null,
                 onCancel: t.status == TransferStatus.pending && isOutgoing
-                    ? () => ref
-                          .read(transfersProvider.notifier)
-                          .cancel(t.id)
+                    ? () async {
+                        try {
+                          await ref
+                              .read(transfersProvider.notifier)
+                              .cancel(t.id);
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        }
+                      }
                     : null,
               );
             },

@@ -25,7 +25,7 @@ CREATE POLICY "Users can view incoming transfers by cnic"
   ON public.device_transfers FOR SELECT
   USING (
     to_owner_id = auth.uid()
-    OR to_cnic = (SELECT cnic FROM public.profiles WHERE id = auth.uid())
+    OR replace(to_cnic, '-', '') = (SELECT replace(cnic, '-', '') FROM public.profiles WHERE id = auth.uid())
   );
 
 -- Owner can create transfer requests for their own devices
@@ -39,7 +39,7 @@ CREATE POLICY "Participants can update transfers"
   USING (
     from_owner_id = auth.uid()
     OR to_owner_id = auth.uid()
-    OR to_cnic = (SELECT cnic FROM public.profiles WHERE id = auth.uid())
+    OR replace(to_cnic, '-', '') = (SELECT replace(cnic, '-', '') FROM public.profiles WHERE id = auth.uid())
   );
 
 -- ═════════════════════════════════════════════════════════════
@@ -53,7 +53,7 @@ STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT id FROM public.profiles WHERE cnic = target_cnic LIMIT 1;
+  SELECT id FROM public.profiles WHERE replace(cnic, '-', '') = replace(target_cnic, '-', '') LIMIT 1;
 $$;
 
 -- ═════════════════════════════════════════════════════════════
@@ -92,7 +92,8 @@ BEGIN
     FROM public.profiles
    WHERE id = auth.uid();
 
-  IF v_caller_cnic IS NULL OR v_caller_cnic <> v_to_cnic THEN
+  IF v_caller_cnic IS NULL
+     OR replace(v_caller_cnic, '-', '') <> replace(v_to_cnic, '-', '') THEN
     RAISE EXCEPTION 'Only the designated recipient can accept this transfer';
   END IF;
 

@@ -27,6 +27,8 @@ class TransferRepository {
         .single();
     final cnic = profile['cnic'] as String;
 
+    final normalizedCnic = cnic.replaceAll('-', '');
+
     final incoming = await SupabaseService.client
         .from('device_transfers')
         .select(
@@ -34,7 +36,7 @@ class TransferRepository {
           'from_profile:profiles!device_transfers_from_owner_id_fkey(full_name), '
           'to_profile:profiles!device_transfers_to_owner_id_fkey!left(full_name)',
         )
-        .eq('to_cnic', cnic)
+        .or('to_cnic.eq.$normalizedCnic,to_cnic.eq.$cnic')
         .order('created_at', ascending: false);
 
     // Merge and deduplicate

@@ -425,6 +425,8 @@ class AppStrings {
   static const String transferAccept = 'Accept';
   static const String transferReject = 'Reject';
   static const String transferCancel = 'Cancel';
+  static const String transferAccepted = 'Transfer accepted successfully';
+  static const String transferRejected = 'Transfer rejected';
   static const String transferFrom = 'From';
   static const String transferTo = 'To';
   static const String transferCnicNotFound =

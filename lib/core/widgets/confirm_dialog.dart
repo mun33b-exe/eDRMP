@@ -48,8 +48,12 @@ class ConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Dialog(
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.lg,
+        vertical: AppPadding.xl,
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(AppPadding.xl),
+        padding: const EdgeInsets.all(AppPadding.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,7 +71,7 @@ class ConfirmDialog extends StatelessWidget {
                     variant: AppButtonVariant.ghost,
                   ),
                 ),
-                AppSpacing.hMd,
+                AppSpacing.hSm,
                 Expanded(
                   child: AppButton(
                     label: confirmLabel,
