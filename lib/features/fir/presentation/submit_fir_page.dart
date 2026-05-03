@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
@@ -31,7 +32,9 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
   final _policeStationCtrl = TextEditingController();
   final _descriptionCtrl = TextEditingController();
   final _firNumberCtrl = TextEditingController();
-  final _dateCtrl = TextEditingController(text: '28 Apr 2026, 09:30 PM');
+  late final _dateCtrl = TextEditingController(
+    text: DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.now()),
+  );
   final _locationCtrl = TextEditingController(
     text: AppStrings.locationPickerHint,
   );
@@ -73,7 +76,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
   void _submit() async {
     if (_selectedDeviceId == null || _policeStationCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
+        const SnackBar(content: Text(AppStrings.submitFirRequired)),
       );
       return;
     }
@@ -145,6 +148,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                           AppSpacing.vXs,
                           DropdownButtonFormField<String>(
                             initialValue: _selectedDeviceId,
+                            isExpanded: true,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: isDark
@@ -174,7 +178,10 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                             dropdownColor: isDark
                                 ? AppColors.darkSurfaceElevated
                                 : AppColors.card,
-                            hint: const Text('Select an approved device'),
+                            hint: const Text(
+                              AppStrings.submitFirDeviceHint,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             items: approvedDevices.map((d) {
                               return DropdownMenuItem(
                                 value: d.id,
@@ -182,6 +189,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                                   '${d.brand} ${d.model} · ${d.maskedImei}',
                                   style: TextStyle(fontSize: context.responsiveFontSize(13)),
                                   overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               );
                             }).toList(),
@@ -194,16 +202,16 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                     },
                     loading: () => const CircularProgressIndicator(),
                     error: (error, stackTrace) =>
-                        const Text('Error loading devices'),
+                        const Text(AppStrings.somethingWentWrong),
                   ),
 
                   AppSpacing.vLg,
 
                   // FIR Number (if any)
                   AppInput(
-                    label: 'FIR number (Optional)',
+                    label: AppStrings.submitFirFirNumberLabel,
                     controller: _firNumberCtrl,
-                    hintText: 'e.g. 124/26',
+                    hintText: AppStrings.submitFirFirNumberHint,
                   ),
                   AppSpacing.vMd,
 
@@ -232,7 +240,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                   AppInput(
                     label: AppStrings.submitFirStationLabel,
                     controller: _policeStationCtrl,
-                    hintText: 'e.g. Clifton P.S.',
+                    hintText: AppStrings.submitFirStationHint,
                     suffix: const Icon(Icons.keyboard_arrow_down, size: 20),
                   ),
                   AppSpacing.vMd,
@@ -250,10 +258,10 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                     onTap: _pickProof,
                     child: AbsorbPointer(
                       child: AppInput(
-                        label: 'Proof upload (FIR copy/Photos)',
+                        label: AppStrings.submitFirProofLabel,
                         enabled: false,
                         hintText: _pickedProof == null
-                            ? 'Tap to upload a file'
+                            ? AppStrings.submitFirProofHint
                             : _pickedProof!.name,
                         suffix: const Icon(Icons.upload_file, size: 20),
                       ),

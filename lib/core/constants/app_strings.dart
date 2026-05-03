@@ -305,7 +305,14 @@ class AppStrings {
   static const String submitFirWarning =
       'Filing a false FIR is a criminal offence under Section 182. Your device will be blocked on the PTA network within 30 minutes.';
   static const String submitFirDeviceLabel = 'Select device';
+  static const String submitFirDeviceHint = 'Select an approved device';
   static const String submitFirDateLabel = 'Date & time of incident';
+  static const String submitFirFirNumberLabel = 'FIR number (Optional)';
+  static const String submitFirFirNumberHint = 'e.g. 124/26';
+  static const String submitFirStationHint = 'e.g. Clifton P.S.';
+  static const String submitFirProofLabel = 'Proof upload (FIR copy/Photos)';
+  static const String submitFirProofHint = 'Tap to upload a file';
+  static const String submitFirRequired = 'Please fill all required fields';
   static const String submitFirLocationLabel = 'Location';
   static const String submitFirStationLabel = 'Police station';
   static const String submitFirDescriptionLabel = 'Description';
