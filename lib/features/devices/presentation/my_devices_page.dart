@@ -290,6 +290,8 @@ class _DeviceCard extends StatelessWidget {
                           ? AppColors.darkTextPrimary
                           : AppColors.textPrimary,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   AppSpacing.vXs,
                   Text(
@@ -302,6 +304,8 @@ class _DeviceCard extends StatelessWidget {
                           ? AppColors.darkTextTertiary
                           : AppColors.textTertiary,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   AppSpacing.vXs,
                   Text(

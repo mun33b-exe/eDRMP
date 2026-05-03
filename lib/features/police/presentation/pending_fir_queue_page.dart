@@ -216,7 +216,7 @@ class _FirQueueCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${AppStrings.policeQueueCasePrefix} ${fir.id.toUpperCase()}',
+                    '${AppStrings.policeQueueCasePrefix} ${fir.id.split('-').first.toUpperCase()}',
                     style: TextStyle(
                       fontSize: AppSizes.bodyRegular(context),
                       fontWeight: FontWeight.w600,
@@ -225,6 +225,8 @@ class _FirQueueCard extends StatelessWidget {
                           ? AppColors.darkTextPrimary
                           : AppColors.textPrimary,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 StatusBadge(
@@ -242,6 +244,8 @@ class _FirQueueCard extends StatelessWidget {
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             AppSpacing.vXs,
             Text(
@@ -252,6 +256,8 @@ class _FirQueueCard extends StatelessWidget {
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             AppSpacing.vSm,
             Divider(color: isDark ? AppColors.darkBorder : AppColors.border),

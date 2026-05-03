@@ -219,14 +219,19 @@ class _SettingRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: AppSizes.bodyRegular(context),
-              fontWeight: FontWeight.w500,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: AppSizes.bodyRegular(context),
+                fontWeight: FontWeight.w500,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
+          AppSpacing.hSm,
           trailing,
         ],
       ),

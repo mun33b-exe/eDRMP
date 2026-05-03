@@ -146,29 +146,33 @@ class _HeroHeader extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppStrings.dashboardGreeting,
-                      style: TextStyle(
-                        fontSize: AppSizes.bodySmall(context),
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xB3FFFFFF),
-                        letterSpacing: 0.2,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppStrings.dashboardGreeting,
+                        style: TextStyle(
+                          fontSize: AppSizes.bodySmall(context),
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xB3FFFFFF),
+                          letterSpacing: 0.2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      displayName,
-                      style: TextStyle(
-                        fontSize: AppSizes.bodyLarge(context) + 2,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        letterSpacing: -0.3,
+                      const SizedBox(height: 2),
+                      Text(
+                        displayName,
+                        style: TextStyle(
+                          fontSize: AppSizes.bodyLarge(context) + 2,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Row(
                   children: [
@@ -632,6 +636,8 @@ class _DeviceRow extends StatelessWidget {
                         : AppColors.textPrimary,
                     letterSpacing: -0.1,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 3),
                 Text(
@@ -644,6 +650,8 @@ class _DeviceRow extends StatelessWidget {
                         ? AppColors.darkTextSecondary
                         : AppColors.textSecondary,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 3),
                 Text(

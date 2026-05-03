@@ -187,7 +187,7 @@ class _FirCard extends StatelessWidget {
             ),
             AppSpacing.vXs,
             Text(
-              '${AppStrings.caseIdLabel} ${fir.id.toUpperCase()}',
+              '${AppStrings.caseIdLabel} ${fir.id.split('-').first.toUpperCase()}',
               style: TextStyle(
                 fontSize: AppSizes.bodySmall(context),
                 fontFamily: 'monospace',
@@ -196,6 +196,8 @@ class _FirCard extends StatelessWidget {
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             AppSpacing.vSm,
             Row(
@@ -206,16 +208,20 @@ class _FirCard extends StatelessWidget {
                   color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
                 ),
                 AppSpacing.hXs,
-                Text(
-                  fir.policeStation,
-                  style: TextStyle(
-                    fontSize: AppSizes.bodySmall(context),
-                    color: isDark
-                        ? AppColors.darkTextTertiary
-                        : AppColors.textTertiary,
+                Expanded(
+                  child: Text(
+                    fir.policeStation,
+                    style: TextStyle(
+                      fontSize: AppSizes.bodySmall(context),
+                      color: isDark
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
+                AppSpacing.hSm,
                 Text(
                   dateStr,
                   style: TextStyle(

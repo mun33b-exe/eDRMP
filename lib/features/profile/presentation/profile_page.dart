@@ -124,6 +124,8 @@ class _AvatarSection extends StatelessWidget {
                       ? AppColors.darkTextPrimary
                       : AppColors.textPrimary,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               AppSpacing.vXs,
               Container(

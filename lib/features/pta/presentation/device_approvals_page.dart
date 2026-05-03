@@ -422,34 +422,41 @@ class _DeviceApprovalCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    device.ownerName ?? 'Citizen ${device.id.split('-').last}',
-                    style: TextStyle(
-                      fontSize: AppSizes.bodyRegular(context),
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.1,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.textPrimary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      device.ownerName ?? 'Citizen ${device.id.split('-').last}',
+                      style: TextStyle(
+                        fontSize: AppSizes.bodyRegular(context),
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.1,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  AppSpacing.vXs,
-                  Text(
-                    'CNIC ${device.ownerCnic ?? "—"}',
-                    style: TextStyle(
-                      fontSize: AppSizes.bodySmall(context),
-                      fontFamily: 'monospace',
-                      color: isDark
-                          ? AppColors.darkTextTertiary
-                          : AppColors.textTertiary,
-                      letterSpacing: 0.3,
+                    AppSpacing.vXs,
+                    Text(
+                      'CNIC ${device.ownerCnic ?? "—"}',
+                      style: TextStyle(
+                        fontSize: AppSizes.bodySmall(context),
+                        fontFamily: 'monospace',
+                        color: isDark
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
+                        letterSpacing: 0.3,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              AppSpacing.hSm,
               StatusBadge(
                 label: device.status.displayName,
                 variant: _mapStatus(device.status),
@@ -466,32 +473,38 @@ class _DeviceApprovalCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${device.brand} ${device.model}',
-                      style: TextStyle(
-                        fontSize: AppSizes.bodySmall(context),
-                        fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.textPrimary,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${device.brand} ${device.model}',
+                        style: TextStyle(
+                          fontSize: AppSizes.bodySmall(context),
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    AppSpacing.vXs,
-                    Text(
-                      device.imei,
-                      style: TextStyle(
-                        fontSize: AppSizes.bodySmall(context),
-                        fontFamily: 'monospace',
-                        color: isDark
-                            ? AppColors.darkTextTertiary
-                            : AppColors.textTertiary,
-                        letterSpacing: 0.3,
+                      AppSpacing.vXs,
+                      Text(
+                        device.imei,
+                        style: TextStyle(
+                          fontSize: AppSizes.bodySmall(context),
+                          fontFamily: 'monospace',
+                          color: isDark
+                              ? AppColors.darkTextTertiary
+                              : AppColors.textTertiary,
+                          letterSpacing: 0.3,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Text(
                   dateStr,
