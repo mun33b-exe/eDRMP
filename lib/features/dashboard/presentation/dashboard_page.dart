@@ -15,6 +15,7 @@ import '../../auth/logic/auth_controller.dart';
 import '../../auth/logic/auth_user.dart';
 import '../../devices/logic/device_provider.dart';
 import '../../fir/logic/fir_provider.dart';
+import '../../notifications/logic/notifications_provider.dart';
 import '../logic/dashboard_stats_provider.dart';
 
 /// Citizen home screen — pixel-faithful to `ScreenCitizenHome` variant 'a'
@@ -34,6 +35,11 @@ class DashboardPage extends ConsumerWidget {
     final isDark = brightness == Brightness.dark;
     final stats = ref.watch(dashboardStatsProvider);
     final user = ref.watch(currentUserProvider);
+    final unreadCount = ref.watch(
+      notificationsProvider.select(
+        (async) => async.valueOrNull?.where((n) => !n.isRead).length ?? 0,
+      ),
+    );
 
     return Scaffold(
       backgroundColor: isDark
@@ -51,7 +57,11 @@ class DashboardPage extends ConsumerWidget {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: _HeroHeader(user: user, stats: stats),
+              child: _HeroHeader(
+                user: user,
+                stats: stats,
+                unreadCount: unreadCount,
+              ),
             ),
             SliverPadding(
               padding: EdgeInsets.fromLTRB(
@@ -114,10 +124,15 @@ class DashboardPage extends ConsumerWidget {
 // ---------------------------------------------------------------------------
 
 class _HeroHeader extends StatelessWidget {
-  const _HeroHeader({required this.user, required this.stats});
+  const _HeroHeader({
+    required this.user,
+    required this.stats,
+    required this.unreadCount,
+  });
 
   final AuthUser? user;
   final DashboardStats stats;
+  final int unreadCount;
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +193,7 @@ class _HeroHeader extends StatelessWidget {
                   children: [
                     _IconBtn(
                       icon: Icons.notifications_outlined,
-                      badge: true,
+                      badge: unreadCount > 0,
                       onTap: () => context.push(RouteNames.notifications),
                     ),
                     AppSpacing.hSm,
