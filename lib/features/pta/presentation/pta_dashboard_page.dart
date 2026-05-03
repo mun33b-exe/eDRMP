@@ -11,6 +11,7 @@ import '../../../core/routes/route_names.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
+import '../logic/pta_stats_provider.dart';
 
 class PtaDashboardPage extends ConsumerWidget {
   const PtaDashboardPage({super.key});
@@ -18,6 +19,7 @@ class PtaDashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final liveStats = ref.watch(ptaStatsProvider).valueOrNull;
 
     return Scaffold(
       backgroundColor: isDark
@@ -88,263 +90,279 @@ class PtaDashboardPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppPadding.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Top Grid Stats
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 1.6,
-              children: [
-                _buildStatTile(
-                  'Total devices',
-                  '2.41M',
-                  '+4.2%',
-                  Icons.devices,
-                  AppColors.ptaPrimary,
-                  isDark,
-                ),
-                _buildStatTile(
-                  'Approvals',
-                  '184K',
-                  '+8.1%',
-                  Icons.check,
-                  AppColors.success,
-                  isDark,
-                ),
-                _buildStatTile(
-                  'Active FIRs',
-                  '3,294',
-                  '-2.3%',
-                  Icons.shield,
-                  AppColors.error,
-                  isDark,
-                ),
-                _buildStatTile(
-                  'Blocked',
-                  '11,820',
-                  '+0.4%',
-                  Icons.block,
-                  AppColors.warning,
-                  isDark,
-                ),
-              ],
-            ),
-            AppSpacing.vLg,
-
-            // Quick Actions
-            Row(
-              children: [
-                Expanded(
-                  child: _buildActionCard(
-                    title: 'Device Approvals',
-                    icon: Icons.checklist,
-                    color: AppColors.ptaPrimary,
-                    isDark: isDark,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(ptaStatsProvider);
+          await ref.read(ptaStatsProvider.future);
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppPadding.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Top Grid Stats
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1.6,
+                children: [
+                  _buildStatTile(
+                    'Total devices',
+                    liveStats?.totalDevices.toString() ?? '—',
+                    '+4.2%',
+                    Icons.devices,
+                    AppColors.ptaPrimary,
+                    isDark,
                     onTap: () => context.push(RouteNames.deviceApprovals),
                   ),
-                ),
-                AppSpacing.hMd,
-                Expanded(
-                  child: _buildActionCard(
-                    title: 'Block Requests',
-                    icon: Icons.gavel,
-                    color: AppColors.error,
-                    isDark: isDark,
-                    onTap: () => context.push(RouteNames.blockRequests),
-                  ),
-                ),
-              ],
-            ),
-            AppSpacing.vLg,
-
-            // Registrations vs Blocks Chart
-            _buildCard(
-              isDark: isDark,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Registrations vs. Blocks',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.textPrimary,
-                            ),
-                          ),
-                          Text(
-                            '30-day trend',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isDark
-                                  ? AppColors.darkTextMuted
-                                  : AppColors.textMuted,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          _buildLegendDot(
-                            'Registered',
-                            AppColors.analyticsViolet,
-                            isDark,
-                          ),
-                          AppSpacing.hSm,
-                          _buildLegendDot(
-                            'Blocked',
-                            AppColors.analyticsRed,
-                            isDark,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  AppSpacing.vLg,
-                  SizedBox(
-                    height: 120,
-                    child: _StaticChartPlaceholder(isDark: isDark),
-                  ),
-                ],
-              ),
-            ),
-            AppSpacing.vLg,
-
-            // Top Devices
-            _buildCard(
-              isDark: isDark,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Top devices by registration',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.textPrimary,
-                    ),
-                  ),
-                  AppSpacing.vLg,
-                  _buildDeviceRow(
-                    'Apple iPhone 15 / Pro',
-                    '412K',
-                    0.92,
-                    AppColors.analyticsViolet,
+                  _buildStatTile(
+                    'Approvals',
+                    liveStats?.approvals.toString() ?? '—',
+                    '+8.1%',
+                    Icons.check,
+                    AppColors.success,
                     isDark,
                   ),
-                  _buildDeviceRow(
-                    'Samsung Galaxy S24',
-                    '318K',
-                    0.71,
-                    AppColors.analyticsViolet,
-                    isDark,
-                  ),
-                  _buildDeviceRow(
-                    'Xiaomi Redmi Note 13',
-                    '267K',
-                    0.59,
+                  _buildStatTile(
+                    'Active FIRs',
+                    liveStats?.activeFirs.toString() ?? '—',
+                    '-2.3%',
+                    Icons.shield,
                     AppColors.error,
                     isDark,
+                    onTap: () => context.push(RouteNames.blockRequests),
                   ),
-                  _buildDeviceRow(
-                    'Tecno Camon 30',
-                    '198K',
-                    0.44,
-                    AppColors.analyticsGreen,
-                    isDark,
-                  ),
-                  _buildDeviceRow(
-                    'Other',
-                    '1.21M',
-                    0.32,
-                    isDark ? AppColors.darkBorder : AppColors.border,
+                  _buildStatTile(
+                    'Blocked',
+                    liveStats?.blocked.toString() ?? '—',
+                    '+0.4%',
+                    Icons.block,
+                    AppColors.warning,
                     isDark,
                   ),
                 ],
               ),
-            ),
-            AppSpacing.vLg,
+              AppSpacing.vLg,
 
-            // Risk Map
-            _buildCard(
-              isDark: isDark,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Quick Actions
+              Row(
                 children: [
-                  Text(
-                    'Risk zones — Karachi',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.textPrimary,
+                  Expanded(
+                    child: _buildActionCard(
+                      title: 'Device Approvals',
+                      icon: Icons.checklist,
+                      color: AppColors.ptaPrimary,
+                      isDark: isDark,
+                      onTap: () => context.push(RouteNames.deviceApprovals),
                     ),
                   ),
-                  AppSpacing.vMd,
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => context.push(RouteNames.theftMap),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Ink(
-                        height: 160,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkInput
-                              : AppColors.scaffoldBackground,
-                          borderRadius: BorderRadius.circular(8),
+                  AppSpacing.hMd,
+                  Expanded(
+                    child: _buildActionCard(
+                      title: 'Block Requests',
+                      icon: Icons.gavel,
+                      color: AppColors.error,
+                      isDark: isDark,
+                      onTap: () => context.push(RouteNames.blockRequests),
+                    ),
+                  ),
+                ],
+              ),
+              AppSpacing.vLg,
+
+              // Registrations vs Blocks Chart
+              _buildCard(
+                isDark: isDark,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Registrations vs. Blocks',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              '30-day trend',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: isDark
+                                    ? AppColors.darkTextMuted
+                                    : AppColors.textMuted,
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Center(
-                          child: Text(
-                            'Tap to view hotspot map',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? AppColors.darkTextMuted
-                                  : AppColors.textMuted,
+                        Row(
+                          children: [
+                            _buildLegendDot(
+                              'Registered',
+                              AppColors.analyticsViolet,
+                              isDark,
+                            ),
+                            AppSpacing.hSm,
+                            _buildLegendDot(
+                              'Blocked',
+                              AppColors.analyticsRed,
+                              isDark,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    AppSpacing.vLg,
+                    SizedBox(
+                      height: 120,
+                      child: _StaticChartPlaceholder(isDark: isDark),
+                    ),
+                  ],
+                ),
+              ),
+              AppSpacing.vLg,
+
+              // Top Devices
+              _buildCard(
+                isDark: isDark,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Top devices by registration',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.textPrimary,
+                      ),
+                    ),
+                    AppSpacing.vLg,
+                    _buildDeviceRow(
+                      'Apple iPhone 15 / Pro',
+                      '412K',
+                      0.92,
+                      AppColors.analyticsViolet,
+                      isDark,
+                    ),
+                    _buildDeviceRow(
+                      'Samsung Galaxy S24',
+                      '318K',
+                      0.71,
+                      AppColors.analyticsViolet,
+                      isDark,
+                    ),
+                    _buildDeviceRow(
+                      'Xiaomi Redmi Note 13',
+                      '267K',
+                      0.59,
+                      AppColors.error,
+                      isDark,
+                    ),
+                    _buildDeviceRow(
+                      'Tecno Camon 30',
+                      '198K',
+                      0.44,
+                      AppColors.analyticsGreen,
+                      isDark,
+                    ),
+                    _buildDeviceRow(
+                      'Other',
+                      '1.21M',
+                      0.32,
+                      isDark ? AppColors.darkBorder : AppColors.border,
+                      isDark,
+                    ),
+                  ],
+                ),
+              ),
+              AppSpacing.vLg,
+
+              // Risk Map
+              _buildCard(
+                isDark: isDark,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Risk zones',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.textPrimary,
+                      ),
+                    ),
+                    AppSpacing.vMd,
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => context.push(RouteNames.theftMap),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Ink(
+                          height: 160,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? AppColors.darkInput
+                                : AppColors.scaffoldBackground,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Tap to view hotspot map',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: isDark
+                                    ? AppColors.darkTextMuted
+                                    : AppColors.textMuted,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  AppSpacing.vMd,
-                  Row(
-                    children: [
-                      _buildRiskLegend('Low', AppColors.analyticsGreen, isDark),
-                      AppSpacing.hMd,
-                      _buildRiskLegend(
-                        'Medium',
-                        AppColors.analyticsOrange,
-                        isDark,
-                      ),
-                      AppSpacing.hMd,
-                      _buildRiskLegend('High', AppColors.analyticsRed, isDark),
-                    ],
-                  ),
-                ],
+                    AppSpacing.vMd,
+                    Row(
+                      children: [
+                        _buildRiskLegend(
+                          'Low',
+                          AppColors.analyticsGreen,
+                          isDark,
+                        ),
+                        AppSpacing.hMd,
+                        _buildRiskLegend(
+                          'Medium',
+                          AppColors.analyticsOrange,
+                          isDark,
+                        ),
+                        AppSpacing.hMd,
+                        _buildRiskLegend(
+                          'High',
+                          AppColors.analyticsRed,
+                          isDark,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -356,71 +374,75 @@ class PtaDashboardPage extends ConsumerWidget {
     String delta,
     IconData icon,
     Color color,
-    bool isDark,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(AppPadding.md),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
-        borderRadius: AppRadius.allMd,
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.border,
+    bool isDark, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppPadding.md),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCard : AppColors.card,
+          borderRadius: AppRadius.allMd,
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.border,
+          ),
+          boxShadow: isDark
+              ? null
+              : [
+                  const BoxShadow(
+                    color: AppColors.shadow,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
         ),
-        boxShadow: isDark
-            ? null
-            : [
-                const BoxShadow(
-                  color: AppColors.shadow,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, size: 16, color: color),
+                Text(
+                  delta,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: delta.startsWith('+')
+                        ? AppColors.success
+                        : AppColors.error,
+                  ),
                 ),
               ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(icon, size: 16, color: color),
-              Text(
-                delta,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: delta.startsWith('+')
-                      ? AppColors.success
-                      : AppColors.error,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.textPrimary,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.textPrimary,
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.textSecondary,
+                  ),
                 ),
-              ),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

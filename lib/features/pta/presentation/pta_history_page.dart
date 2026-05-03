@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -8,14 +9,47 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
+import '../../devices/data/device_model.dart';
+import '../../devices/logic/device_provider.dart';
 
-class PtaHistoryPage extends StatelessWidget {
-  const PtaHistoryPage({super.key});
+bool _isLuhnValid(String imei) {
+  final digits = imei.replaceAll(RegExp(r'\D'), '');
+  if (digits.length != 15) return false;
+  var sum = 0;
+  for (var i = 0; i < digits.length; i++) {
+    var d = int.parse(digits[i]);
+    if (i.isOdd) {
+      d *= 2;
+      if (d > 9) d -= 9;
+    }
+    sum += d;
+  }
+  return sum % 10 == 0;
+}
+
+class PtaHistoryPage extends ConsumerWidget {
+  const PtaHistoryPage({this.device, super.key});
+
+  final DeviceModel? device;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
+    final ownerName = device?.ownerName ?? 'Unknown';
+    final ownerCnic = device?.ownerCnic ?? '—';
+    final ownerPhone = device?.ownerPhone ?? '—';
+    final deviceLabel = device != null
+        ? '${device!.brand} ${device!.model}'.trim()
+        : '—';
+    final imei = device?.imei ?? '';
+    final isImeiValid = _isLuhnValid(imei);
+    final initials = ownerName
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .take(2)
+        .map((w) => w[0].toUpperCase())
+        .join();
 
     return Scaffold(
       backgroundColor: isDark
@@ -26,11 +60,11 @@ class PtaHistoryPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Application #APP-${now.year}-${now.month}-3819',
+              'Application #APP-${now.year}-${device?.id.split('-').last ?? '???'}',
               style: const TextStyle(fontSize: 16),
             ),
             Text(
-              'Pending review · ${DateFormat('dd MMM yyyy').format(now)}',
+              '${device?.status.displayName ?? 'Review'} · ${DateFormat('dd MMM yyyy').format(now)}',
               style: TextStyle(
                 fontSize: 12,
                 color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
@@ -60,9 +94,9 @@ class PtaHistoryPage extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
-                          child: const Text(
-                            'HK',
-                            style: TextStyle(
+                          child: Text(
+                            initials.isEmpty ? '?' : initials,
+                            style: const TextStyle(
                               color: AppColors.ptaPrimary,
                               fontWeight: FontWeight.w800,
                               fontSize: 16,
@@ -75,7 +109,7 @@ class PtaHistoryPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Hamza Ali Khan',
+                                ownerName,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
@@ -86,7 +120,7 @@ class PtaHistoryPage extends StatelessWidget {
                               ),
                               AppSpacing.vXs,
                               Text(
-                                'CNIC 42101-1234567-8 · +92 300 1234567',
+                                'CNIC $ownerCnic · $ownerPhone',
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontFamily: 'monospace',
@@ -152,7 +186,7 @@ class PtaHistoryPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Apple iPhone 15 Pro',
+                                      deviceLabel,
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700,
@@ -163,7 +197,7 @@ class PtaHistoryPage extends StatelessWidget {
                                     ),
                                     AppSpacing.vXs,
                                     Text(
-                                      'IMEI 356938 09 123456 7',
+                                      imei.isEmpty ? '—' : 'IMEI $imei',
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontFamily: 'monospace',
@@ -202,23 +236,31 @@ class PtaHistoryPage extends StatelessWidget {
                       children: [
                         _buildCheckRow(
                           'IMEI format valid (Luhn)',
-                          'pass',
+                          isImeiValid ? 'pass' : 'warn',
                           isDark,
                         ),
                         _buildCheckRow(
                           'IMEI not previously registered',
-                          'pass',
+                          device?.status == DeviceStatus.approved
+                              ? 'warn'
+                              : 'pass',
                           isDark,
                         ),
-                        _buildCheckRow('CNIC matches NADRA', 'pass', isDark),
+                        _buildCheckRow(
+                          'CNIC matches NADRA',
+                          ownerCnic == '—' ? 'warn' : 'pass',
+                          isDark,
+                        ),
                         _buildCheckRow(
                           'Invoice matches authorized dealer',
-                          'warn',
+                          device?.invoicePath != null ? 'pass' : 'warn',
                           isDark,
                         ),
                         _buildCheckRow(
                           'Device not on stolen list',
-                          'pass',
+                          device?.status == DeviceStatus.blocked
+                              ? 'warn'
+                              : 'pass',
                           isDark,
                           isLast: true,
                         ),
@@ -250,7 +292,17 @@ class PtaHistoryPage extends StatelessWidget {
                       label: 'Reject',
                       icon: Icons.close,
                       variant: AppButtonVariant.reject,
-                      onPressed: () => context.pop(),
+                      onPressed: () async {
+                        if (device != null) {
+                          await ref
+                              .read(devicesProvider.notifier)
+                              .updateDeviceStatus(
+                                device!.id,
+                                DeviceStatus.rejected,
+                              );
+                        }
+                        if (context.mounted) context.pop();
+                      },
                     ),
                   ),
                   AppSpacing.hMd,
@@ -259,7 +311,17 @@ class PtaHistoryPage extends StatelessWidget {
                       label: 'Approve',
                       icon: Icons.check,
                       variant: AppButtonVariant.success,
-                      onPressed: () => context.pop(),
+                      onPressed: () async {
+                        if (device != null) {
+                          await ref
+                              .read(devicesProvider.notifier)
+                              .updateDeviceStatus(
+                                device!.id,
+                                DeviceStatus.approved,
+                              );
+                        }
+                        if (context.mounted) context.pop();
+                      },
                     ),
                   ),
                 ],

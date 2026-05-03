@@ -26,6 +26,8 @@ class DeviceApprovalsPage extends ConsumerStatefulWidget {
 
 class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
   String _filter = AppStrings.ptaFilterPending;
+  bool _showSearch = false;
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -71,30 +73,126 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
           ),
         ),
         actions: [
-          _buildIconBtn(Icons.filter_list, isDark),
+          _buildIconBtn(
+            Icons.filter_list,
+            isDark,
+            onTap: () => showModalBottomSheet<void>(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              builder: (_) => SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children:
+                      [
+                            AppStrings.ptaFilterPending,
+                            AppStrings.ptaFilterApproved,
+                            AppStrings.ptaFilterRejected,
+                            AppStrings.ptaFilterAll,
+                          ]
+                          .map(
+                            (f) => ListTile(
+                              title: Text(f),
+                              trailing: _filter == f
+                                  ? const Icon(
+                                      Icons.check,
+                                      color: AppColors.ptaPrimary,
+                                    )
+                                  : null,
+                              onTap: () {
+                                setState(() => _filter = f);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          )
+                          .toList(),
+                ),
+              ),
+            ),
+          ),
           AppSpacing.hSm,
-          _buildIconBtn(Icons.search, isDark),
+          _buildIconBtn(
+            Icons.search,
+            isDark,
+            onTap: () => setState(() {
+              _showSearch = !_showSearch;
+              if (!_showSearch) _searchQuery = '';
+            }),
+          ),
           AppSpacing.hLg,
         ],
       ),
       body: devicesAsync.when(
         data: (devices) {
           final filtered = devices.where((d) {
-            if (_filter == AppStrings.ptaFilterPending) {
-              return d.status == DeviceStatus.pending;
+            if (_filter == AppStrings.ptaFilterPending &&
+                d.status != DeviceStatus.pending) {
+              return false;
             }
-            if (_filter == AppStrings.ptaFilterApproved) {
-              return d.status == DeviceStatus.approved;
+            if (_filter == AppStrings.ptaFilterApproved &&
+                d.status != DeviceStatus.approved) {
+              return false;
             }
-            if (_filter == AppStrings.ptaFilterRejected) {
-              return d.status == DeviceStatus.rejected;
+            if (_filter == AppStrings.ptaFilterRejected &&
+                d.status != DeviceStatus.rejected) {
+              return false;
             }
-            return true; // All
+            if (_searchQuery.isNotEmpty) {
+              final q = _searchQuery.toLowerCase();
+              final name = (d.ownerName ?? '').toLowerCase();
+              final imei = d.imei.toLowerCase();
+              final model = '${d.brand} ${d.model}'.toLowerCase();
+              return name.contains(q) || imei.contains(q) || model.contains(q);
+            }
+            return true;
           }).toList();
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (_showSearch)
+                Container(
+                  color: isDark ? AppColors.darkSurface : Colors.white,
+                  padding: const EdgeInsets.fromLTRB(
+                    AppPadding.lg,
+                    AppPadding.sm,
+                    AppPadding.lg,
+                    0,
+                  ),
+                  child: TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: AppStrings.ptaSearchHint,
+                      prefixIcon: const Icon(Icons.search, size: 18),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      filled: true,
+                      fillColor: isDark
+                          ? AppColors.darkInput
+                          : AppColors.inputFill,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.border,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.border,
+                        ),
+                      ),
+                    ),
+                    onChanged: (v) => setState(() => _searchQuery = v.trim()),
+                  ),
+                ),
               Container(
                 color: isDark ? AppColors.darkSurface : Colors.white,
                 padding: const EdgeInsets.symmetric(
@@ -161,7 +259,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                               onApprove: () => _handleApprove(context, ref, d),
                               onReject: () => _handleReject(context, ref, d),
                               onReview: () =>
-                                  context.push(RouteNames.ptaHistory),
+                                  context.push(RouteNames.ptaHistory, extra: d),
                             );
                           },
                         ),
@@ -177,18 +275,25 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
     );
   }
 
-  Widget _buildIconBtn(IconData icon, bool isDark) {
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.inputFill,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Icon(
-        icon,
-        size: 17,
-        color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+  Widget _buildIconBtn(
+    IconData icon,
+    bool isDark, {
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCard : AppColors.inputFill,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(
+          icon,
+          size: 17,
+          color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+        ),
       ),
     );
   }
@@ -311,7 +416,7 @@ class _DeviceApprovalCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Citizen ID ${device.id.split('-').last}',
+                    device.ownerName ?? 'Citizen ${device.id.split('-').last}',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -322,7 +427,7 @@ class _DeviceApprovalCard extends StatelessWidget {
                   ),
                   AppSpacing.vXs,
                   Text(
-                    'CNIC 42101-1234567-8', // Mock CNIC
+                    'CNIC ${device.ownerCnic ?? "—"}',
                     style: TextStyle(
                       fontSize: 11,
                       fontFamily: 'monospace',

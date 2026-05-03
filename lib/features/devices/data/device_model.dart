@@ -52,6 +52,9 @@ class DeviceModel {
     required this.status,
     required this.registeredAt,
     this.invoicePath,
+    this.ownerName,
+    this.ownerCnic,
+    this.ownerPhone,
   });
 
   final String id;
@@ -71,6 +74,12 @@ class DeviceModel {
 
   /// Path to the uploaded invoice file in Supabase Storage.
   final String? invoicePath;
+
+  final String? ownerName;
+  final String? ownerCnic;
+  final String? ownerPhone;
+
+  String get maskedOwnerCnic => 'xxxxx-xxxxxxx-x';
 
   /// Masked IMEI for display: shows first 9 digits and last 1, hides middle.
   String get maskedImei {
@@ -100,6 +109,7 @@ class DeviceModel {
   }
 
   factory DeviceModel.fromJson(Map<String, dynamic> json) {
+    final profiles = json['profiles'] as Map<String, dynamic>?;
     return DeviceModel(
       id: json['id'] as String,
       ownerId: json['owner_id'] as String,
@@ -111,6 +121,9 @@ class DeviceModel {
       status: DeviceStatusX.fromString(json['status'] as String),
       registeredAt: DateTime.parse(json['registered_at'] as String),
       invoicePath: json['purchase_invoice_url'] as String?,
+      ownerName: profiles?['full_name'] as String?,
+      ownerCnic: profiles?['cnic'] as String?,
+      ownerPhone: profiles?['phone'] as String?,
     );
   }
 
@@ -126,6 +139,9 @@ class DeviceModel {
       status: status ?? this.status,
       registeredAt: registeredAt,
       invoicePath: invoicePath,
+      ownerName: ownerName,
+      ownerCnic: ownerCnic,
+      ownerPhone: ownerPhone,
     );
   }
 

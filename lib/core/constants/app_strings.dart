@@ -345,6 +345,7 @@ class AppStrings {
   static const String ptaApprove = 'Approve';
   static const String ptaReject = 'Reject';
   static const String ptaBlock = 'Block device';
+  static const String ptaSearchHint = 'Search by name, IMEI or model...';
 
   static const String policeQueueTitle = 'Approval queue';
   static const String policeQueuePending = 'Pending';
@@ -389,4 +390,11 @@ class AppStrings {
   static const String deviceQrSubtitle =
       'Show this to verify your device registration.';
   static const String deviceQrShareTooltip = 'Copy IMEI';
+
+  // ---------------------------------------------------------------------------
+  // Location Picker (Phase 9D)
+  // ---------------------------------------------------------------------------
+  static const String locationPickerTitle = 'Pick Incident Location';
+  static const String locationPickerConfirm = 'Confirm Location';
+  static const String locationPickerHint = 'Tap to pick on map';
 }

@@ -6,9 +6,8 @@ import '../logic/connectivity_notifier.dart';
 class ConnectivityMiddleware {
   ConnectivityMiddleware._();
 
-  // TODO(Phase 9D): replace connectivityProvider with real connectivity_plus check.
   static void assertOnline(Ref ref) {
-    final isOnline = ref.read(connectivityProvider);
+    final isOnline = ref.read(connectivityProvider).valueOrNull ?? true;
     if (!isOnline) throw const NetworkFailure();
   }
 }

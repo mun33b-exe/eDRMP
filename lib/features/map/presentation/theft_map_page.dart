@@ -49,11 +49,12 @@ class _TheftMapPageState extends ConsumerState<TheftMapPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final zones = ref.watch(theftZoneProvider);
+    final zonesAsync = ref.watch(theftZoneProvider);
+    final zones = zonesAsync.valueOrNull ?? const [];
 
     final circles = zones.map((zone) {
       return Circle(
-        circleId: CircleId(zone.name),
+        circleId: CircleId(zone.id.isNotEmpty ? zone.id : zone.name),
         center: LatLng(zone.latitude, zone.longitude),
         radius: 1500,
         fillColor: zone.riskLevel.colorToken.withValues(alpha: 0.35),
@@ -65,7 +66,7 @@ class _TheftMapPageState extends ConsumerState<TheftMapPage> {
     final markers = zones.map((zone) {
       final hue = HSVColor.fromColor(zone.riskLevel.colorToken).hue;
       return Marker(
-        markerId: MarkerId(zone.name),
+        markerId: MarkerId(zone.id.isNotEmpty ? zone.id : zone.name),
         position: LatLng(zone.latitude, zone.longitude),
         icon: BitmapDescriptor.defaultMarkerWithHue(hue),
         onTap: () => _openZoneDetails(zone),
@@ -76,6 +77,13 @@ class _TheftMapPageState extends ConsumerState<TheftMapPage> {
       appBar: AppBar(
         title: const Text(AppStrings.titleTheftMap),
         backgroundColor: isDark ? AppColors.darkBackground : AppColors.appBar,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh_outlined),
+            tooltip: AppStrings.retry,
+            onPressed: () => ref.invalidate(theftZoneProvider),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -254,8 +262,10 @@ class _ZoneDetails extends StatelessWidget {
             color: valueColor,
           ),
         ),
-        AppSpacing.vXs,
-        Text(zone.city, style: TextStyle(fontSize: 12, color: labelColor)),
+        if (zone.city.isNotEmpty) ...[
+          AppSpacing.vXs,
+          Text(zone.city, style: TextStyle(fontSize: 12, color: labelColor)),
+        ],
         AppSpacing.vMd,
         Row(
           children: [

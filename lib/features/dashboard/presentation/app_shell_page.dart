@@ -11,7 +11,7 @@ import '../../../core/logic/connectivity_notifier.dart';
 import '../../../core/widgets/connectivity_banner.dart';
 import '../../../theme/colors.dart';
 import '../../devices/presentation/my_devices_page.dart';
-import '../../notifications/presentation/notifications_page.dart';
+import '../../fir/presentation/fir_history_page.dart';
 import '../../profile/presentation/profile_page.dart';
 import 'dashboard_page.dart';
 
@@ -47,7 +47,7 @@ class _AppShellPageState extends ConsumerState<AppShellPage> {
     DashboardPage(),
     MyDevicesPage(),
     SizedBox.shrink(), // slot 2: FAB navigates away, never rendered
-    NotificationsPage(), // FIR tab slot — Phase 4 will replace with FirHistoryPage
+    FirHistoryPage(),
     ProfilePage(),
   ];
 
@@ -70,7 +70,7 @@ class _AppShellPageState extends ConsumerState<AppShellPage> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
-    final isOnline = ref.watch(connectivityProvider);
+    final isOnline = ref.watch(connectivityProvider).valueOrNull ?? true;
 
     return Scaffold(
       backgroundColor: isDark
@@ -115,7 +115,7 @@ class _CitizenBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = isDark ? AppColors.darkSurface : AppColors.surface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
-    const selected = AppColors.primary;
+    final selected = isDark ? AppColors.darkTextPrimary : AppColors.primary;
     final unselected = isDark ? AppColors.darkTextPrimary : AppColors.textMuted;
 
     return Container(

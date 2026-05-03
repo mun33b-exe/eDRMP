@@ -25,7 +25,7 @@ class DeviceRepository {
   Future<List<DeviceModel>> fetchAll() async {
     final rows = await SupabaseService.client
         .from('devices')
-        .select()
+        .select('*, profiles(full_name, cnic, phone)')
         .order('registered_at', ascending: false);
     return rows.map(DeviceModel.fromJson).toList();
   }
@@ -33,7 +33,7 @@ class DeviceRepository {
   Future<DeviceModel?> fetchById(String id) async {
     final rows = await SupabaseService.client
         .from('devices')
-        .select()
+        .select('*, profiles(full_name, cnic, phone)')
         .eq('id', id)
         .limit(1);
     if (rows.isEmpty) return null;

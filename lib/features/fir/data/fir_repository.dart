@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import '../../../core/services/supabase_service.dart';
@@ -43,12 +44,21 @@ class FirRepository {
     required String policeStation,
     required DateTime incidentDate,
     required String description,
+    String? proofFilePath,
     Uint8List? proofBytes,
     String? proofFileName,
+    double? incidentLat,
+    double? incidentLng,
+    String? incidentAddress,
   }) async {
     String? proofUrl;
 
-    if (proofBytes != null && proofFileName != null) {
+    if (proofFilePath != null) {
+      final file = File(proofFilePath);
+      final bytes = await file.readAsBytes();
+      final name = proofFilePath.split('/').last;
+      proofUrl = await _uploadWithRetry(bytes, name);
+    } else if (proofBytes != null && proofFileName != null) {
       proofUrl = await _uploadWithRetry(proofBytes, proofFileName);
     }
 
@@ -62,6 +72,9 @@ class FirRepository {
       'description': description,
       'status': 'pending_review',
       'proof_url': ?proofUrl,
+      'incident_lat': ?incidentLat,
+      'incident_lng': ?incidentLng,
+      'incident_address': ?incidentAddress,
     };
 
     final row = await SupabaseService.client

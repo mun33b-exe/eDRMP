@@ -49,7 +49,14 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
         data: (firs) {
           final filteredFirs = firs.where((f) {
             if (_filter == AppStrings.policeQueuePending) {
-              return f.caseStatus == CaseStatus.firUnderReview;
+              return f.caseStatus == CaseStatus.firSubmitted ||
+                  f.caseStatus == CaseStatus.firUnderReview;
+            }
+            if (_filter == AppStrings.policeQueueVerified) {
+              return f.caseStatus == CaseStatus.firVerified;
+            }
+            if (_filter == AppStrings.policeQueueRejected) {
+              return f.caseStatus == CaseStatus.firRejected;
             }
             return true;
           }).toList();
@@ -70,12 +77,19 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
                     ),
                   ),
                 ),
-                child: Row(
-                  children: [
-                    _buildChip(AppStrings.policeQueuePending, isDark),
-                    AppSpacing.hSm,
-                    _buildChip(AppStrings.policeQueueAll, isDark),
-                  ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildChip(AppStrings.policeQueuePending, isDark),
+                      AppSpacing.hSm,
+                      _buildChip(AppStrings.policeQueueVerified, isDark),
+                      AppSpacing.hSm,
+                      _buildChip(AppStrings.policeQueueRejected, isDark),
+                      AppSpacing.hSm,
+                      _buildChip(AppStrings.policeQueueAll, isDark),
+                    ],
+                  ),
                 ),
               ),
               Expanded(

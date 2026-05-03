@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
@@ -29,9 +31,13 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
   final _firNumberCtrl = TextEditingController();
   final _dateCtrl = TextEditingController(text: '28 Apr 2026, 09:30 PM');
   final _locationCtrl = TextEditingController(
-    text: 'Sea View, Clifton, Karachi',
+    text: AppStrings.locationPickerHint,
   );
 
+  double? _pickedLat;
+  double? _pickedLng;
+  String? _pickedAddress;
+  XFile? _pickedProof;
   bool _isLoading = false;
 
   @override
@@ -42,6 +48,24 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
     _dateCtrl.dispose();
     _locationCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickProof() async {
+    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (file == null) return;
+    setState(() => _pickedProof = file);
+  }
+
+  Future<void> _pickLocation() async {
+    final result = await context.push<LatLng>(RouteNames.locationPicker);
+    if (result == null) return;
+    setState(() {
+      _pickedLat = result.latitude;
+      _pickedLng = result.longitude;
+      _pickedAddress =
+          '${result.latitude.toStringAsFixed(4)}, ${result.longitude.toStringAsFixed(4)}';
+      _locationCtrl.text = _pickedAddress!;
+    });
   }
 
   void _submit() async {
@@ -62,6 +86,10 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
           policeStation: _policeStationCtrl.text.trim(),
           incidentDate: DateTime.now(),
           description: _descriptionCtrl.text.trim(),
+          proofFilePath: _pickedProof?.path,
+          incidentLat: _pickedLat,
+          incidentLng: _pickedLng,
+          incidentAddress: _pickedAddress,
         );
 
     if (mounted) {
@@ -185,11 +213,17 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                   ),
                   AppSpacing.vMd,
 
-                  AppInput(
-                    label: AppStrings.submitFirLocationLabel,
-                    controller: _locationCtrl,
-                    enabled: false,
-                    suffix: const Icon(Icons.map, size: 20),
+                  // Location field — tappable, opens LocationPickerPage
+                  GestureDetector(
+                    onTap: _pickLocation,
+                    child: AbsorbPointer(
+                      child: AppInput(
+                        label: AppStrings.submitFirLocationLabel,
+                        controller: _locationCtrl,
+                        enabled: false,
+                        suffix: const Icon(Icons.map, size: 20),
+                      ),
+                    ),
                   ),
                   AppSpacing.vMd,
 
@@ -209,12 +243,19 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                   ),
                   AppSpacing.vMd,
 
-                  // Proof upload placeholder
-                  const AppInput(
-                    label: 'Proof upload (FIR copy/Photos)',
-                    enabled: false,
-                    hintText: 'Tap to upload files',
-                    suffix: Icon(Icons.upload_file, size: 20),
+                  // Proof upload
+                  GestureDetector(
+                    onTap: _pickProof,
+                    child: AbsorbPointer(
+                      child: AppInput(
+                        label: 'Proof upload (FIR copy/Photos)',
+                        enabled: false,
+                        hintText: _pickedProof == null
+                            ? 'Tap to upload a file'
+                            : _pickedProof!.name,
+                        suffix: const Icon(Icons.upload_file, size: 20),
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -7,11 +7,13 @@ import '../../features/auth/presentation/register_page.dart';
 import '../../features/auth/presentation/splash_page.dart';
 import '../../features/dashboard/presentation/app_shell_page.dart';
 import '../../features/dashboard/presentation/dashboard_page.dart';
+import '../../features/devices/data/device_model.dart';
 import '../../features/devices/presentation/add_device_page.dart';
 import '../../features/devices/presentation/device_details_page.dart';
 import '../../features/devices/presentation/my_devices_page.dart';
 import '../../features/fir/presentation/case_tracking_page.dart';
 import '../../features/fir/presentation/fir_history_page.dart';
+import '../../features/fir/presentation/location_picker_page.dart';
 import '../../features/fir/presentation/submit_fir_page.dart';
 import '../../features/notifications/presentation/notifications_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
@@ -205,8 +207,10 @@ final List<RouteBase> appRoutes = <RouteBase>[
   GoRoute(
     name: RouteNames.ptaHistory,
     path: RouteNames.ptaHistory,
-    pageBuilder: (context, state) =>
-        _buildTransitionPage(state, const PtaHistoryPage()),
+    pageBuilder: (context, state) {
+      final device = state.extra as DeviceModel?;
+      return _buildTransitionPage(state, PtaHistoryPage(device: device));
+    },
   ),
   GoRoute(
     name: RouteNames.theftMap,
@@ -219,5 +223,11 @@ final List<RouteBase> appRoutes = <RouteBase>[
     path: RouteNames.verifyImei,
     pageBuilder: (context, state) =>
         _buildTransitionPage(state, const VerifyImeiPage()),
+  ),
+  GoRoute(
+    name: RouteNames.locationPicker,
+    path: RouteNames.locationPicker,
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const LocationPickerPage()),
   ),
 ];

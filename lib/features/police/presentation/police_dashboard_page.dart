@@ -73,7 +73,11 @@ class PoliceDashboardPage extends ConsumerWidget {
       body: firsAsync.when(
         data: (firs) {
           final pendingCount = firs
-              .where((f) => f.caseStatus == CaseStatus.firUnderReview)
+              .where(
+                (f) =>
+                    f.caseStatus == CaseStatus.firSubmitted ||
+                    f.caseStatus == CaseStatus.firUnderReview,
+              )
               .length;
           final verifiedCount = firs
               .where((f) => f.caseStatus == CaseStatus.firVerified)
@@ -82,49 +86,55 @@ class PoliceDashboardPage extends ConsumerWidget {
               .where((f) => f.caseStatus == CaseStatus.firRejected)
               .length;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppPadding.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildStatCard(
-                  title: 'Pending FIRs',
-                  value: pendingCount.toString(),
-                  icon: Icons.pending_actions,
-                  color: AppColors.pending,
-                  isDark: isDark,
-                ),
-                AppSpacing.vMd,
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildStatCard(
-                        title: 'Verified',
-                        value: verifiedCount.toString(),
-                        icon: Icons.check_circle_outline,
-                        color: AppColors.success,
-                        isDark: isDark,
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(firsProvider);
+              await ref.read(firsProvider.future);
+            },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppPadding.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildStatCard(
+                    title: 'Pending FIRs',
+                    value: pendingCount.toString(),
+                    icon: Icons.pending_actions,
+                    color: AppColors.pending,
+                    isDark: isDark,
+                  ),
+                  AppSpacing.vMd,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          title: 'Verified',
+                          value: verifiedCount.toString(),
+                          icon: Icons.check_circle_outline,
+                          color: AppColors.success,
+                          isDark: isDark,
+                        ),
                       ),
-                    ),
-                    AppSpacing.hMd,
-                    Expanded(
-                      child: _buildStatCard(
-                        title: 'Rejected',
-                        value: rejectedCount.toString(),
-                        icon: Icons.cancel_outlined,
-                        color: AppColors.error,
-                        isDark: isDark,
+                      AppSpacing.hMd,
+                      Expanded(
+                        child: _buildStatCard(
+                          title: 'Rejected',
+                          value: rejectedCount.toString(),
+                          icon: Icons.cancel_outlined,
+                          color: AppColors.error,
+                          isDark: isDark,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                AppSpacing.vXl,
-                AppButton(
-                  label: 'Open Pending Queue',
-                  onPressed: () => context.push(RouteNames.pendingFirQueue),
-                  icon: Icons.list_alt,
-                ),
-              ],
+                    ],
+                  ),
+                  AppSpacing.vXl,
+                  AppButton(
+                    label: 'Open Pending Queue',
+                    onPressed: () => context.push(RouteNames.pendingFirQueue),
+                    icon: Icons.list_alt,
+                  ),
+                ],
+              ),
             ),
           );
         },

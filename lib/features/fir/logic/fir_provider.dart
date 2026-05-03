@@ -21,6 +21,10 @@ class FirsNotifier extends AsyncNotifier<List<FirModel>> {
     required String policeStation,
     required DateTime incidentDate,
     required String description,
+    String? proofFilePath,
+    double? incidentLat,
+    double? incidentLng,
+    String? incidentAddress,
   }) async {
     state = const AsyncValue.loading();
     try {
@@ -30,6 +34,10 @@ class FirsNotifier extends AsyncNotifier<List<FirModel>> {
         policeStation: policeStation,
         incidentDate: incidentDate,
         description: description,
+        proofFilePath: proofFilePath,
+        incidentLat: incidentLat,
+        incidentLng: incidentLng,
+        incidentAddress: incidentAddress,
       );
       ref.invalidateSelf();
     } catch (e, st) {

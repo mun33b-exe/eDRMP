@@ -41,4 +41,5 @@ class RouteNames {
   // Misc
   static const String theftMap = '/map';
   static const String verifyImei = '/verify-imei';
+  static const String locationPicker = '/location-picker';
 }

@@ -11,6 +11,8 @@ import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
 import '../../auth/logic/auth_user.dart';
+import '../../devices/logic/device_provider.dart';
+import '../../fir/logic/fir_provider.dart';
 import '../logic/dashboard_stats_provider.dart';
 
 /// Citizen home screen — pixel-faithful to `ScreenCitizenHome` variant 'a'
@@ -35,55 +37,70 @@ class DashboardPage extends ConsumerWidget {
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.scaffoldBackground,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: _HeroHeader(user: user, stats: stats),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-              AppPadding.lg,
-              AppPadding.lg,
-              AppPadding.lg,
-              AppPadding.xl,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(devicesProvider);
+          ref.invalidate(firsProvider);
+          await Future.wait([
+            ref.read(devicesProvider.future),
+            ref.read(firsProvider.future),
+          ]);
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: _HeroHeader(user: user, stats: stats),
             ),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _SectionLabel(AppStrings.dashboardQuickActions, isDark: isDark),
-                AppSpacing.vMd,
-                _QuickActionsGrid(isDark: isDark),
-                AppSpacing.vXl,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _SectionLabel(
-                      AppStrings.dashboardMyDevices,
-                      isDark: isDark,
-                    ),
-                    GestureDetector(
-                      onTap: () => context.push(RouteNames.myDevices),
-                      child: const Text(
-                        AppStrings.dashboardSeeAll,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppPadding.lg,
+                AppPadding.lg,
+                AppPadding.lg,
+                AppPadding.xl,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _SectionLabel(
+                    AppStrings.dashboardQuickActions,
+                    isDark: isDark,
+                  ),
+                  AppSpacing.vMd,
+                  _QuickActionsGrid(isDark: isDark),
+                  AppSpacing.vXl,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _SectionLabel(
+                        AppStrings.dashboardMyDevices,
+                        isDark: isDark,
+                      ),
+                      GestureDetector(
+                        onTap: () => context.push(RouteNames.myDevices),
+                        child: Text(
+                          AppStrings.dashboardSeeAll,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.secondaryLight
+                                : AppColors.primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                AppSpacing.vMd,
-                ...stats.devices.map(
-                  (d) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppPadding.sm),
-                    child: _DeviceRow(device: d, isDark: isDark),
+                    ],
                   ),
-                ),
-              ]),
+                  AppSpacing.vMd,
+                  ...stats.devices.map(
+                    (d) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppPadding.sm),
+                      child: _DeviceRow(device: d, isDark: isDark),
+                    ),
+                  ),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
