@@ -129,10 +129,10 @@ class _HeroHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment(-1, -0.8),
           end: Alignment(0.8, 1.2),
-          stops: [0.0, 0.5, 1.0],
+          stops: [0.0, 0.55, 1.0],
           colors: [
             AppColors.primaryDark,
-            AppColors.primary,
+            AppColors.primaryMid,
             AppColors.primaryDark,
           ],
         ),
