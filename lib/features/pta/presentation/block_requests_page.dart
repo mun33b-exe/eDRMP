@@ -346,25 +346,27 @@ class _BlockRequestCard extends StatelessWidget {
                   children: [
                     Text(
                       'Case ${fir.id.split('-').first.toUpperCase()}',
-                    style: TextStyle(
-                      fontSize: context.responsiveFontSize(13),
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.1,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.textPrimary,
+                      style: TextStyle(
+                        fontSize: context.responsiveFontSize(13),
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.1,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  AppSpacing.vXs,
-                  Text(
-                    fir.policeStation,
-                    style: TextStyle(
-                      fontSize: context.responsiveFontSize(11),
-                      color: isDark
-                          ? AppColors.darkTextTertiary
-                          : AppColors.textTertiary,
+                    AppSpacing.vXs,
+                    Text(
+                      fir.policeStation,
+                      style: TextStyle(
+                        fontSize: context.responsiveFontSize(11),
+                        color: isDark
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
                   ],
                 ),
               ),
@@ -377,13 +379,15 @@ class _BlockRequestCard extends StatelessWidget {
           ),
           AppSpacing.vMd,
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppPadding.sm + 2, vertical: AppPadding.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppPadding.sm + 2,
+              vertical: AppPadding.sm,
+            ),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkSurface : AppColors.inputFill,
               borderRadius: AppRadius.allSm,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
@@ -395,10 +399,11 @@ class _BlockRequestCard extends StatelessWidget {
                           ? AppColors.darkTextPrimary
                           : AppColors.textPrimary,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                AppSpacing.hSm,
                 Text(
                   dateStr,
                   style: TextStyle(
@@ -417,7 +422,7 @@ class _BlockRequestCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    label: 'Block',
+                    label: AppStrings.ptaBlock,
                     onPressed: onBlock,
                     variant: AppButtonVariant.success,
                     icon: Icons.gavel,
@@ -426,22 +431,20 @@ class _BlockRequestCard extends StatelessWidget {
                 AppSpacing.hSm,
                 Expanded(
                   child: AppButton(
-                    label: 'Reject',
+                    label: AppStrings.ptaReject,
                     onPressed: onReject,
                     variant: AppButtonVariant.reject,
                     icon: Icons.close,
                   ),
                 ),
-                AppSpacing.hSm,
-                Expanded(
-                  child: AppButton(
-                    label: 'Review',
-                    onPressed: onReview,
-                    variant: AppButtonVariant.ghost,
-                    icon: Icons.visibility,
-                  ),
-                ),
               ],
+            ),
+            AppSpacing.vSm,
+            AppButton(
+              label: AppStrings.ptaReviewCta,
+              onPressed: onReview,
+              variant: AppButtonVariant.ghost,
+              icon: Icons.visibility,
             ),
           ],
         ],
@@ -464,15 +467,15 @@ class _BlockRequestCard extends StatelessWidget {
 
   String _statusText(CaseStatus s) {
     if (s == CaseStatus.blockApproved || s == CaseStatus.deviceBlocked) {
-      return 'Blocked';
+      return AppStrings.ptaFilterBlocked;
     }
     if (s == CaseStatus.firVerified || s == CaseStatus.blockPending) {
-      return 'Pending Block';
+      return AppStrings.ptaFilterPending;
     }
     if (s == CaseStatus.blockRejected) {
-      return 'Rejected';
+      return AppStrings.ptaFilterRejected;
     }
-    return 'Other';
+    return AppStrings.ptaFilterAll;
   }
 }
 
