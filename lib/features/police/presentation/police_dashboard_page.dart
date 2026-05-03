@@ -74,6 +74,9 @@ class PoliceDashboardPage extends ConsumerWidget {
       ),
       body: firsAsync.when(
         data: (firs) {
+          for (final f in firs) {
+            debugPrint('FIR ${f.id.substring(0, 8)} → status: ${f.caseStatus}');
+          }
           final pendingCount = firs
               .where(
                 (f) =>

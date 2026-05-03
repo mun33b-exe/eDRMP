@@ -32,7 +32,8 @@ class FirReviewPage extends ConsumerWidget {
       appBar: const AppAppBar(title: 'FIR Verification'),
       body: firAsync.when(
         data: (fir) {
-          final isPending = fir.caseStatus == CaseStatus.firUnderReview;
+          final isPending = fir.caseStatus == CaseStatus.firSubmitted ||
+              fir.caseStatus == CaseStatus.firUnderReview;
 
           return Column(
             children: [

@@ -67,6 +67,8 @@ extension CaseStatusX on CaseStatus {
 
   static CaseStatus fromString(String s) {
     switch (s) {
+      case 'pending_review':
+        return CaseStatus.firSubmitted;
       case 'under_review':
         return CaseStatus.firUnderReview;
       case 'verified':
@@ -90,6 +92,7 @@ extension CaseStatusX on CaseStatus {
       case 'unblocked':
         return CaseStatus.unblocked;
       default:
+        debugPrint('⚠️ Unknown FIR status: "$s" — defaulting to firSubmitted');
         return CaseStatus.firSubmitted;
     }
   }
