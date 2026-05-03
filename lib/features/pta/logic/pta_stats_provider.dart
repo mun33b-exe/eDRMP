@@ -40,6 +40,15 @@ class PtaStatsNotifier extends AsyncNotifier<PtaStats> {
     }).length;
     final blockedCount = devices.where((d) => d['status'] == 'blocked').length;
 
+    debugPrint('PTA Stats: $total devices, $approved approved, '
+        '$activeFirsCount active FIRs, $blockedCount blocked');
+    for (final d in devices) {
+      debugPrint('  Device ${(d['id'] as String).substring(0, 8)} → ${d['status']}');
+    }
+    for (final f in firs) {
+      debugPrint('  FIR ${(f['id'] as String).substring(0, 8)} → ${f['status']}');
+    }
+
     // Build 30-day trend from actual data
     final now = DateTime.now();
     final thirtyDaysAgo = now.subtract(const Duration(days: 29));

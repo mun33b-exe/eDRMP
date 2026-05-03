@@ -15,8 +15,11 @@ import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
+import '../../devices/data/device_model.dart';
+import '../../devices/logic/device_provider.dart';
 import '../../fir/data/fir_model.dart';
 import '../../fir/logic/fir_provider.dart';
+import '../logic/pta_stats_provider.dart';
 
 class BlockRequestsPage extends ConsumerStatefulWidget {
   const BlockRequestsPage({super.key});
@@ -27,6 +30,13 @@ class BlockRequestsPage extends ConsumerStatefulWidget {
 
 class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
   String _filter = AppStrings.ptaFilterPending;
+
+  @override
+  void initState() {
+    super.initState();
+    // Force fresh fetch when navigating to this page
+    Future.microtask(() => ref.invalidate(firsProvider));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +85,10 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
       ),
       body: firsAsync.when(
         data: (firs) {
+          debugPrint('Block requests: ${firs.length} total FIRs');
+          for (final f in firs) {
+            debugPrint('  FIR ${f.id.substring(0, 8)} → ${f.caseStatus}');
+          }
           final filtered = firs.where((f) {
             final isPending =
                 f.caseStatus == CaseStatus.firVerified ||
@@ -159,17 +173,22 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                 ),
               ),
               Expanded(
-                child: filtered.isEmpty
-                    ? const EmptyState(
-                        icon: Icons.lock_outline,
-                        title: AppStrings.ptaBlockEmpty,
-                      )
-                    : RefreshIndicator(
-                        onRefresh: () async {
-                          ref.invalidate(firsProvider);
-                          await ref.read(firsProvider.future);
-                        },
-                        child: ListView.separated(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    ref.invalidate(firsProvider);
+                    await ref.read(firsProvider.future);
+                  },
+                  child: filtered.isEmpty
+                      ? ListView(
+                          children: const [
+                            SizedBox(height: 120),
+                            EmptyState(
+                              icon: Icons.lock_outline,
+                              title: AppStrings.ptaBlockEmpty,
+                            ),
+                          ],
+                        )
+                      : ListView.separated(
                           padding: EdgeInsets.symmetric(
                             horizontal: context.responsiveHorizontalPadding,
                             vertical: AppPadding.lg,
@@ -188,7 +207,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                             );
                           },
                         ),
-                      ),
+                ),
               ),
             ],
           );
@@ -253,6 +272,11 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
     await ref
         .read(firsProvider.notifier)
         .updateFirStatus(fir.id, CaseStatus.deviceBlocked);
+    // Also update the device status to 'blocked'
+    await ref
+        .read(devicesProvider.notifier)
+        .updateDeviceStatus(fir.deviceId, DeviceStatus.blocked);
+    ref.invalidate(ptaStatsProvider);
   }
 
   void _handleReject(BuildContext context, WidgetRef ref, FirModel fir) async {
@@ -263,6 +287,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
           CaseStatus.blockRejected,
           AppStrings.ptaReject,
         );
+    ref.invalidate(ptaStatsProvider);
   }
 }
 
@@ -315,11 +340,12 @@ class _BlockRequestCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Case ${fir.id.toUpperCase()}',
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Case ${fir.id.split('-').first.toUpperCase()}',
                     style: TextStyle(
                       fontSize: context.responsiveFontSize(13),
                       fontWeight: FontWeight.w600,
@@ -339,8 +365,10 @@ class _BlockRequestCard extends StatelessWidget {
                           : AppColors.textTertiary,
                     ),
                   ),
-                ],
+                  ],
+                ),
               ),
+              AppSpacing.hSm,
               StatusBadge(
                 label: _statusText(fir.caseStatus),
                 variant: _mapStatus(fir.caseStatus),

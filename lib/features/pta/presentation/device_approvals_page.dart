@@ -17,6 +17,7 @@ import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../devices/data/device_model.dart';
 import '../../devices/logic/device_provider.dart';
+import '../logic/pta_stats_provider.dart';
 
 class DeviceApprovalsPage extends ConsumerStatefulWidget {
   const DeviceApprovalsPage({super.key});
@@ -361,6 +362,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
     await ref
         .read(devicesProvider.notifier)
         .updateDeviceStatus(device.id, DeviceStatus.approved);
+    ref.invalidate(ptaStatsProvider);
   }
 
   void _handleReject(
@@ -371,6 +373,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
     await ref
         .read(devicesProvider.notifier)
         .updateDeviceStatus(device.id, DeviceStatus.rejected);
+    ref.invalidate(ptaStatsProvider);
   }
 }
 
