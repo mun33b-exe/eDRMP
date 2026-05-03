@@ -62,7 +62,7 @@ class AppSizes {
   ///
   /// A wider screen can fit slightly wider tiles, so the ratio grows.
   static double quickActionAspect(BuildContext context) =>
-      context.responsive(mobile: 2.6, tablet: 3.2, desktop: 3.8);
+      context.responsive(mobile: 2.2, tablet: 3.0, desktop: 3.8);
 
   /// Number of columns for device grids — 1 mobile / 2 tablet / 3 desktop.
   static int deviceGridColumns(BuildContext context) =>

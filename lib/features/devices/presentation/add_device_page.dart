@@ -806,12 +806,6 @@ class _StickyBottom extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hp = context.responsiveHorizontalPadding;
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        hp,
-        AppPadding.sm,
-        hp,
-        AppPadding.lg,
-      ),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkBackground : AppColors.background,
         border: Border(
@@ -820,7 +814,18 @@ class _StickyBottom extends StatelessWidget {
           ),
         ),
       ),
-      child: child,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            hp,
+            AppPadding.sm,
+            hp,
+            AppPadding.md,
+          ),
+          child: child,
+        ),
+      ),
     );
   }
 }
