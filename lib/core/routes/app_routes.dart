@@ -11,6 +11,7 @@ import '../../features/devices/data/device_model.dart';
 import '../../features/devices/presentation/add_device_page.dart';
 import '../../features/devices/presentation/device_details_page.dart';
 import '../../features/devices/presentation/my_devices_page.dart';
+import '../../features/devices/presentation/transfer_device_page.dart';
 import '../../features/fir/presentation/case_tracking_page.dart';
 import '../../features/fir/presentation/fir_history_page.dart';
 import '../../features/fir/presentation/location_picker_page.dart';
@@ -126,6 +127,12 @@ final List<RouteBase> appRoutes = <RouteBase>[
       final deviceId = state.extra as String? ?? '';
       return _buildTransitionPage(state, DeviceDetailsPage(deviceId: deviceId));
     },
+  ),
+  GoRoute(
+    name: RouteNames.transferDevice,
+    path: RouteNames.transferDevice,
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const TransferDevicePage()),
   ),
   GoRoute(
     name: RouteNames.firHistory,

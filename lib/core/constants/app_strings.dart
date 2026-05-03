@@ -397,4 +397,41 @@ class AppStrings {
   static const String locationPickerTitle = 'Pick Incident Location';
   static const String locationPickerConfirm = 'Confirm Location';
   static const String locationPickerHint = 'Tap to pick on map';
+
+  // ---------------------------------------------------------------------------
+  // Device Transfer
+  // ---------------------------------------------------------------------------
+  static const String transferTitle = 'Transfer Device';
+  static const String transferSubtitle =
+      'Transfer ownership of a registered device to another person.';
+  static const String transferSelectDevice = 'Select device to transfer';
+  static const String transferRecipientCnic = 'Recipient CNIC';
+  static const String transferRecipientCnicHint = 'e.g. 42101-1234567-8';
+  static const String transferNote = 'Note (optional)';
+  static const String transferNoteHint = 'Add a message for the recipient';
+  static const String transferSubmit = 'Send Transfer Request';
+  static const String transferSuccessTitle = 'Transfer request sent!';
+  static const String transferSuccessBody =
+      'The recipient will be notified. They must accept the request for the transfer to complete.';
+  static const String transferSuccessAction = 'View Transfers';
+  static const String transferEmpty = 'No transfer requests';
+  static const String transferEmptyBody =
+      'You have no pending or past transfer requests.';
+  static const String transferFilterAll = 'All';
+  static const String transferFilterPending = 'Pending';
+  static const String transferFilterCompleted = 'Completed';
+  static const String transferIncoming = 'Incoming';
+  static const String transferOutgoing = 'Outgoing';
+  static const String transferAccept = 'Accept';
+  static const String transferReject = 'Reject';
+  static const String transferCancel = 'Cancel';
+  static const String transferFrom = 'From';
+  static const String transferTo = 'To';
+  static const String transferCnicNotFound =
+      'No registered user found with this CNIC';
+  static const String transferSameOwner =
+      'Cannot transfer a device to yourself';
+  static const String transferNoDevices =
+      'No approved devices available to transfer';
+  static const String transferHistory = 'Transfer History';
 }

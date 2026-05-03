@@ -467,11 +467,7 @@ class _QuickActionsGrid extends StatelessWidget {
           label: AppStrings.dashboardTransfer,
           toneColor: AppColors.primaryAccent,
           isDark: isDark,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(AppStrings.featureComingSoon)),
-            );
-          },
+          onTap: () => context.push(RouteNames.transferDevice),
         ),
         _QuickActionTile(
           icon: Icons.qr_code_scanner_outlined,

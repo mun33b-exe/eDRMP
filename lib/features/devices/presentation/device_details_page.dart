@@ -75,7 +75,7 @@ class DeviceDetailsPage extends ConsumerWidget {
                   child: AppButton(
                     label: AppStrings.deviceDetailsTransfer,
                     variant: AppButtonVariant.ghost,
-                    onPressed: () {},
+                    onPressed: () => context.push(RouteNames.transferDevice),
                     icon: Icons.swap_horiz_outlined,
                   ),
                 ),

@@ -23,6 +23,7 @@ class RouteNames {
   static const String myDevices = '/devices';
   static const String addDevice = '/devices/add';
   static const String deviceDetails = '/devices/details';
+  static const String transferDevice = '/devices/transfer';
 
   // FIR
   static const String firHistory = '/fir';
