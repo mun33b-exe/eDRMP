@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../core/services/supabase_service.dart';
 import 'device_model.dart';
 
@@ -48,23 +50,42 @@ class DeviceRepository {
   }
 
   /// Inserts a new device registration and returns the created model.
+  /// If [invoiceFile] is provided, uploads it to Supabase Storage first.
   Future<DeviceModel> register({
     required String imei,
     String? imei2,
     required String brand,
     required String model,
     required String operator,
+    File? invoiceFile,
   }) async {
+    final userId = SupabaseService.client.auth.currentUser!.id;
+    String? invoiceUrl;
+
+    // Upload invoice if provided
+    if (invoiceFile != null) {
+      final fileName = invoiceFile.path.split('/').last.split('\\').last;
+      final ext = fileName.contains('.') ? '.${fileName.split('.').last.toLowerCase()}' : '.jpg';
+      final storagePath = '$userId/${DateTime.now().millisecondsSinceEpoch}$ext';
+      await SupabaseService.client.storage
+          .from('device-invoices')
+          .upload(storagePath, invoiceFile);
+      invoiceUrl = SupabaseService.client.storage
+          .from('device-invoices')
+          .getPublicUrl(storagePath);
+    }
+
     final row = await SupabaseService.client
         .from('devices')
         .insert({
-          'owner_id': SupabaseService.client.auth.currentUser!.id,
+          'owner_id': userId,
           'imei1': imei,
           'imei2': imei2,
           'brand': brand,
           'model': model,
           'operator': operator,
           'status': 'pending',
+          'purchase_invoice_url': invoiceUrl,
         })
         .select()
         .single();

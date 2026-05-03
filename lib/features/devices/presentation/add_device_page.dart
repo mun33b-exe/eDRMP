@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
@@ -50,6 +53,9 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
   String _brand = '';
   String _model = '';
   bool _detected = false;
+
+  // Invoice file
+  File? _invoiceFile;
 
   @override
   void dispose() {
@@ -153,6 +159,9 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
           operatorCtrl: _operatorCtrl,
           loading: _loading,
           isDark: isDark,
+          invoiceFile: _invoiceFile,
+          onPickInvoice: _onPickInvoice,
+          onRemoveInvoice: () => setState(() => _invoiceFile = null),
           onSubmit: _onStep2Submit,
         );
       default:
@@ -215,6 +224,18 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
     setState(() => _step = 2);
   }
 
+  Future<void> _onPickInvoice() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1920,
+      imageQuality: 80,
+    );
+    if (picked != null && mounted) {
+      setState(() => _invoiceFile = File(picked.path));
+    }
+  }
+
   Future<void> _onStep2Submit() async {
     if (!_formKey2.currentState!.validate()) return;
     setState(() => _loading = true);
@@ -227,6 +248,7 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
           brand: _brand.isEmpty ? 'Unknown' : _brand,
           model: _model.isEmpty ? 'Unknown device' : _model,
           operator: _operatorCtrl.text.trim(),
+          invoiceFile: _invoiceFile,
         );
 
     if (mounted) {
@@ -366,6 +388,9 @@ class _Step2 extends StatelessWidget {
     required this.loading,
     required this.isDark,
     required this.onSubmit,
+    this.invoiceFile,
+    this.onPickInvoice,
+    this.onRemoveInvoice,
   });
 
   final GlobalKey<FormState> formKey;
@@ -377,6 +402,9 @@ class _Step2 extends StatelessWidget {
   final bool loading;
   final bool isDark;
   final VoidCallback onSubmit;
+  final File? invoiceFile;
+  final VoidCallback? onPickInvoice;
+  final VoidCallback? onRemoveInvoice;
 
   @override
   Widget build(BuildContext context) {
@@ -435,23 +463,76 @@ class _Step2 extends StatelessWidget {
                     ),
                   ),
                   AppSpacing.vMd,
-                  // Invoice upload (placeholder)
+                  // Invoice upload
                   GestureDetector(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Invoice upload will be available in the next update.',
-                          ),
+                    onTap: onPickInvoice,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppPadding.md,
+                        vertical: AppPadding.sm + 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppColors.darkSurface
+                            : AppColors.inputFill,
+                        borderRadius: AppRadius.allMd,
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.border,
                         ),
-                      );
-                    },
-                    child: _ReadOnlyField(
-                      label: AppStrings.addDeviceInvoiceLabel,
-                      value: AppStrings.addDeviceInvoiceHint,
-                      isDark: isDark,
-                      placeholder: true,
-                      trailing: const Icon(Icons.upload_outlined, size: 16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppStrings.addDeviceInvoiceLabel,
+                            style: TextStyle(
+                              fontSize: context.responsiveFontSize(11),
+                              fontWeight: FontWeight.w600,
+                              color: isDark
+                                  ? AppColors.darkTextTertiary
+                                  : AppColors.textTertiary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  invoiceFile != null
+                                      ? invoiceFile!.path.split('/').last
+                                      : AppStrings.addDeviceInvoiceHint,
+                                  style: TextStyle(
+                                    fontSize: AppSizes.bodyRegular(context),
+                                    fontWeight: FontWeight.w600,
+                                    color: invoiceFile != null
+                                        ? (isDark
+                                            ? AppColors.darkTextPrimary
+                                            : AppColors.textPrimary)
+                                        : (isDark
+                                            ? AppColors.darkTextTertiary
+                                            : AppColors.textTertiary),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (invoiceFile != null)
+                                GestureDetector(
+                                  onTap: onRemoveInvoice,
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 16,
+                                    color: AppColors.error,
+                                  ),
+                                )
+                              else
+                                const Icon(Icons.upload_outlined, size: 16),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   AppSpacing.vLg,
@@ -689,7 +770,6 @@ class _ReadOnlyField extends StatelessWidget {
     required this.value,
     required this.isDark,
     this.mono = false,
-    this.placeholder = false,
     this.trailing,
   });
 
@@ -697,7 +777,6 @@ class _ReadOnlyField extends StatelessWidget {
   final String value;
   final bool isDark;
   final bool mono;
-  final bool placeholder;
   final Widget? trailing;
 
   @override
@@ -736,13 +815,9 @@ class _ReadOnlyField extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontFamily: mono ? 'monospace' : null,
                     letterSpacing: mono ? 0.3 : 0,
-                    color: placeholder
-                        ? (isDark
-                              ? AppColors.darkTextTertiary
-                              : AppColors.textTertiary)
-                        : (isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.textPrimary),
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.textPrimary,
                   ),
                 ),
               ),

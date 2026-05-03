@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/block_request_model.dart';
@@ -39,6 +41,7 @@ class DevicesNotifier extends AsyncNotifier<List<DeviceModel>> {
     required String brand,
     required String model,
     required String operator,
+    File? invoiceFile,
   }) async {
     final device = await _repo.register(
       imei: imei,
@@ -46,6 +49,7 @@ class DevicesNotifier extends AsyncNotifier<List<DeviceModel>> {
       brand: brand,
       model: model,
       operator: operator,
+      invoiceFile: invoiceFile,
     );
     ref.invalidateSelf();
     return device;
