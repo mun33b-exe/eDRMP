@@ -27,17 +27,22 @@ class StatusBadge extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final badge = Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.md,
-        vertical: AppPadding.xs,
+        horizontal: AppPadding.sm + 2,
+        vertical: 3,
       ),
       decoration: BoxDecoration(
         color: palette.background,
         borderRadius: AppRadius.allPill,
-        border: Border.all(color: palette.foreground.withValues(alpha: 0.18)),
+        border: Border.all(color: palette.foreground.withValues(alpha: 0.12)),
       ),
       child: Text(
-        label.toUpperCase(),
-        style: textTheme.labelSmall?.copyWith(color: palette.foreground),
+        _formatLabel(label),
+        style: textTheme.labelSmall?.copyWith(
+          color: palette.foreground,
+          fontWeight: FontWeight.w600,
+          fontSize: 10.5,
+          letterSpacing: 0.3,
+        ),
       ),
     );
 
@@ -46,6 +51,12 @@ class StatusBadge extends StatelessWidget {
     }
 
     return _PendingPulse(child: badge);
+  }
+
+  static String _formatLabel(String label) {
+    if (label.isEmpty) return label;
+    final lower = label.toLowerCase();
+    return lower[0].toUpperCase() + lower.substring(1);
   }
 
   _BadgePalette _palette() {
@@ -69,13 +80,13 @@ class StatusBadge extends StatelessWidget {
         );
       case StatusBadgeVariant.blocked:
         return const _BadgePalette(
-          background: AppColors.primarySoft,
-          foreground: AppColors.primaryDark,
+          background: AppColors.blockedBg,
+          foreground: AppColors.blocked,
         );
       case StatusBadgeVariant.info:
         return const _BadgePalette(
           background: AppColors.primarySoft,
-          foreground: AppColors.primaryAccent,
+          foreground: AppColors.primary,
         );
     }
   }

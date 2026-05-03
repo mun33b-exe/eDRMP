@@ -196,14 +196,15 @@ class _FirQueueCard extends StatelessWidget {
           borderRadius: AppRadius.allMd,
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.border,
+            width: 0.5,
           ),
           boxShadow: isDark
               ? null
-              : [
-                  const BoxShadow(
+              : const [
+                  BoxShadow(
                     color: AppColors.shadowLight,
-                    blurRadius: 2,
-                    offset: Offset(0, 1),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
                   ),
                 ],
         ),
@@ -218,7 +219,7 @@ class _FirQueueCard extends StatelessWidget {
                     '${AppStrings.policeQueueCasePrefix} ${fir.id.toUpperCase()}',
                     style: TextStyle(
                       fontSize: AppSizes.bodyRegular(context),
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       fontFamily: 'monospace',
                       color: isDark
                           ? AppColors.darkTextPrimary

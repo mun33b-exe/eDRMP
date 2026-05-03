@@ -55,13 +55,14 @@ class FirReviewPage extends ConsumerWidget {
                             color: isDark
                                 ? AppColors.darkBorder
                                 : AppColors.border,
+                            width: 0.5,
                           ),
                           boxShadow: isDark
                               ? null
-                              : [
-                                  const BoxShadow(
+                              : const [
+                                  BoxShadow(
                                     color: AppColors.shadowLight,
-                                    blurRadius: 4,
+                                    blurRadius: 8,
                                     offset: Offset(0, 2),
                                   ),
                                 ],
@@ -122,8 +123,8 @@ class FirReviewPage extends ConsumerWidget {
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: AppSizes.h3(context),
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: -0.2,
+                                            fontWeight: FontWeight.w700,
+                                            letterSpacing: -0.3,
                                           ),
                                         ),
                                         if (fir.rejectReason != null) ...[

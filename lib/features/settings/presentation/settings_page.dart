@@ -40,7 +40,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 AppStrings.titleSettings,
                 style: TextStyle(
                   fontSize: AppSizes.h2(context),
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: -0.4,
                   color: isDark
                       ? AppColors.darkTextPrimary
@@ -177,11 +177,11 @@ class _SettingsCard extends StatelessWidget {
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
                 ),
               ],
       ),

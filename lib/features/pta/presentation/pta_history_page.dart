@@ -103,7 +103,7 @@ class PtaHistoryPage extends ConsumerWidget {
                             initials.isEmpty ? '?' : initials,
                             style: TextStyle(
                               color: AppColors.success,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               fontSize: AppSizes.bodyLarge(context),
                             ),
                           ),
@@ -117,7 +117,8 @@ class PtaHistoryPage extends ConsumerWidget {
                                 ownerName,
                                 style: TextStyle(
                                   fontSize: AppSizes.bodyRegular(context),
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -0.1,
                                   color: isDark
                                       ? AppColors.darkTextPrimary
                                       : AppColors.textPrimary,
@@ -151,8 +152,8 @@ class PtaHistoryPage extends ConsumerWidget {
                     'DEVICE',
                     style: TextStyle(
                       fontSize: context.responsiveFontSize(11),
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.8,
                       color: isDark
                           ? AppColors.darkTextTertiary
                           : AppColors.textTertiary,
@@ -194,7 +195,7 @@ class PtaHistoryPage extends ConsumerWidget {
                                       deviceLabel,
                                       style: TextStyle(
                                         fontSize: context.responsiveFontSize(13),
-                                        fontWeight: FontWeight.w700,
+                                        fontWeight: FontWeight.w600,
                                         color: isDark
                                             ? AppColors.darkTextPrimary
                                             : AppColors.textPrimary,
@@ -226,8 +227,8 @@ class PtaHistoryPage extends ConsumerWidget {
                     'VERIFICATION CHECKS',
                     style: TextStyle(
                       fontSize: context.responsiveFontSize(11),
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.8,
                       color: isDark
                           ? AppColors.darkTextTertiary
                           : AppColors.textTertiary,
@@ -358,13 +359,14 @@ class PtaHistoryPage extends ConsumerWidget {
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
+          width: 0.5,
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 4,
+                  blurRadius: 8,
                   offset: Offset(0, 2),
                 ),
               ],
@@ -421,7 +423,7 @@ class PtaHistoryPage extends ConsumerWidget {
                 isPass ? 'PASS' : 'REVIEW',
                 style: TextStyle(
                   fontSize: context.responsiveFontSize(11),
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   color: isPass ? AppColors.success : AppColors.warning,
                 ),
               ),

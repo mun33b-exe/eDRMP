@@ -37,6 +37,7 @@ class AppTimeline extends StatelessWidget {
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
+          width: 0.5,
         ),
       ),
       padding: const EdgeInsets.all(AppPadding.md),
@@ -141,7 +142,8 @@ class _TimelineItemNode extends StatelessWidget {
                     item.title,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.1,
                       color: isActive
                           ? AppColors.primary
                           : (isDone || isRejected
@@ -158,6 +160,7 @@ class _TimelineItemNode extends StatelessWidget {
                     item.meta,
                     style: TextStyle(
                       fontSize: 11,
+                      letterSpacing: 0.1,
                       color: isDark
                           ? AppColors.darkTextTertiary
                           : AppColors.textTertiary,

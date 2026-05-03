@@ -127,9 +127,14 @@ class _HeroHeader extends StatelessWidget {
       padding: AppSizes.heroPadding(context),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment(-0.7, -1),
-          end: Alignment(1, 1),
-          colors: [AppColors.primary, AppColors.primaryDark],
+          begin: Alignment(-1, -0.8),
+          end: Alignment(0.8, 1.2),
+          stops: [0.0, 0.5, 1.0],
+          colors: [
+            AppColors.primaryDark,
+            AppColors.primary,
+            AppColors.primaryDark,
+          ],
         ),
       ),
       child: SafeArea(
@@ -148,17 +153,19 @@ class _HeroHeader extends StatelessWidget {
                       AppStrings.dashboardGreeting,
                       style: TextStyle(
                         fontSize: AppSizes.bodySmall(context),
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white70,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xB3FFFFFF),
+                        letterSpacing: 0.2,
                       ),
                     ),
-                    AppSpacing.vXs,
+                    const SizedBox(height: 2),
                     Text(
                       displayName,
                       style: TextStyle(
                         fontSize: AppSizes.bodyLarge(context) + 2,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
+                        letterSpacing: -0.3,
                       ),
                     ),
                   ],
@@ -208,9 +215,9 @@ class _IconBtn extends StatelessWidget {
         width: AppSizes.iconSm(context),
         height: AppSizes.iconSm(context),
         decoration: BoxDecoration(
-          color: const Color(0x24FFFFFF),
+          color: const Color(0x14FFFFFF),
           borderRadius: AppRadius.allMd,
-          border: Border.all(color: const Color(0x2EFFFFFF)),
+          border: Border.all(color: const Color(0x1AFFFFFF)),
         ),
         child: Stack(
           alignment: Alignment.center,
@@ -252,9 +259,9 @@ class _RegisteredDevicesCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.lg),
       decoration: BoxDecoration(
-        color: const Color(0x1AFFFFFF),
+        color: const Color(0x0DFFFFFF),
         borderRadius: AppRadius.allLg,
-        border: Border.all(color: const Color(0x2EFFFFFF)),
+        border: Border.all(color: const Color(0x14FFFFFF)),
       ),
       child: Column(
         children: [
@@ -267,18 +274,18 @@ class _RegisteredDevicesCard extends StatelessWidget {
                   Text(
                     AppStrings.dashboardRegisteredDevices,
                     style: TextStyle(
-                      fontSize: context.responsiveFontSize(11),
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.5,
+                      fontSize: context.responsiveFontSize(10),
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0x99FFFFFF),
+                      letterSpacing: 1.0,
                     ),
                   ),
-                  AppSpacing.vXs,
+                  const SizedBox(height: 2),
                   Text(
                     '${stats.totalDevices}',
                     style: TextStyle(
                       fontSize: AppSizes.h1(context),
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       color: Colors.white,
                       letterSpacing: -1,
                     ),
@@ -287,21 +294,34 @@ class _RegisteredDevicesCard extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.md,
-                  vertical: AppPadding.sm,
+                  horizontal: AppPadding.sm + 2,
+                  vertical: AppPadding.xs + 1,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.approved,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.approved),
+                  color: const Color(0x26FFFFFF),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  AppStrings.dashboardAllActive,
-                  style: TextStyle(
-                    fontSize: context.responsiveFontSize(11),
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.approvedBg,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        color: AppColors.success,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      AppStrings.dashboardAllActive,
+                      style: TextStyle(
+                        fontSize: context.responsiveFontSize(11),
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xCCFFFFFF),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -360,18 +380,18 @@ class _MiniStat extends StatelessWidget {
         Text(
           label.toUpperCase(),
           style: TextStyle(
-            fontSize: context.responsiveFontSize(11),
-            color: Colors.white60,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.4,
+            fontSize: context.responsiveFontSize(10),
+            color: const Color(0x80FFFFFF),
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.8,
           ),
         ),
-        AppSpacing.vXs,
+        const SizedBox(height: 4),
         Text(
           value,
           style: TextStyle(
             fontSize: context.responsiveFontSize(18),
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             color: color,
           ),
         ),
@@ -396,8 +416,9 @@ class _SectionLabel extends StatelessWidget {
       text,
       style: TextStyle(
         fontSize: AppSizes.bodyRegular(context),
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
         color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+        letterSpacing: -0.2,
       ),
     );
   }
@@ -498,10 +519,10 @@ class _QuickActionTile extends StatelessWidget {
                 width: AppSizes.iconMd(context),
                 height: AppSizes.iconMd(context),
                 decoration: BoxDecoration(
-                  color: toneColor,
+                  color: toneColor.withValues(alpha: isDark ? 0.15 : 0.08),
                   borderRadius: AppRadius.allMd,
                 ),
-                child: Icon(icon, size: 22, color: Colors.white),
+                child: Icon(icon, size: 20, color: toneColor),
               ),
               AppSpacing.hMd,
               Expanded(
@@ -509,10 +530,11 @@ class _QuickActionTile extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: AppSizes.bodySmall(context),
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: isDark
                         ? AppColors.darkTextPrimary
                         : AppColors.textPrimary,
+                    letterSpacing: -0.1,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -560,18 +582,22 @@ class _DeviceRow extends StatelessWidget {
     final iconBg = isDark ? AppColors.darkSurface : AppColors.primarySoft;
 
     return Container(
-      padding: const EdgeInsets.all(AppPadding.lg - 2),
+      padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: AppRadius.allLg,
-        border: Border.all(color: borderColor),
+        border: Border.all(color: borderColor, width: 0.5),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 1,
                 ),
               ],
       ),
@@ -583,7 +609,7 @@ class _DeviceRow extends StatelessWidget {
             height: AppSizes.iconMd(context),
             decoration: BoxDecoration(
               color: iconBg,
-              borderRadius: AppRadius.allMd,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               Icons.smartphone_outlined,
@@ -600,25 +626,26 @@ class _DeviceRow extends StatelessWidget {
                   device.model,
                   style: TextStyle(
                     fontSize: AppSizes.bodyRegular(context),
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: isDark
                         ? AppColors.darkTextPrimary
                         : AppColors.textPrimary,
+                    letterSpacing: -0.1,
                   ),
                 ),
-                AppSpacing.vXs,
+                const SizedBox(height: 3),
                 Text(
                   'IMEI ${device.imei}',
                   style: TextStyle(
                     fontSize: AppSizes.bodySmall(context),
                     fontFamily: 'monospace',
-                    letterSpacing: 0.3,
+                    letterSpacing: 0.2,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.textSecondary,
                   ),
                 ),
-                AppSpacing.vXs,
+                const SizedBox(height: 3),
                 Text(
                   '${device.date} · ${device.operator}',
                   style: TextStyle(

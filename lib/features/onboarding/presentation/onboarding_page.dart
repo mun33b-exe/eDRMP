@@ -109,7 +109,7 @@ class OnboardingPage extends ConsumerWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: AppSizes.h2(context),
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         letterSpacing: -0.4,
                         color: titleColor,
                       ),

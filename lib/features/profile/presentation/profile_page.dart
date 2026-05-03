@@ -42,7 +42,7 @@ class ProfilePage extends ConsumerWidget {
                 AppStrings.titleProfile,
                 style: TextStyle(
                   fontSize: AppSizes.h2(context),
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: -0.4,
                   color: isDark
                       ? AppColors.darkTextPrimary
@@ -102,7 +102,7 @@ class _AvatarSection extends StatelessWidget {
               name.isNotEmpty ? name[0].toUpperCase() : 'U',
               style: TextStyle(
                 fontSize: AppSizes.h2(context),
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
             ),
@@ -200,11 +200,11 @@ class _ProfileCard extends StatelessWidget {
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
                 ),
               ],
       ),

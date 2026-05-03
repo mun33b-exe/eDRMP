@@ -520,7 +520,7 @@ class _Step3 extends StatelessWidget {
             AppStrings.addDeviceSuccessTitle,
             style: TextStyle(
               fontSize: AppSizes.h3(context),
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
             ),
           ),

@@ -239,11 +239,11 @@ class _DeviceCard extends StatelessWidget {
           ),
           boxShadow: isDark
               ? null
-              : [
-                  const BoxShadow(
+              : const [
+                  BoxShadow(
                     color: AppColors.shadowLight,
-                    blurRadius: 2,
-                    offset: Offset(0, 1),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
                   ),
                 ],
         ),

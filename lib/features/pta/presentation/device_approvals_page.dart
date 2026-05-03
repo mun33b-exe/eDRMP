@@ -56,7 +56,8 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
               AppStrings.ptaApprovalQueueTitle,
               style: TextStyle(
                 fontSize: AppSizes.h3(context),
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
                 color: isDark
                     ? AppColors.darkTextPrimary
                     : AppColors.textPrimary,
@@ -399,13 +400,14 @@ class _DeviceApprovalCard extends StatelessWidget {
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
+          width: 0.5,
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 4,
+                  blurRadius: 8,
                   offset: Offset(0, 2),
                 ),
               ],
@@ -424,7 +426,8 @@ class _DeviceApprovalCard extends StatelessWidget {
                     device.ownerName ?? 'Citizen ${device.id.split('-').last}',
                     style: TextStyle(
                       fontSize: AppSizes.bodyRegular(context),
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.1,
                       color: isDark
                           ? AppColors.darkTextPrimary
                           : AppColors.textPrimary,

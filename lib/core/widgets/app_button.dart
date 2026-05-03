@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../constants/app_padding.dart';
-import '../constants/app_radius.dart';
 import '../constants/app_spacing.dart';
 import '../../theme/colors.dart';
 
@@ -53,9 +52,9 @@ class AppButton extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               foregroundColor: colors.foreground,
               side: BorderSide(color: colors.border),
-              minimumSize: const Size.fromHeight(52),
-              shape: const RoundedRectangleBorder(
-                borderRadius: AppRadius.allMd,
+              minimumSize: const Size.fromHeight(50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: child,
@@ -67,9 +66,9 @@ class AppButton extends StatelessWidget {
               foregroundColor: colors.foreground,
               disabledBackgroundColor: AppColors.border,
               disabledForegroundColor: AppColors.textTertiary,
-              minimumSize: const Size.fromHeight(52),
-              shape: const RoundedRectangleBorder(
-                borderRadius: AppRadius.allMd,
+              minimumSize: const Size.fromHeight(50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: child,
@@ -189,8 +188,8 @@ class _PressScaleState extends State<_PressScale> {
       onPointerUp: (_) => _setPressed(false),
       onPointerCancel: (_) => _setPressed(false),
       child: AnimatedScale(
-        scale: _pressed ? 0.97 : 1.0,
-        duration: const Duration(milliseconds: 120),
+        scale: _pressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 100),
         child: widget.child,
       ),
     );

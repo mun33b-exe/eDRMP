@@ -23,7 +23,8 @@ class AppTypography {
         fontSize: 32,
         fontWeight: FontWeight.w700,
         color: textPrimary,
-        height: 1.25,
+        height: 1.2,
+        letterSpacing: -0.5,
       ),
       // Display Medium — H2 (24px, Poppins SemiBold)
       displayMedium: TextStyle(
@@ -31,7 +32,8 @@ class AppTypography {
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: textPrimary,
-        height: 1.35,
+        height: 1.3,
+        letterSpacing: -0.3,
       ),
       // Display Small — H3 (20px, Poppins SemiBold)
       displaySmall: TextStyle(
@@ -47,7 +49,8 @@ class AppTypography {
         fontSize: 32,
         fontWeight: FontWeight.w700,
         color: textPrimary,
-        height: 1.25,
+        height: 1.2,
+        letterSpacing: -0.5,
       ),
       // Headline Medium — Alternative H2
       headlineMedium: TextStyle(
@@ -55,7 +58,8 @@ class AppTypography {
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: textPrimary,
-        height: 1.35,
+        height: 1.3,
+        letterSpacing: -0.3,
       ),
       // Headline Small — Alternative H3
       headlineSmall: TextStyle(
@@ -95,7 +99,8 @@ class AppTypography {
         fontSize: 16,
         fontWeight: FontWeight.w400,
         color: textPrimary,
-        height: 1.5,
+        height: 1.55,
+        letterSpacing: -0.1,
       ),
       // Body Medium — Secondary body text (14px, Roboto)
       bodyMedium: TextStyle(
@@ -104,6 +109,7 @@ class AppTypography {
         fontWeight: FontWeight.w400,
         color: textSecondary,
         height: 1.5,
+        letterSpacing: -0.05,
       ),
       // Body Small — Tertiary text (12px, Roboto)
       bodySmall: TextStyle(
@@ -112,32 +118,34 @@ class AppTypography {
         fontWeight: FontWeight.w400,
         color: textTertiary,
         height: 1.4,
+        letterSpacing: 0.1,
       ),
-      // Label Large — Button text, labels (14px, Poppins SemiBold)
+      // Label Large — Button text, labels (14px, Poppins Medium)
       labelLarge: TextStyle(
         fontFamily: displayFont,
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: textPrimary,
         height: 1.4,
+        letterSpacing: 0.02,
       ),
-      // Label Medium — Small labels (13px, Poppins SemiBold)
+      // Label Medium — Small labels (13px, Poppins Medium)
       labelMedium: TextStyle(
         fontFamily: displayFont,
         fontSize: 13,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: textPrimary,
         height: 1.4,
-        letterSpacing: 0.5,
+        letterSpacing: 0.3,
       ),
-      // Label Small — Captions, badges (12px, Poppins SemiBold)
+      // Label Small — Captions, badges (11px, Poppins Medium)
       labelSmall: TextStyle(
         fontFamily: displayFont,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
         color: textSecondary,
         height: 1.4,
-        letterSpacing: 0.5,
+        letterSpacing: 0.4,
       ),
     );
   }
@@ -196,13 +204,13 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
-          side: BorderSide(color: AppColors.border),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          side: BorderSide(color: AppColors.border, width: 0.5),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.inputFill,
+        fillColor: AppColors.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
@@ -214,26 +222,26 @@ class AppTheme {
         floatingLabelStyle: textTheme.bodyLarge?.copyWith(
           color: AppColors.primary,
         ),
-        errorStyle: textTheme.bodyMedium?.copyWith(color: AppColors.error),
+        errorStyle: textTheme.bodySmall?.copyWith(color: AppColors.error),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.error, width: 0.8),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.error, width: 1.4),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.border, width: 0.5),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -243,22 +251,22 @@ class AppTheme {
           disabledBackgroundColor: AppColors.border,
           disabledForegroundColor: AppColors.textTertiary,
           elevation: 0,
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size.fromHeight(50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: textTheme.bodyLarge,
+          textStyle: textTheme.labelLarge,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          minimumSize: const Size.fromHeight(52),
+          foregroundColor: AppColors.textPrimary,
+          minimumSize: const Size.fromHeight(50),
           side: const BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: textTheme.bodyLarge,
+          textStyle: textTheme.labelLarge,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -271,7 +279,7 @@ class AppTheme {
         backgroundColor: AppColors.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         titleTextStyle: textTheme.titleMedium,
         contentTextStyle: textTheme.bodyMedium,
       ),
@@ -285,12 +293,12 @@ class AppTheme {
         showDragHandle: true,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.primaryDark,
-        contentTextStyle: textTheme.bodyLarge?.copyWith(
-          color: AppColors.buttonTextLight,
+        backgroundColor: AppColors.textPrimary,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.surface,
         ),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.surface,
@@ -360,8 +368,8 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
-          side: BorderSide(color: AppColors.darkBorder),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          side: BorderSide(color: AppColors.darkBorder, width: 0.5),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -380,26 +388,26 @@ class AppTheme {
         floatingLabelStyle: textTheme.bodyLarge?.copyWith(
           color: AppColors.primaryAccent,
         ),
-        errorStyle: textTheme.bodyMedium?.copyWith(color: AppColors.error),
+        errorStyle: textTheme.bodySmall?.copyWith(color: AppColors.error),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.darkBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.primaryAccent, width: 1.4),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primaryAccent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.error, width: 0.8),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.error, width: 1.4),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.darkBorder),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.darkBorder, width: 0.5),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -409,22 +417,22 @@ class AppTheme {
           disabledBackgroundColor: AppColors.darkBorder,
           disabledForegroundColor: AppColors.darkTextTertiary,
           elevation: 0,
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size.fromHeight(50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: textTheme.bodyLarge,
+          textStyle: textTheme.labelLarge,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.darkTextPrimary,
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size.fromHeight(50),
           side: const BorderSide(color: AppColors.darkBorder),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: textTheme.bodyLarge,
+          textStyle: textTheme.labelLarge,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -437,7 +445,7 @@ class AppTheme {
         backgroundColor: AppColors.darkSurface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         titleTextStyle: textTheme.titleMedium,
         contentTextStyle: textTheme.bodyMedium,
       ),
@@ -451,12 +459,12 @@ class AppTheme {
         showDragHandle: true,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.darkSurfaceElevated,
-        contentTextStyle: textTheme.bodyLarge?.copyWith(
-          color: AppColors.darkTextPrimary,
+        backgroundColor: AppColors.darkTextPrimary,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.darkBackground,
         ),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,

@@ -37,21 +37,25 @@ class AuthBrandHeader extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.md,
-            vertical: AppPadding.sm,
+            horizontal: AppPadding.sm + 4,
+            vertical: AppPadding.xs + 2,
           ),
           decoration: BoxDecoration(
             color: chipBg,
-            borderRadius: AppRadius.allMd,
+            borderRadius: AppRadius.allSm,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.shield_outlined, size: 18, color: chipFg),
+              Icon(Icons.shield_outlined, size: 15, color: chipFg),
               AppSpacing.hSm,
               Text(
                 AppStrings.appName,
-                style: textTheme.bodyLarge?.copyWith(color: chipFg),
+                style: textTheme.labelMedium?.copyWith(
+                  color: chipFg,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
               ),
             ],
           ),
@@ -59,7 +63,12 @@ class AuthBrandHeader extends StatelessWidget {
         AppSpacing.vXl,
         Text(title, style: textTheme.displayLarge),
         AppSpacing.vSm,
-        Text(subtitle, style: textTheme.bodyMedium),
+        Text(
+          subtitle,
+          style: textTheme.bodyMedium?.copyWith(
+            height: 1.6,
+          ),
+        ),
       ],
     );
   }

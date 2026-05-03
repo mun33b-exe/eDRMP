@@ -34,16 +34,17 @@ class PtaDashboardPage extends ConsumerWidget {
               'PTA · NATIONAL OVERVIEW',
               style: TextStyle(
                 fontSize: AppSizes.bodySmall(context),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 color: AppColors.success,
-                letterSpacing: 0.5,
+                letterSpacing: 0.8,
               ),
             ),
             Text(
               'Analytics',
               style: TextStyle(
                 fontSize: AppSizes.h3(context),
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
                 color: isDark
                     ? AppColors.darkTextPrimary
                     : AppColors.textPrimary,
@@ -203,7 +204,8 @@ class PtaDashboardPage extends ConsumerWidget {
                                 'Registrations vs. Blocks',
                                 style: TextStyle(
                                   fontSize: AppSizes.bodyRegular(context),
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -0.2,
                                   color: isDark
                                       ? AppColors.darkTextPrimary
                                       : AppColors.textPrimary,
@@ -261,7 +263,8 @@ class PtaDashboardPage extends ConsumerWidget {
                       'Top devices by registration',
                       style: TextStyle(
                         fontSize: AppSizes.bodyRegular(context),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.2,
                         color: isDark
                             ? AppColors.darkTextPrimary
                             : AppColors.textPrimary,
@@ -324,7 +327,8 @@ class PtaDashboardPage extends ConsumerWidget {
                       'Risk zones',
                       style: TextStyle(
                         fontSize: AppSizes.bodyRegular(context),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.2,
                         color: isDark
                             ? AppColors.darkTextPrimary
                             : AppColors.textPrimary,
@@ -413,13 +417,14 @@ class PtaDashboardPage extends ConsumerWidget {
           borderRadius: AppRadius.allMd,
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.border,
+            width: 0.5,
           ),
           boxShadow: isDark
               ? null
-              : [
-                  const BoxShadow(
+              : const [
+                  BoxShadow(
                     color: AppColors.shadowLight,
-                    blurRadius: 4,
+                    blurRadius: 8,
                     offset: Offset(0, 2),
                   ),
                 ],
@@ -431,12 +436,20 @@ class PtaDashboardPage extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, size: 16, color: color),
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: isDark ? 0.15 : 0.08),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Icon(icon, size: 14, color: color),
+                ),
                 Text(
                   delta,
                   style: TextStyle(
                     fontSize: AppSizes.bodySmall(context),
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: delta.startsWith('+')
                         ? AppColors.success
                         : AppColors.error,
@@ -451,7 +464,8 @@ class PtaDashboardPage extends ConsumerWidget {
                   value,
                   style: TextStyle(
                     fontSize: AppSizes.h3(context),
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
                     color: isDark
                         ? AppColors.darkTextPrimary
                         : AppColors.textPrimary,
@@ -461,6 +475,7 @@ class PtaDashboardPage extends ConsumerWidget {
                   label,
                   style: TextStyle(
                     fontSize: AppSizes.bodySmall(context),
+                    fontWeight: FontWeight.w400,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.textSecondary,
@@ -490,18 +505,29 @@ class PtaDashboardPage extends ConsumerWidget {
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
-          border: Border.all(color: color.withValues(alpha: 0.5)),
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.border,
+            width: 0.5,
+          ),
         ),
         child: Row(
           children: [
-            Icon(icon, color: color, size: 20),
-            AppSpacing.hSm,
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: isDark ? 0.15 : 0.08),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Icon(icon, color: color, size: 18),
+            ),
+            AppSpacing.hMd,
             Expanded(
               child: Text(
                 title,
                 style: TextStyle(
                   fontSize: AppSizes.bodyRegular(context),
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   color: isDark
                       ? AppColors.darkTextPrimary
                       : AppColors.textPrimary,
@@ -526,13 +552,14 @@ class PtaDashboardPage extends ConsumerWidget {
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
+          width: 0.5,
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 4,
+                  blurRadius: 8,
                   offset: Offset(0, 2),
                 ),
               ],
@@ -728,16 +755,16 @@ class _ChartPainter extends CustomPainter {
     final line1Paint = Paint()
       ..color = AppColors.primaryAccent
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
+      ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round;
 
     canvas.drawPath(path1, line1Paint);
 
     // Simple dashed line implementation
     final dashPaint = Paint()
-      ..color = AppColors.error
+      ..color = AppColors.error.withValues(alpha: 0.7)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
+      ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
 
     // Simplistic dash (not a real path dash, but sufficient for a placeholder)

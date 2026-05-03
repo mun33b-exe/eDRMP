@@ -167,13 +167,14 @@ class PoliceDashboardPage extends ConsumerWidget {
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
+          width: 0.5,
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 4,
+                  blurRadius: 8,
                   offset: Offset(0, 2),
                 ),
               ],
@@ -183,14 +184,22 @@ class PoliceDashboardPage extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: color, size: 20),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: isDark ? 0.15 : 0.08),
+                  borderRadius: AppRadius.allSm,
+                ),
+                child: Icon(icon, color: color, size: 16),
+              ),
               AppSpacing.hSm,
               Text(
-                title.toUpperCase(),
+                title,
                 style: TextStyle(
                   fontSize: AppSizes.bodySmall(context),
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.1,
                   color: isDark
                       ? AppColors.darkTextSecondary
                       : AppColors.textSecondary,
@@ -198,12 +207,13 @@ class PoliceDashboardPage extends ConsumerWidget {
               ),
             ],
           ),
-          AppSpacing.vSm,
+          AppSpacing.vMd,
           Text(
             value,
             style: TextStyle(
               fontSize: AppSizes.h1(context),
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
               color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
             ),
           ),

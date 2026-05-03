@@ -53,7 +53,8 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
               AppStrings.ptaBlockRequestsTitle,
               style: TextStyle(
                 fontSize: context.responsiveFontSize(18),
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
                 color: isDark
                     ? AppColors.darkTextPrimary
                     : AppColors.textPrimary,
@@ -295,13 +296,14 @@ class _BlockRequestCard extends StatelessWidget {
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
+          width: 0.5,
         ),
         boxShadow: isDark
             ? null
-            : [
-                const BoxShadow(
+            : const [
+                BoxShadow(
                   color: AppColors.shadowLight,
-                  blurRadius: 4,
+                  blurRadius: 8,
                   offset: Offset(0, 2),
                 ),
               ],
@@ -320,7 +322,8 @@ class _BlockRequestCard extends StatelessWidget {
                     'Case ${fir.id.toUpperCase()}',
                     style: TextStyle(
                       fontSize: context.responsiveFontSize(13),
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.1,
                       color: isDark
                           ? AppColors.darkTextPrimary
                           : AppColors.textPrimary,
