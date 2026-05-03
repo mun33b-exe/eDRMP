@@ -9,6 +9,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_helpers.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../theme/colors.dart';
 import '../../../theme/text_styles.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
@@ -83,18 +84,23 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // eDRMP Logo / Brand
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.textInverse.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(
-                      Icons.shield_outlined,
-                      size: 48,
-                      color: AppColors.textInverse,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final sz = AppSizes.iconLg(context);
+                      return Container(
+                        width: sz,
+                        height: sz,
+                        decoration: BoxDecoration(
+                          color: AppColors.textInverse.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.shield_outlined,
+                          size: sz * 0.6,
+                          color: AppColors.textInverse,
+                        ),
+                      );
+                    },
                   ),
                   AppSpacing.vLg,
                   // eDRMP Title — Poppins Bold, 48px, white
@@ -116,7 +122,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
             ),
             // Loading indicator at bottom
             Positioned(
-              bottom: 80,
+              bottom: MediaQuery.paddingOf(context).bottom + 48,
               left: 0,
               right: 0,
               child: Center(

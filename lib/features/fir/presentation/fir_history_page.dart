@@ -9,6 +9,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -142,7 +143,7 @@ class _FirCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppPadding.md),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.card,
+          color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -151,7 +152,7 @@ class _FirCard extends StatelessWidget {
               ? null
               : [
                   const BoxShadow(
-                    color: AppColors.shadow,
+                    color: AppColors.shadowLight,
                     blurRadius: 2,
                     offset: Offset(0, 1),
                   ),
@@ -167,7 +168,7 @@ class _FirCard extends StatelessWidget {
                   child: Text(
                     fir.deviceInfo.split('·').first.trim(),
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: AppSizes.bodyRegular(context),
                       fontWeight: FontWeight.w700,
                       color: isDark
                           ? AppColors.darkTextPrimary
@@ -188,7 +189,7 @@ class _FirCard extends StatelessWidget {
             Text(
               '${AppStrings.caseIdLabel} ${fir.id.toUpperCase()}',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 fontFamily: 'monospace',
                 letterSpacing: 0.3,
                 color: isDark
@@ -202,26 +203,26 @@ class _FirCard extends StatelessWidget {
                 Icon(
                   Icons.local_police_outlined,
                   size: 14,
-                  color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                  color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
                 ),
                 AppSpacing.hXs,
                 Text(
                   fir.policeStation,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppSizes.bodySmall(context),
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
                 const Spacer(),
                 Text(
                   dateStr,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppSizes.bodySmall(context),
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -239,10 +240,10 @@ class _FirListSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final baseColor = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final highlightColor = isDark
         ? AppColors.darkSurface.withValues(alpha: 0.6)
-        : AppColors.scaffoldBackground;
+        : AppColors.background;
 
     return Shimmer.fromColors(
       baseColor: baseColor,

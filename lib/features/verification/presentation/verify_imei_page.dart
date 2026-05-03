@@ -291,7 +291,7 @@ class _NotFoundCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: AppPadding.lg),
       padding: AppPadding.allLg,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -319,7 +319,7 @@ class _NotFoundCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
           ),
           AppSpacing.vLg,
@@ -346,7 +346,7 @@ class _FoundCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppPadding.lg),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -375,8 +375,8 @@ class _FoundCard extends StatelessWidget {
                         Icons.smartphone_outlined,
                         size: 24,
                         color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
                       ),
                     ),
                     AppSpacing.hMd,
@@ -399,8 +399,8 @@ class _FoundCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               color: isDark
-                                  ? AppColors.darkTextMuted
-                                  : AppColors.textMuted,
+                                  ? AppColors.darkTextTertiary
+                                  : AppColors.textTertiary,
                             ),
                           ),
                         ],
@@ -415,7 +415,7 @@ class _FoundCard extends StatelessWidget {
                 AppSpacing.vMd,
                 Divider(
                   height: 1,
-                  color: isDark ? AppColors.darkDivider : AppColors.divider,
+                  color: isDark ? AppColors.darkBorder : AppColors.divider,
                 ),
                 AppSpacing.vMd,
                 _DetailRow(
@@ -444,7 +444,7 @@ class _FoundCard extends StatelessWidget {
               width: double.infinity,
               padding: AppPadding.allMd,
               decoration: const BoxDecoration(
-                color: AppColors.errorLight,
+                color: AppColors.errorSoft,
                 borderRadius: BorderRadius.vertical(bottom: AppRadius.radiusLg),
               ),
               child: const Row(
@@ -509,7 +509,7 @@ class _DetailRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
           ),
         ),
@@ -522,7 +522,7 @@ class _DetailRow extends StatelessWidget {
               fontFamily: mono ? 'monospace' : null,
               letterSpacing: mono ? 0.3 : 0,
               color: mono
-                  ? AppColors.info
+                  ? AppColors.primaryAccent
                   : (isDark
                         ? AppColors.darkTextPrimary
                         : AppColors.textPrimary),
@@ -550,7 +550,7 @@ class _ErrorCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: AppPadding.lg),
       padding: AppPadding.allMd,
       decoration: BoxDecoration(
-        color: AppColors.errorLight,
+        color: AppColors.errorSoft,
         borderRadius: AppRadius.allMd,
         border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
       ),
@@ -594,7 +594,7 @@ class _CameraPermissionDeniedState extends StatelessWidget {
             Icon(
               Icons.no_photography_outlined,
               size: 64,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
             AppSpacing.vLg,
             Text(
@@ -614,7 +614,7 @@ class _CameraPermissionDeniedState extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
               ),
             ),
           ],

@@ -8,6 +8,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../core/logic/connectivity_notifier.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/connectivity_banner.dart';
 import '../../../theme/colors.dart';
 import '../../devices/presentation/my_devices_page.dart';
@@ -75,7 +76,7 @@ class _AppShellPageState extends ConsumerState<AppShellPage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       body: Column(
         children: [
           ConnectivityBanner(isOnline: isOnline),
@@ -116,7 +117,7 @@ class _CitizenBottomNav extends StatelessWidget {
     final bg = isDark ? AppColors.darkSurface : AppColors.surface;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
     final selected = isDark ? AppColors.darkTextPrimary : AppColors.primary;
-    final unselected = isDark ? AppColors.darkTextPrimary : AppColors.textMuted;
+    final unselected = isDark ? AppColors.darkTextPrimary : AppColors.textTertiary;
 
     return Container(
       decoration: BoxDecoration(
@@ -126,7 +127,7 @@ class _CitizenBottomNav extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: AppSizes.minTouchTarget + 16,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -225,13 +226,14 @@ class _CentreFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sz = AppSizes.iconLg(context);
     return GestureDetector(
       onTap: onTap,
       child: Transform.translate(
         offset: const Offset(0, -AppPadding.lg),
         child: Container(
-          width: 52,
-          height: 52,
+          width: sz,
+          height: sz,
           decoration: const BoxDecoration(
             color: AppColors.primary,
             borderRadius: AppRadius.allLg,

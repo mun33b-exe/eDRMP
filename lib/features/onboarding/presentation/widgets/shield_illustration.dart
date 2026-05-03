@@ -17,8 +17,8 @@ class ShieldIllustration extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final wash = brightness == Brightness.dark
-        ? AppColors.darkCard
-        : AppColors.illustrationBg;
+        ? AppColors.darkSurfaceElevated
+        : AppColors.primarySoft;
     return SizedBox(
       width: size,
       height: size,
@@ -94,14 +94,14 @@ class _ShieldPainter extends CustomPainter {
     canvas.drawPath(
       tick,
       Paint()
-        ..color = AppColors.secondary
+        ..color = AppColors.success
         ..style = PaintingStyle.stroke
         ..strokeWidth = 6 * scale
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round,
     );
 
-    canvas.drawCircle(p(100, 38), 6 * scale, Paint()..color = AppColors.accent);
+    canvas.drawCircle(p(100, 38), 6 * scale, Paint()..color = AppColors.warning);
   }
 
   @override

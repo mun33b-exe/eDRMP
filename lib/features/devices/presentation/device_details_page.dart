@@ -44,7 +44,7 @@ class DeviceDetailsPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
         title: const Text(AppStrings.deviceDetailsTitle),
         centerTitle: false,
@@ -98,7 +98,7 @@ class DeviceDetailsPage extends ConsumerWidget {
                 AppStrings.deviceDetailsReportFirDisabled,
                 style: TextStyle(
                   fontSize: 11,
-                  color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                  color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
                 ),
               ),
             ],
@@ -143,7 +143,7 @@ class _DeviceDetailCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -152,7 +152,7 @@ class _DeviceDetailCard extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 2,
                   offset: Offset(0, 1),
                 ),
@@ -178,8 +178,8 @@ class _DeviceDetailCard extends StatelessWidget {
                     Icons.smartphone_outlined,
                     size: 26,
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ),
@@ -203,8 +203,8 @@ class _DeviceDetailCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
                       ),
                     ),
                   ],
@@ -220,7 +220,7 @@ class _DeviceDetailCard extends StatelessWidget {
           // Divider
           Divider(
             height: 1,
-            color: isDark ? AppColors.darkDivider : AppColors.divider,
+            color: isDark ? AppColors.darkBorder : AppColors.divider,
           ),
           AppSpacing.vMd,
           // Detail rows
@@ -296,7 +296,7 @@ class _DetailRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
           ),
         ),
@@ -436,7 +436,7 @@ class _QrCard extends StatelessWidget {
     return Container(
       padding: AppPadding.allLg,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -445,7 +445,7 @@ class _QrCard extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 2,
                   offset: Offset(0, 1),
                 ),
@@ -476,8 +476,8 @@ class _QrCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
                       ),
                     ),
                   ],

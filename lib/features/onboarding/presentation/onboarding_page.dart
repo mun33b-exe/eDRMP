@@ -7,6 +7,8 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../theme/colors.dart';
 import '../logic/onboarding_controller.dart';
@@ -40,15 +42,15 @@ class OnboardingPage extends ConsumerWidget {
     final isDark = brightness == Brightness.dark;
     final background = isDark
         ? AppColors.darkBackground
-        : AppColors.scaffoldBackground;
+        : AppColors.background;
     final titleColor = isDark
         ? AppColors.darkTextPrimary
         : AppColors.textPrimary;
     final bodyColor = isDark
         ? AppColors.darkTextSecondary
         : AppColors.textSecondary;
-    final mutedColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
-    final inactiveDot = isDark ? AppColors.darkBorder : AppColors.inactiveDot;
+    final mutedColor = isDark ? AppColors.darkTextTertiary : AppColors.textTertiary;
+    final inactiveDot = isDark ? AppColors.darkBorder : AppColors.border;
 
     return Scaffold(
       backgroundColor: background,
@@ -58,10 +60,10 @@ class OnboardingPage extends ConsumerWidget {
             // Top bar — Logo (left) + Skip (right). Padding mirrors the JSX
             // (8px top, 22px sides) for visual fidelity to the handoff.
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.xxl - AppPadding.xs, // ≈ 22 (handoff: 22)
+              padding: EdgeInsets.fromLTRB(
+                context.responsiveHorizontalPadding,
                 AppPadding.sm,
-                AppPadding.xxl - AppPadding.xs,
+                context.responsiveHorizontalPadding,
                 0,
               ),
               child: Row(
@@ -106,7 +108,7 @@ class OnboardingPage extends ConsumerWidget {
                       AppStrings.onboardingTitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: AppSizes.h2(context),
                         fontWeight: FontWeight.w800,
                         letterSpacing: -0.4,
                         color: titleColor,
@@ -117,7 +119,7 @@ class OnboardingPage extends ConsumerWidget {
                       AppStrings.onboardingBody,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: AppSizes.bodyRegular(context),
                         height: 1.5,
                         color: bodyColor,
                       ),
@@ -129,10 +131,10 @@ class OnboardingPage extends ConsumerWidget {
 
             // Bottom — page indicator, primary CTA, "Already registered? Sign in".
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.xxl - AppPadding.xs, // 22
+              padding: EdgeInsets.fromLTRB(
+                context.responsiveHorizontalPadding,
                 0,
-                AppPadding.xxl - AppPadding.xs,
+                context.responsiveHorizontalPadding,
                 AppPadding.xxl + AppPadding.xs, // 28
               ),
               child: Column(
@@ -226,7 +228,10 @@ class _SignInRow extends StatelessWidget {
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: TextStyle(fontSize: 12, color: mutedColor),
+            style: TextStyle(
+              fontSize: AppSizes.bodySmall(context),
+              color: mutedColor,
+            ),
             children: const [
               TextSpan(text: '${AppStrings.onboardingAlreadyRegistered} '),
               TextSpan(

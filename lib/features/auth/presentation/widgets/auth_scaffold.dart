@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_padding.dart';
+import '../../../../core/utils/responsive.dart';
 
 /// Common scaffold for all four auth screens.
 ///
@@ -21,30 +22,35 @@ class AuthScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = context.responsiveHorizontalPadding;
+    final maxW = context.maxContentWidth;
     return Scaffold(
       appBar: appBar,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
+                hPad,
                 AppPadding.xl,
-                AppPadding.xl,
-                AppPadding.xl,
+                hPad,
                 AppPadding.xxl,
               ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight:
-                      constraints.maxHeight - AppPadding.xl - AppPadding.xxl,
-                ),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      child,
-                      if (bottom != null) ...[const Spacer(), bottom!],
-                    ],
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        constraints.maxHeight - AppPadding.xl - AppPadding.xxl,
+                    maxWidth: maxW,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        child,
+                        if (bottom != null) ...[const Spacer(), bottom!],
+                      ],
+                    ),
                   ),
                 ),
               ),

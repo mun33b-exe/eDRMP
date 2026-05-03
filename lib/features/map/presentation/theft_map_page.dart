@@ -121,7 +121,7 @@ class _LegendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = isDark ? AppColors.darkCard : AppColors.card;
+    final background = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final border = isDark ? AppColors.darkBorder : AppColors.border;
     final textColor = isDark
         ? AppColors.darkTextPrimary
@@ -140,7 +140,7 @@ class _LegendCard extends StatelessWidget {
             ? null
             : [
                 BoxShadow(
-                  color: AppColors.shadow.withValues(alpha: 0.12),
+                  color: AppColors.shadowLight.withValues(alpha: 0.12),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -246,7 +246,7 @@ class _ZoneDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final labelColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+    final labelColor = isDark ? AppColors.darkTextTertiary : AppColors.textTertiary;
     final valueColor = isDark
         ? AppColors.darkTextPrimary
         : AppColors.textPrimary;
@@ -317,7 +317,7 @@ class _DetailBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final labelColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+    final labelColor = isDark ? AppColors.darkTextTertiary : AppColors.textTertiary;
     final valueColor = isDark
         ? AppColors.darkTextPrimary
         : AppColors.textPrimary;

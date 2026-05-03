@@ -7,6 +7,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
@@ -29,7 +30,7 @@ class ProfilePage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppPadding.screen,
@@ -40,7 +41,7 @@ class ProfilePage extends ConsumerWidget {
               Text(
                 AppStrings.titleProfile,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: AppSizes.h2(context),
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.4,
                   color: isDark
@@ -82,9 +83,12 @@ class _AvatarSection extends StatelessWidget {
 
     return Row(
       children: [
-        Container(
-          width: 72,
-          height: 72,
+        Builder(
+          builder: (context) {
+            final sz = AppSizes.avatar(context);
+            return Container(
+          width: sz,
+          height: sz,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -96,13 +100,15 @@ class _AvatarSection extends StatelessWidget {
           child: Center(
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : 'U',
-              style: const TextStyle(
-                fontSize: 28,
+              style: TextStyle(
+                fontSize: AppSizes.h2(context),
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
               ),
             ),
           ),
+            );
+          },
         ),
         AppSpacing.hLg,
         Expanded(
@@ -112,7 +118,7 @@ class _AvatarSection extends StatelessWidget {
               Text(
                 name,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppSizes.h3(context),
                   fontWeight: FontWeight.w700,
                   color: isDark
                       ? AppColors.darkTextPrimary
@@ -131,8 +137,8 @@ class _AvatarSection extends StatelessWidget {
                 ),
                 child: Text(
                   role,
-                  style: const TextStyle(
-                    fontSize: 11,
+                  style: TextStyle(
+                    fontSize: AppSizes.bodySmall(context),
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                     letterSpacing: 0.2,
@@ -187,7 +193,7 @@ class _ProfileCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -196,7 +202,7 @@ class _ProfileCard extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 2,
                   offset: Offset(0, 1),
                 ),
@@ -246,7 +252,7 @@ class _ProfileRow extends StatelessWidget {
           : BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isDark ? AppColors.darkDivider : AppColors.divider,
+                  color: isDark ? AppColors.darkBorder : AppColors.divider,
                 ),
               ),
             ),
@@ -258,9 +264,9 @@ class _ProfileRow extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w500,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
               ),
             ),
           ),
@@ -268,7 +274,7 @@ class _ProfileRow extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppSizes.bodyRegular(context),
                 fontWeight: FontWeight.w600,
                 fontFamily: mono ? 'monospace' : null,
                 letterSpacing: mono ? 0.3 : 0,

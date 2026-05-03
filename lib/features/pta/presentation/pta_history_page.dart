@@ -54,7 +54,7 @@ class PtaHistoryPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +67,7 @@ class PtaHistoryPage extends ConsumerWidget {
               '${device?.status.displayName ?? 'Review'} · ${DateFormat('dd MMM yyyy').format(now)}',
               style: TextStyle(
                 fontSize: 12,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
               ),
             ),
           ],
@@ -97,7 +97,7 @@ class PtaHistoryPage extends ConsumerWidget {
                           child: Text(
                             initials.isEmpty ? '?' : initials,
                             style: const TextStyle(
-                              color: AppColors.ptaPrimary,
+                              color: AppColors.success,
                               fontWeight: FontWeight.w800,
                               fontSize: 16,
                             ),
@@ -125,8 +125,8 @@ class PtaHistoryPage extends ConsumerWidget {
                                   fontSize: 11,
                                   fontFamily: 'monospace',
                                   color: isDark
-                                      ? AppColors.darkTextMuted
-                                      : AppColors.textMuted,
+                                      ? AppColors.darkTextTertiary
+                                      : AppColors.textTertiary,
                                   letterSpacing: 0.3,
                                 ),
                               ),
@@ -149,8 +149,8 @@ class PtaHistoryPage extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                   AppSpacing.vSm,
@@ -169,7 +169,7 @@ class PtaHistoryPage extends ConsumerWidget {
                                 height: 40,
                                 decoration: BoxDecoration(
                                   color: isDark
-                                      ? AppColors.darkInput
+                                      ? AppColors.darkSurface
                                       : AppColors.inputFill,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -224,8 +224,8 @@ class PtaHistoryPage extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                   AppSpacing.vSm,
@@ -341,7 +341,7 @@ class PtaHistoryPage extends ConsumerWidget {
     return Container(
       padding: padding ?? const EdgeInsets.all(AppPadding.lg),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -350,7 +350,7 @@ class PtaHistoryPage extends ConsumerWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),

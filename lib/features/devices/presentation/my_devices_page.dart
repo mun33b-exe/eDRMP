@@ -8,6 +8,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -38,7 +39,7 @@ class _MyDevicesPageState extends ConsumerState<MyDevicesPage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppAppBar(
         title: AppStrings.titleMyDevices,
         actions: [
@@ -181,7 +182,7 @@ class _FilterRow extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.primary
-                    : (isDark ? AppColors.darkCard : AppColors.card),
+                    : (isDark ? AppColors.darkSurfaceElevated : AppColors.card),
                 borderRadius: AppRadius.allPill,
                 border: Border.all(
                   color: isSelected
@@ -231,7 +232,7 @@ class _DeviceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppPadding.md),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.card,
+          color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allLg,
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -240,7 +241,7 @@ class _DeviceCard extends StatelessWidget {
               ? null
               : [
                   const BoxShadow(
-                    color: AppColors.shadow,
+                    color: AppColors.shadowLight,
                     blurRadius: 2,
                     offset: Offset(0, 1),
                   ),
@@ -251,20 +252,25 @@ class _DeviceCard extends StatelessWidget {
             // Phone glyph
             Hero(
               tag: 'device-${device.id}',
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkBackground
-                      : AppColors.inputFill,
-                  borderRadius: AppRadius.allMd,
-                ),
-                child: Icon(
-                  Icons.smartphone_outlined,
-                  size: 24,
-                  color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
-                ),
+              child: Builder(
+                builder: (context) {
+                  final sz = AppSizes.iconMd(context);
+                  return Container(
+                    width: sz,
+                    height: sz,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.darkBackground
+                          : AppColors.inputFill,
+                      borderRadius: AppRadius.allMd,
+                    ),
+                    child: Icon(
+                      Icons.smartphone_outlined,
+                      size: sz * 0.55,
+                      color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
+                    ),
+                  );
+                },
               ),
             ),
             AppSpacing.hMd,
@@ -278,7 +284,7 @@ class _DeviceCard extends StatelessWidget {
                         ? 'Unverified device'
                         : '${device.brand} ${device.model}',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: AppSizes.bodyRegular(context),
                       fontWeight: FontWeight.w700,
                       color: isDark
                           ? AppColors.darkTextPrimary
@@ -289,22 +295,22 @@ class _DeviceCard extends StatelessWidget {
                   Text(
                     device.maskedImei,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppSizes.bodySmall(context),
                       fontFamily: 'monospace',
                       letterSpacing: 0.3,
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                   AppSpacing.vXs,
                   Text(
                     '${device.displayDate} · ${device.operator}',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppSizes.bodySmall(context),
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                 ],
@@ -347,10 +353,10 @@ class _DeviceListSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final baseColor = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final highlightColor = isDark
         ? AppColors.darkSurface.withValues(alpha: 0.6)
-        : AppColors.scaffoldBackground;
+        : AppColors.background;
 
     return Shimmer.fromColors(
       baseColor: baseColor,
@@ -369,8 +375,8 @@ class _DeviceListSkeleton extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: AppSizes.iconMd(context),
+                height: AppSizes.iconMd(context),
                 decoration: BoxDecoration(
                   color: highlightColor,
                   borderRadius: AppRadius.allMd,

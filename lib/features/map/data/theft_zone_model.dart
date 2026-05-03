@@ -47,11 +47,11 @@ extension RiskLevelColor on RiskLevel {
   Color get colorToken {
     switch (this) {
       case RiskLevel.low:
-        return AppColors.analyticsGreen;
+        return AppColors.success;
       case RiskLevel.medium:
-        return AppColors.analyticsOrange;
+        return AppColors.warning;
       case RiskLevel.high:
-        return AppColors.analyticsRed;
+        return AppColors.error;
     }
   }
 }

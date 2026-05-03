@@ -30,8 +30,8 @@ class EmptyState extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final brightness = Theme.of(context).brightness;
     final iconColor = brightness == Brightness.dark
-        ? AppColors.darkTextMuted
-        : AppColors.textMuted;
+        ? AppColors.darkTextTertiary
+        : AppColors.textTertiary;
 
     return Center(
       child: Padding(

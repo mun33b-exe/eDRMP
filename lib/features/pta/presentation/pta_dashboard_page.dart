@@ -8,6 +8,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
@@ -24,23 +25,23 @@ class PtaDashboardPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
         title: Column(
           children: [
-            const Text(
+            Text(
               'PTA · NATIONAL OVERVIEW',
               style: TextStyle(
-                fontSize: 11,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w600,
-                color: AppColors.ptaPrimary,
+                color: AppColors.success,
                 letterSpacing: 0.5,
               ),
             ),
             Text(
               'Analytics',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppSizes.h3(context),
                 fontWeight: FontWeight.w800,
                 color: isDark
                     ? AppColors.darkTextPrimary
@@ -110,15 +111,17 @@ class PtaDashboardPage extends ConsumerWidget {
                 childAspectRatio: 1.6,
                 children: [
                   _buildStatTile(
+                    context,
                     'Total devices',
                     liveStats?.totalDevices.toString() ?? '—',
                     '+4.2%',
                     Icons.devices,
-                    AppColors.ptaPrimary,
+                    AppColors.success,
                     isDark,
                     onTap: () => context.push(RouteNames.deviceApprovals),
                   ),
                   _buildStatTile(
+                    context,
                     'Approvals',
                     liveStats?.approvals.toString() ?? '—',
                     '+8.1%',
@@ -127,6 +130,7 @@ class PtaDashboardPage extends ConsumerWidget {
                     isDark,
                   ),
                   _buildStatTile(
+                    context,
                     'Active FIRs',
                     liveStats?.activeFirs.toString() ?? '—',
                     '-2.3%',
@@ -136,6 +140,7 @@ class PtaDashboardPage extends ConsumerWidget {
                     onTap: () => context.push(RouteNames.blockRequests),
                   ),
                   _buildStatTile(
+                    context,
                     'Blocked',
                     liveStats?.blocked.toString() ?? '—',
                     '+0.4%',
@@ -152,9 +157,10 @@ class PtaDashboardPage extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _buildActionCard(
+                      context: context,
                       title: 'Device Approvals',
                       icon: Icons.checklist,
-                      color: AppColors.ptaPrimary,
+                      color: AppColors.success,
                       isDark: isDark,
                       onTap: () => context.push(RouteNames.deviceApprovals),
                     ),
@@ -162,6 +168,7 @@ class PtaDashboardPage extends ConsumerWidget {
                   AppSpacing.hMd,
                   Expanded(
                     child: _buildActionCard(
+                      context: context,
                       title: 'Block Requests',
                       icon: Icons.gavel,
                       color: AppColors.error,
@@ -189,7 +196,7 @@ class PtaDashboardPage extends ConsumerWidget {
                             Text(
                               'Registrations vs. Blocks',
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: AppSizes.bodyRegular(context),
                                 fontWeight: FontWeight.w700,
                                 color: isDark
                                     ? AppColors.darkTextPrimary
@@ -199,10 +206,10 @@ class PtaDashboardPage extends ConsumerWidget {
                             Text(
                               '30-day trend',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: AppSizes.bodySmall(context),
                                 color: isDark
-                                    ? AppColors.darkTextMuted
-                                    : AppColors.textMuted,
+                                    ? AppColors.darkTextTertiary
+                                    : AppColors.textTertiary,
                               ),
                             ),
                           ],
@@ -210,14 +217,16 @@ class PtaDashboardPage extends ConsumerWidget {
                         Row(
                           children: [
                             _buildLegendDot(
+                              context,
                               'Registered',
-                              AppColors.analyticsViolet,
+                              AppColors.primaryAccent,
                               isDark,
                             ),
                             AppSpacing.hSm,
                             _buildLegendDot(
+                              context,
                               'Blocked',
-                              AppColors.analyticsRed,
+                              AppColors.error,
                               isDark,
                             ),
                           ],
@@ -243,7 +252,7 @@ class PtaDashboardPage extends ConsumerWidget {
                     Text(
                       'Top devices by registration',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppSizes.bodyRegular(context),
                         fontWeight: FontWeight.w700,
                         color: isDark
                             ? AppColors.darkTextPrimary
@@ -252,20 +261,23 @@ class PtaDashboardPage extends ConsumerWidget {
                     ),
                     AppSpacing.vLg,
                     _buildDeviceRow(
+                      context,
                       'Apple iPhone 15 / Pro',
                       '412K',
                       0.92,
-                      AppColors.analyticsViolet,
+                      AppColors.primaryAccent,
                       isDark,
                     ),
                     _buildDeviceRow(
+                      context,
                       'Samsung Galaxy S24',
                       '318K',
                       0.71,
-                      AppColors.analyticsViolet,
+                      AppColors.primaryAccent,
                       isDark,
                     ),
                     _buildDeviceRow(
+                      context,
                       'Xiaomi Redmi Note 13',
                       '267K',
                       0.59,
@@ -273,13 +285,15 @@ class PtaDashboardPage extends ConsumerWidget {
                       isDark,
                     ),
                     _buildDeviceRow(
+                      context,
                       'Tecno Camon 30',
                       '198K',
                       0.44,
-                      AppColors.analyticsGreen,
+                      AppColors.success,
                       isDark,
                     ),
                     _buildDeviceRow(
+                      context,
                       'Other',
                       '1.21M',
                       0.32,
@@ -300,7 +314,7 @@ class PtaDashboardPage extends ConsumerWidget {
                     Text(
                       'Risk zones',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppSizes.bodyRegular(context),
                         fontWeight: FontWeight.w700,
                         color: isDark
                             ? AppColors.darkTextPrimary
@@ -318,8 +332,8 @@ class PtaDashboardPage extends ConsumerWidget {
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: isDark
-                                ? AppColors.darkInput
-                                : AppColors.scaffoldBackground,
+                                ? AppColors.darkSurface
+                                : AppColors.background,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
@@ -328,8 +342,8 @@ class PtaDashboardPage extends ConsumerWidget {
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: isDark
-                                    ? AppColors.darkTextMuted
-                                    : AppColors.textMuted,
+                                    ? AppColors.darkTextTertiary
+                                    : AppColors.textTertiary,
                               ),
                             ),
                           ),
@@ -340,20 +354,23 @@ class PtaDashboardPage extends ConsumerWidget {
                     Row(
                       children: [
                         _buildRiskLegend(
+                          context,
                           'Low',
-                          AppColors.analyticsGreen,
+                          AppColors.success,
                           isDark,
                         ),
                         AppSpacing.hMd,
                         _buildRiskLegend(
+                          context,
                           'Medium',
-                          AppColors.analyticsOrange,
+                          AppColors.warning,
                           isDark,
                         ),
                         AppSpacing.hMd,
                         _buildRiskLegend(
+                          context,
                           'High',
-                          AppColors.analyticsRed,
+                          AppColors.error,
                           isDark,
                         ),
                       ],
@@ -369,6 +386,7 @@ class PtaDashboardPage extends ConsumerWidget {
   }
 
   Widget _buildStatTile(
+    BuildContext context,
     String label,
     String value,
     String delta,
@@ -382,7 +400,7 @@ class PtaDashboardPage extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(AppPadding.md),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.card,
+          color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -391,7 +409,7 @@ class PtaDashboardPage extends ConsumerWidget {
               ? null
               : [
                   const BoxShadow(
-                    color: AppColors.shadow,
+                    color: AppColors.shadowLight,
                     blurRadius: 4,
                     offset: Offset(0, 2),
                   ),
@@ -408,7 +426,7 @@ class PtaDashboardPage extends ConsumerWidget {
                 Text(
                   delta,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppSizes.bodySmall(context),
                     fontWeight: FontWeight.w700,
                     color: delta.startsWith('+')
                         ? AppColors.success
@@ -423,7 +441,7 @@ class PtaDashboardPage extends ConsumerWidget {
                 Text(
                   value,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: AppSizes.h3(context),
                     fontWeight: FontWeight.w800,
                     color: isDark
                         ? AppColors.darkTextPrimary
@@ -433,7 +451,7 @@ class PtaDashboardPage extends ConsumerWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppSizes.bodySmall(context),
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.textSecondary,
@@ -448,6 +466,7 @@ class PtaDashboardPage extends ConsumerWidget {
   }
 
   Widget _buildActionCard({
+    required BuildContext context,
     required String title,
     required IconData icon,
     required Color color,
@@ -460,7 +479,7 @@ class PtaDashboardPage extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(AppPadding.md),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.card,
+          color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
           border: Border.all(color: color.withValues(alpha: 0.5)),
         ),
@@ -472,7 +491,7 @@ class PtaDashboardPage extends ConsumerWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: AppSizes.bodyRegular(context),
                   fontWeight: FontWeight.w700,
                   color: isDark
                       ? AppColors.darkTextPrimary
@@ -482,7 +501,7 @@ class PtaDashboardPage extends ConsumerWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
           ],
         ),
@@ -494,7 +513,7 @@ class PtaDashboardPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.lg),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -503,7 +522,7 @@ class PtaDashboardPage extends ConsumerWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -513,7 +532,7 @@ class PtaDashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildLegendDot(String label, Color color, bool isDark) {
+  Widget _buildLegendDot(BuildContext context, String label, Color color, bool isDark) {
     return Row(
       children: [
         Container(
@@ -525,7 +544,7 @@ class PtaDashboardPage extends ConsumerWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 11,
+            fontSize: AppSizes.bodySmall(context),
             color: isDark
                 ? AppColors.darkTextSecondary
                 : AppColors.textSecondary,
@@ -535,7 +554,7 @@ class PtaDashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildRiskLegend(String label, Color color, bool isDark) {
+  Widget _buildRiskLegend(BuildContext context, String label, Color color, bool isDark) {
     return Row(
       children: [
         Container(
@@ -550,7 +569,7 @@ class PtaDashboardPage extends ConsumerWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 11,
+            fontSize: AppSizes.bodySmall(context),
             color: isDark
                 ? AppColors.darkTextSecondary
                 : AppColors.textSecondary,
@@ -561,6 +580,7 @@ class PtaDashboardPage extends ConsumerWidget {
   }
 
   Widget _buildDeviceRow(
+    BuildContext context,
     String label,
     String value,
     double percent,
@@ -578,7 +598,7 @@ class PtaDashboardPage extends ConsumerWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppSizes.bodySmall(context),
                   fontWeight: FontWeight.w600,
                   color: isDark
                       ? AppColors.darkTextPrimary
@@ -588,9 +608,9 @@ class PtaDashboardPage extends ConsumerWidget {
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppSizes.bodySmall(context),
                   fontFamily: 'monospace',
-                  color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                  color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
                 ),
               ),
             ],
@@ -599,7 +619,7 @@ class PtaDashboardPage extends ConsumerWidget {
           Container(
             height: 6,
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkInput : AppColors.inputFill,
+              color: isDark ? AppColors.darkSurface : AppColors.inputFill,
               borderRadius: BorderRadius.circular(99),
             ),
             alignment: Alignment.centerLeft,
@@ -684,8 +704,8 @@ class _ChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          AppColors.analyticsViolet.withValues(alpha: 0.3),
-          AppColors.analyticsViolet.withValues(alpha: 0.0),
+          AppColors.primaryAccent.withValues(alpha: 0.3),
+          AppColors.primaryAccent.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
 
@@ -697,7 +717,7 @@ class _ChartPainter extends CustomPainter {
     canvas.drawPath(fillPath, gradientPaint);
 
     final line1Paint = Paint()
-      ..color = AppColors.analyticsViolet
+      ..color = AppColors.primaryAccent
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round;
@@ -706,7 +726,7 @@ class _ChartPainter extends CustomPainter {
 
     // Simple dashed line implementation
     final dashPaint = Paint()
-      ..color = AppColors.analyticsRed
+      ..color = AppColors.error
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round;

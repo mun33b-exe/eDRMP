@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/app_app_bar.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_input.dart';
@@ -26,7 +27,7 @@ class FirReviewPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: const AppAppBar(title: 'FIR Verification'),
       body: firAsync.when(
         data: (fir) {
@@ -44,7 +45,7 @@ class FirReviewPage extends ConsumerWidget {
                       Container(
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkCard : AppColors.card,
+                          color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
                           borderRadius: AppRadius.allMd,
                           border: Border.all(
                             color: isDark
@@ -55,7 +56,7 @@ class FirReviewPage extends ConsumerWidget {
                               ? null
                               : [
                                   const BoxShadow(
-                                    color: AppColors.shadow,
+                                    color: AppColors.shadowLight,
                                     blurRadius: 4,
                                     offset: Offset(0, 2),
                                   ),
@@ -98,11 +99,11 @@ class FirReviewPage extends ConsumerWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
+                                        Text(
                                           'STATUS',
                                           style: TextStyle(
                                             color: Colors.white70,
-                                            fontSize: 11,
+                                            fontSize: AppSizes.bodySmall(context),
                                             fontWeight: FontWeight.w600,
                                             letterSpacing: 0.5,
                                           ),
@@ -114,9 +115,9 @@ class FirReviewPage extends ConsumerWidget {
                                                         CaseStatus.firVerified
                                                     ? 'VERIFIED'
                                                     : 'REJECTED'),
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 20,
+                                            fontSize: AppSizes.h3(context),
                                             fontWeight: FontWeight.w800,
                                             letterSpacing: -0.2,
                                           ),
@@ -186,18 +187,18 @@ class FirReviewPage extends ConsumerWidget {
                         padding: const EdgeInsets.all(AppPadding.md),
                         decoration: BoxDecoration(
                           color: isDark
-                              ? AppColors.darkInput
+                              ? AppColors.darkSurface
                               : AppColors.inputFill,
                           borderRadius: AppRadius.allSm,
                         ),
                         child: Text(
                           'Officer ID: PB-0429-118 · Loaded ${DateFormat('dd MMM yyyy, HH:mm').format(DateTime.now())}',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: AppSizes.bodySmall(context),
                             fontFamily: 'monospace',
                             color: isDark
-                                ? AppColors.darkTextMuted
-                                : AppColors.textMuted,
+                                ? AppColors.darkTextTertiary
+                                : AppColors.textTertiary,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -214,7 +215,7 @@ class FirReviewPage extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: isDark
                         ? AppColors.darkBackground
-                        : AppColors.scaffoldBackground,
+                        : AppColors.background,
                     border: Border(
                       top: BorderSide(
                         color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -383,7 +384,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppSizes.bodyRegular(context),
                 fontWeight: FontWeight.w600,
                 color: isDark
                     ? AppColors.darkTextSecondary
@@ -395,7 +396,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppSizes.bodyRegular(context),
                 fontFamily: isMono ? 'monospace' : null,
                 color: isDark
                     ? AppColors.darkTextPrimary

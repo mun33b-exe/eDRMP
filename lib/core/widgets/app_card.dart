@@ -28,7 +28,7 @@ class AppCard extends StatelessWidget {
         ? AppColors.darkBorder
         : AppColors.border;
     final background = brightness == Brightness.dark
-        ? AppColors.darkCard
+        ? AppColors.darkSurfaceElevated
         : AppColors.card;
 
     final body = Container(

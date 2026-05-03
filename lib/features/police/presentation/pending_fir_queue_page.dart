@@ -9,6 +9,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
@@ -34,15 +35,15 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           AppStrings.policeQueueTitle,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: AppSizes.bodyLarge(context), fontWeight: FontWeight.w700),
         ),
         backgroundColor: isDark
             ? AppColors.darkSurface
-            : AppColors.policePrimary,
+            : AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: firsAsync.when(
@@ -140,7 +141,7 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
         label,
         style: TextStyle(
           color: isSelected
-              ? (isDark ? Colors.white : AppColors.policePrimary)
+              ? (isDark ? Colors.white : AppColors.primary)
               : (isDark
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary),
@@ -149,12 +150,12 @@ class _PendingFirQueuePageState extends ConsumerState<PendingFirQueuePage> {
       ),
       backgroundColor: isSelected
           ? (isDark
-                ? AppColors.policePrimary.withValues(alpha: 0.3)
+                ? AppColors.primary.withValues(alpha: 0.3)
                 : AppColors.primarySoft)
-          : (isDark ? AppColors.darkCard : AppColors.inputFill),
+          : (isDark ? AppColors.darkSurfaceElevated : AppColors.inputFill),
       side: BorderSide(
         color: isSelected
-            ? AppColors.policePrimary
+            ? AppColors.primary
             : (isDark ? AppColors.darkBorder : AppColors.border),
       ),
       onPressed: () {
@@ -187,7 +188,7 @@ class _FirQueueCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppPadding.md),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.card,
+          color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -196,7 +197,7 @@ class _FirQueueCard extends StatelessWidget {
               ? null
               : [
                   const BoxShadow(
-                    color: AppColors.shadow,
+                    color: AppColors.shadowLight,
                     blurRadius: 2,
                     offset: Offset(0, 1),
                   ),
@@ -212,7 +213,7 @@ class _FirQueueCard extends StatelessWidget {
                   child: Text(
                     '${AppStrings.policeQueueCasePrefix} ${fir.id.toUpperCase()}',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: AppSizes.bodyRegular(context),
                       fontWeight: FontWeight.w700,
                       fontFamily: 'monospace',
                       color: isDark
@@ -231,7 +232,7 @@ class _FirQueueCard extends StatelessWidget {
             Text(
               fir.deviceInfo,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppSizes.bodyRegular(context),
                 color: isDark
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary,
@@ -241,7 +242,7 @@ class _FirQueueCard extends StatelessWidget {
             Text(
               '${AppStrings.policeQueueStationPrefix} ${fir.policeStation}',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 color: isDark
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary,
@@ -253,8 +254,8 @@ class _FirQueueCard extends StatelessWidget {
             Text(
               '${AppStrings.policeQueueFiledPrefix} $dateStr',
               style: TextStyle(
-                fontSize: 11,
-                color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+                fontSize: AppSizes.bodySmall(context),
+                color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
               ),
             ),
           ],
@@ -286,10 +287,10 @@ class _FirQueueSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final baseColor = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final highlightColor = isDark
         ? AppColors.darkSurface.withValues(alpha: 0.6)
-        : AppColors.scaffoldBackground;
+        : AppColors.background;
 
     return Shimmer.fromColors(
       baseColor: baseColor,

@@ -33,7 +33,7 @@ class AppTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -75,7 +75,7 @@ class _TimelineItemNode extends StatelessWidget {
         ? AppColors.rejected
         : isActive
         ? AppColors.primary
-        : (isDark ? AppColors.darkTextMuted : AppColors.border);
+        : (isDark ? AppColors.darkTextTertiary : AppColors.border);
 
     // Line color
     final lineColor = isDone
@@ -149,8 +149,8 @@ class _TimelineItemNode extends StatelessWidget {
                                       ? AppColors.darkTextPrimary
                                       : AppColors.textPrimary)
                                 : (isDark
-                                      ? AppColors.darkTextMuted
-                                      : AppColors.textMuted)),
+                                      ? AppColors.darkTextTertiary
+                                      : AppColors.textTertiary)),
                     ),
                   ),
                   AppSpacing.vXs,
@@ -159,8 +159,8 @@ class _TimelineItemNode extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                   if (item.note != null) ...[
@@ -171,8 +171,8 @@ class _TimelineItemNode extends StatelessWidget {
                         fontSize: 11,
                         height: 1.4,
                         color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
                       ),
                     ),
                   ],

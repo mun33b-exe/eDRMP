@@ -66,7 +66,7 @@ class AppButton extends StatelessWidget {
               backgroundColor: colors.background,
               foregroundColor: colors.foreground,
               disabledBackgroundColor: AppColors.border,
-              disabledForegroundColor: AppColors.textMuted,
+              disabledForegroundColor: AppColors.textTertiary,
               minimumSize: const Size.fromHeight(52),
               shape: const RoundedRectangleBorder(
                 borderRadius: AppRadius.allMd,
@@ -88,7 +88,7 @@ class AppButton extends StatelessWidget {
       case AppButtonVariant.primary:
         return _ButtonPalette(
           background: brightness == Brightness.dark
-              ? AppColors.primaryLight
+              ? AppColors.primaryAccent
               : AppColors.primary,
           foreground: AppColors.buttonTextLight,
           border: AppColors.border,
@@ -118,7 +118,7 @@ class AppButton extends StatelessWidget {
       case AppButtonVariant.disabled:
         return const _ButtonPalette(
           background: AppColors.border,
-          foreground: AppColors.textMuted,
+          foreground: AppColors.textTertiary,
           border: AppColors.border,
         );
     }

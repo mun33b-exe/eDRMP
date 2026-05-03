@@ -65,7 +65,7 @@ class _AddDevicePageState extends ConsumerState<AddDevicePage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: _buildAppBar(isDark),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 220),
@@ -494,13 +494,13 @@ class _Step3 extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: const BoxDecoration(
-              color: AppColors.secondaryLight,
+              color: AppColors.successSoft,
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.check_circle_outline,
               size: 40,
-              color: AppColors.secondary,
+              color: AppColors.success,
             ),
           ),
           AppSpacing.vXl,
@@ -531,7 +531,7 @@ class _Step3 extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               height: 1.5,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
           ),
           AppSpacing.vXl,
@@ -569,7 +569,7 @@ class _StepIndicator extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+            color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
           ),
         ),
         AppSpacing.hMd,
@@ -607,7 +607,7 @@ class _DetectedCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -639,8 +639,8 @@ class _DetectedCard extends StatelessWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
                 Text(
@@ -658,8 +658,8 @@ class _DetectedCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -696,7 +696,7 @@ class _ReadOnlyField extends StatelessWidget {
         vertical: AppPadding.sm + 2,
       ),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkInput : AppColors.inputFill,
+        color: isDark ? AppColors.darkSurface : AppColors.inputFill,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -710,7 +710,7 @@ class _ReadOnlyField extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
             ),
           ),
           const SizedBox(height: 2),
@@ -726,8 +726,8 @@ class _ReadOnlyField extends StatelessWidget {
                     letterSpacing: mono ? 0.3 : 0,
                     color: placeholder
                         ? (isDark
-                              ? AppColors.darkTextMuted
-                              : AppColors.textMuted)
+                              ? AppColors.darkTextTertiary
+                              : AppColors.textTertiary)
                         : (isDark
                               ? AppColors.darkTextPrimary
                               : AppColors.textPrimary),
@@ -754,19 +754,19 @@ class _InfoBanner extends StatelessWidget {
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.info.withValues(alpha: 0.3)
-            : AppColors.infoLight,
+            ? AppColors.primaryAccent.withValues(alpha: 0.3)
+            : AppColors.primarySoft,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark
-              ? AppColors.info.withValues(alpha: 0.3)
-              : AppColors.infoBorderLight,
+              ? AppColors.primaryAccent.withValues(alpha: 0.3)
+              : AppColors.primarySoft,
         ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, size: 18, color: AppColors.info),
+          const Icon(Icons.info_outline, size: 18, color: AppColors.primaryAccent),
           AppSpacing.hSm,
           Expanded(
             child: Text(
@@ -774,7 +774,7 @@ class _InfoBanner extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 height: 1.45,
-                color: isDark ? AppColors.infoTextDark : AppColors.infoTextDeep,
+                color: isDark ? AppColors.primaryAccent : AppColors.primaryDark,
               ),
             ),
           ),
@@ -800,7 +800,7 @@ class _StickyBottom extends StatelessWidget {
         AppPadding.lg,
       ),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkBackground : AppColors.scaffoldBackground,
+        color: isDark ? AppColors.darkBackground : AppColors.background,
         border: Border(
           top: BorderSide(
             color: isDark ? AppColors.darkBorder : AppColors.border,

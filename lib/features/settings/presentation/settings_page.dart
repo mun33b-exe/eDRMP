@@ -5,6 +5,7 @@ import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../theme/colors.dart';
 import '../../settings/logic/theme_mode_notifier.dart';
 
@@ -28,7 +29,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppPadding.screen,
@@ -38,7 +39,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               Text(
                 AppStrings.titleSettings,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: AppSizes.h2(context),
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.4,
                   color: isDark
@@ -56,7 +57,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     trailing: Text(
                       AppStrings.settingsLanguageValue,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppSizes.bodyRegular(context),
                         fontWeight: FontWeight.w600,
                         color: isDark
                             ? AppColors.darkTextSecondary
@@ -107,8 +108,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       Icons.chevron_right,
                       size: 18,
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                     isDark: isDark,
                     isLast: false,
@@ -119,11 +120,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     trailing: Text(
                       '1.0.0 (Phase 2)',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppSizes.bodyRegular(context),
                         fontWeight: FontWeight.w500,
                         color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
                       ),
                     ),
                     isDark: isDark,
@@ -169,7 +170,7 @@ class _SettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allLg,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -178,7 +179,7 @@ class _SettingsCard extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 2,
                   offset: Offset(0, 1),
                 ),
@@ -221,7 +222,7 @@ class _SettingRow extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: AppSizes.bodyRegular(context),
               fontWeight: FontWeight.w500,
               color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
             ),
@@ -239,7 +240,7 @@ class _SettingRow extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: isDark ? AppColors.darkDivider : AppColors.divider,
+                    color: isDark ? AppColors.darkBorder : AppColors.divider,
                   ),
                 ),
               ),
@@ -293,9 +294,9 @@ class _ThemeSegment extends StatelessWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: AppSizes.bodySmall(context),
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : AppColors.textMuted,
+                  color: isSelected ? Colors.white : AppColors.textTertiary,
                 ),
               ),
             ),

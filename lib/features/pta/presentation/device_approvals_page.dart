@@ -9,6 +9,7 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/status_badge.dart';
@@ -37,23 +38,23 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
         title: Column(
           children: [
-            const Text(
+            Text(
               AppStrings.ptaRegulatoryLabel,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w600,
-                color: AppColors.ptaPrimary,
+                color: AppColors.success,
                 letterSpacing: 0.5,
               ),
             ),
             Text(
               AppStrings.ptaApprovalQueueTitle,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppSizes.h3(context),
                 fontWeight: FontWeight.w800,
                 color: isDark
                     ? AppColors.darkTextPrimary
@@ -97,7 +98,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                               trailing: _filter == f
                                   ? const Icon(
                                       Icons.check,
-                                      color: AppColors.ptaPrimary,
+                                      color: AppColors.success,
                                     )
                                   : null,
                               onTap: () {
@@ -171,7 +172,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
                       ),
                       filled: true,
                       fillColor: isDark
-                          ? AppColors.darkInput
+                          ? AppColors.darkSurface
                           : AppColors.inputFill,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -286,7 +287,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : AppColors.inputFill,
+          color: isDark ? AppColors.darkSurfaceElevated : AppColors.inputFill,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -307,8 +308,8 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isOn
-              ? AppColors.ptaPrimary
-              : (isDark ? AppColors.darkCard : AppColors.inputFill),
+              ? AppColors.success
+              : (isDark ? AppColors.darkSurfaceElevated : AppColors.inputFill),
           borderRadius: BorderRadius.circular(99),
           border: Border.all(
             color: isOn
@@ -321,7 +322,7 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w600,
                 color: isOn
                     ? Colors.white
@@ -334,11 +335,11 @@ class _DeviceApprovalsPageState extends ConsumerState<DeviceApprovalsPage> {
             Text(
               '$count',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSizes.bodySmall(context),
                 fontWeight: FontWeight.w500,
                 color: isOn
                     ? Colors.white70
-                    : (isDark ? AppColors.darkTextMuted : AppColors.textMuted),
+                    : (isDark ? AppColors.darkTextTertiary : AppColors.textTertiary),
               ),
             ),
           ],
@@ -390,7 +391,7 @@ class _DeviceApprovalCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -399,7 +400,7 @@ class _DeviceApprovalCard extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -418,7 +419,7 @@ class _DeviceApprovalCard extends StatelessWidget {
                   Text(
                     device.ownerName ?? 'Citizen ${device.id.split('-').last}',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: AppSizes.bodyRegular(context),
                       fontWeight: FontWeight.w700,
                       color: isDark
                           ? AppColors.darkTextPrimary
@@ -429,11 +430,11 @@ class _DeviceApprovalCard extends StatelessWidget {
                   Text(
                     'CNIC ${device.ownerCnic ?? "—"}',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppSizes.bodySmall(context),
                       fontFamily: 'monospace',
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -449,7 +450,7 @@ class _DeviceApprovalCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkInput : AppColors.inputFill,
+              color: isDark ? AppColors.darkSurface : AppColors.inputFill,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -461,7 +462,7 @@ class _DeviceApprovalCard extends StatelessWidget {
                     Text(
                       '${device.brand} ${device.model}',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: AppSizes.bodySmall(context),
                         fontWeight: FontWeight.w600,
                         color: isDark
                             ? AppColors.darkTextPrimary
@@ -472,11 +473,11 @@ class _DeviceApprovalCard extends StatelessWidget {
                     Text(
                       device.imei,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: AppSizes.bodySmall(context),
                         fontFamily: 'monospace',
                         color: isDark
-                            ? AppColors.darkTextMuted
-                            : AppColors.textMuted,
+                            ? AppColors.darkTextTertiary
+                            : AppColors.textTertiary,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -485,10 +486,10 @@ class _DeviceApprovalCard extends StatelessWidget {
                 Text(
                   dateStr,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppSizes.bodySmall(context),
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -552,10 +553,10 @@ class _DeviceApprovalSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final baseColor = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final highlightColor = isDark
         ? AppColors.darkSurface.withValues(alpha: 0.6)
-        : AppColors.scaffoldBackground;
+        : AppColors.background;
 
     return Shimmer.fromColors(
       baseColor: baseColor,

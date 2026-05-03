@@ -146,7 +146,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: isDark
-                                  ? AppColors.darkInput
+                                  ? AppColors.darkSurface
                                   : AppColors.inputFill,
                               border: OutlineInputBorder(
                                 borderRadius: AppRadius.allMd,
@@ -170,7 +170,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
                               ),
                             ),
                             dropdownColor: isDark
-                                ? AppColors.darkCard
+                                ? AppColors.darkSurfaceElevated
                                 : AppColors.card,
                             hint: const Text('Select an approved device'),
                             items: approvedDevices.map((d) {
@@ -268,7 +268,7 @@ class _SubmitFirPageState extends ConsumerState<SubmitFirPage> {
             decoration: BoxDecoration(
               color: isDark
                   ? AppColors.darkBackground
-                  : AppColors.scaffoldBackground,
+                  : AppColors.background,
               border: Border(
                 top: BorderSide(
                   color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -302,12 +302,12 @@ class _WarningCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? AppColors.rejected.withValues(alpha: 0.14)
-            : AppColors.errorLight,
+            : AppColors.errorSoft,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark
               ? AppColors.rejected.withValues(alpha: 0.32)
-              : AppColors.warningBorder,
+              : AppColors.errorSoft,
         ),
       ),
       child: Row(
@@ -326,8 +326,8 @@ class _WarningCard extends StatelessWidget {
                 fontSize: 12,
                 height: 1.45,
                 color: isDark
-                    ? AppColors.errorTextDark
-                    : AppColors.errorTextDeep,
+                    ? AppColors.error
+                    : AppColors.errorDark,
               ),
             ),
           ),

@@ -114,7 +114,7 @@ class _LogoMarkPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(24 * scale, 9 * scale),
       2.5 * scale,
-      Paint()..color = AppColors.accent,
+      Paint()..color = AppColors.warning,
     );
   }
 

@@ -288,7 +288,7 @@ class _InlineError extends StatelessWidget {
         vertical: AppPadding.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.errorLight,
+        color: AppColors.errorSoft,
         borderRadius: AppRadius.allMd,
         border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
       ),

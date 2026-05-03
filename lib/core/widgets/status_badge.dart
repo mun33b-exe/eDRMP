@@ -52,19 +52,19 @@ class StatusBadge extends StatelessWidget {
     switch (variant) {
       case StatusBadgeVariant.pending:
         return const _BadgePalette(
-          background: AppColors.warningLight,
+          background: AppColors.warningSoft,
           foreground: AppColors.pending,
         );
       case StatusBadgeVariant.approved:
       case StatusBadgeVariant.verified:
       case StatusBadgeVariant.active:
         return const _BadgePalette(
-          background: AppColors.successLight,
+          background: AppColors.successSoft,
           foreground: AppColors.approved,
         );
       case StatusBadgeVariant.rejected:
         return const _BadgePalette(
-          background: AppColors.errorLight,
+          background: AppColors.errorSoft,
           foreground: AppColors.rejected,
         );
       case StatusBadgeVariant.blocked:
@@ -74,8 +74,8 @@ class StatusBadge extends StatelessWidget {
         );
       case StatusBadgeVariant.info:
         return const _BadgePalette(
-          background: AppColors.infoLight,
-          foreground: AppColors.info,
+          background: AppColors.primarySoft,
+          foreground: AppColors.primaryAccent,
         );
     }
   }

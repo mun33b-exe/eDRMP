@@ -34,7 +34,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
         title: Column(
           children: [
@@ -43,7 +43,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: AppColors.ptaPrimary,
+                color: AppColors.success,
                 letterSpacing: 0.5,
               ),
             ),
@@ -203,8 +203,8 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isOn
-              ? AppColors.ptaPrimary
-              : (isDark ? AppColors.darkCard : AppColors.inputFill),
+              ? AppColors.success
+              : (isDark ? AppColors.darkSurfaceElevated : AppColors.inputFill),
           borderRadius: BorderRadius.circular(99),
           border: Border.all(
             color: isOn
@@ -234,7 +234,7 @@ class _BlockRequestsPageState extends ConsumerState<BlockRequestsPage> {
                 fontWeight: FontWeight.w500,
                 color: isOn
                     ? Colors.white70
-                    : (isDark ? AppColors.darkTextMuted : AppColors.textMuted),
+                    : (isDark ? AppColors.darkTextTertiary : AppColors.textTertiary),
               ),
             ),
           ],
@@ -286,7 +286,7 @@ class _BlockRequestCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.md),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -295,7 +295,7 @@ class _BlockRequestCard extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -327,8 +327,8 @@ class _BlockRequestCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                 ],
@@ -343,7 +343,7 @@ class _BlockRequestCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkInput : AppColors.inputFill,
+              color: isDark ? AppColors.darkSurface : AppColors.inputFill,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -368,8 +368,8 @@ class _BlockRequestCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -446,10 +446,10 @@ class _BlockRequestsSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? AppColors.darkCard : AppColors.card;
+    final baseColor = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final highlightColor = isDark
         ? AppColors.darkSurface.withValues(alpha: 0.6)
-        : AppColors.scaffoldBackground;
+        : AppColors.background;
 
     return Shimmer.fromColors(
       baseColor: baseColor,

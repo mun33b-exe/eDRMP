@@ -126,8 +126,8 @@ class _SuccessPanel extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final brightness = Theme.of(context).brightness;
     final iconBg = brightness == Brightness.dark
-        ? AppColors.secondaryDark
-        : AppColors.successLight;
+        ? AppColors.successDark
+        : AppColors.successSoft;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -177,7 +177,7 @@ class _InlineError extends StatelessWidget {
         vertical: AppPadding.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.errorLight,
+        color: AppColors.errorSoft,
         borderRadius: AppRadius.allMd,
         border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
       ),

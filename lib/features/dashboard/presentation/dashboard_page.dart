@@ -7,6 +7,8 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
 import '../../auth/logic/auth_controller.dart';
@@ -36,7 +38,7 @@ class DashboardPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(devicesProvider);
@@ -52,10 +54,10 @@ class DashboardPage extends ConsumerWidget {
               child: _HeroHeader(user: user, stats: stats),
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
+                context.responsiveHorizontalPadding,
                 AppPadding.lg,
-                AppPadding.lg,
-                AppPadding.lg,
+                context.responsiveHorizontalPadding,
                 AppPadding.xl,
               ),
               sliver: SliverList(
@@ -82,7 +84,7 @@ class DashboardPage extends ConsumerWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: isDark
-                                ? AppColors.secondaryLight
+                                ? AppColors.successSoft
                                 : AppColors.primary,
                           ),
                         ),
@@ -122,12 +124,7 @@ class _HeroHeader extends StatelessWidget {
     final displayName = user?.firstName ?? 'Hamza Khan';
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.lg,
-        AppPadding.xxl + AppPadding.xxl, // compensate for status bar
-        AppPadding.lg,
-        AppPadding.xl,
-      ),
+      padding: AppSizes.heroPadding(context),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment(-0.7, -1),
@@ -227,7 +224,7 @@ class _IconBtn extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: AppColors.accent,
+                    color: AppColors.warning,
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.primary, width: 2),
                   ),
@@ -294,9 +291,9 @@ class _RegisteredDevicesCard extends StatelessWidget {
                   vertical: AppPadding.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.dashboardApproved,
+                  color: AppColors.approved,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.dashboardApproved),
+                  border: Border.all(color: AppColors.approved),
                 ),
                 child: const Text(
                   AppStrings.dashboardAllActive,
@@ -320,17 +317,17 @@ class _RegisteredDevicesCard extends StatelessWidget {
               _MiniStat(
                 label: AppStrings.dashboardApproved,
                 value: '${stats.approved}',
-                color: AppColors.dashboardApproved,
+                color: AppColors.approved,
               ),
               _MiniStat(
                 label: AppStrings.dashboardPending,
                 value: '${stats.pending}',
-                color: AppColors.dashboardPending,
+                color: AppColors.pending,
               ),
               _MiniStat(
                 label: AppStrings.dashboardFirs,
                 value: '${stats.firs}',
-                color: AppColors.dashboardFirs,
+                color: AppColors.error,
               ),
             ],
           ),
@@ -419,12 +416,12 @@ class _QuickActionsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: context.isMobile ? 2 : 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: AppPadding.sm,
       crossAxisSpacing: AppPadding.sm,
-      childAspectRatio: 2.6,
+      childAspectRatio: AppSizes.quickActionAspect(context),
       children: [
         _QuickActionTile(
           icon: Icons.add_outlined,
@@ -443,7 +440,7 @@ class _QuickActionsGrid extends StatelessWidget {
         _QuickActionTile(
           icon: Icons.swap_horiz_outlined,
           label: AppStrings.dashboardTransfer,
-          toneColor: AppColors.info,
+          toneColor: AppColors.primaryAccent,
           isDark: isDark,
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -454,7 +451,7 @@ class _QuickActionsGrid extends StatelessWidget {
         _QuickActionTile(
           icon: Icons.qr_code_scanner_outlined,
           label: AppStrings.dashboardVerifyImei,
-          toneColor: AppColors.secondary,
+          toneColor: AppColors.success,
           isDark: isDark,
           onTap: () => context.push(RouteNames.verifyImei),
         ),
@@ -480,7 +477,7 @@ class _QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isDark ? AppColors.darkCard : AppColors.card;
+    final bg = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
 
     return Material(
@@ -558,9 +555,9 @@ class _DeviceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isDark ? AppColors.darkCard : AppColors.card;
+    final bg = isDark ? AppColors.darkSurfaceElevated : AppColors.card;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
-    final iconBg = isDark ? AppColors.darkInput : AppColors.primarySoft;
+    final iconBg = isDark ? AppColors.darkSurface : AppColors.primarySoft;
 
     return Container(
       padding: const EdgeInsets.all(AppPadding.lg - 2),
@@ -572,7 +569,7 @@ class _DeviceRow extends StatelessWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 2,
                   offset: Offset(0, 1),
                 ),
@@ -627,8 +624,8 @@ class _DeviceRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
+                        ? AppColors.darkTextTertiary
+                        : AppColors.textTertiary,
                   ),
                 ),
               ],

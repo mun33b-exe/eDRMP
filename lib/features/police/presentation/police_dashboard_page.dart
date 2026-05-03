@@ -6,6 +6,7 @@ import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/routes/route_names.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../theme/colors.dart';
 import '../../../core/constants/app_strings.dart';
@@ -27,12 +28,12 @@ class PoliceDashboardPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'OFFICER MODE',
           style: TextStyle(
-            fontSize: 13,
+            fontSize: AppSizes.bodyRegular(context),
             fontWeight: FontWeight.w700,
             letterSpacing: 0.3,
           ),
@@ -40,7 +41,7 @@ class PoliceDashboardPage extends ConsumerWidget {
         centerTitle: true,
         backgroundColor: isDark
             ? AppColors.darkSurface
-            : AppColors.policePrimary,
+            : AppColors.primary,
         foregroundColor: isDark ? AppColors.darkTextPrimary : Colors.white,
         actions: [
           IconButton(
@@ -97,6 +98,7 @@ class PoliceDashboardPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildStatCard(
+                    context: context,
                     title: 'Pending FIRs',
                     value: pendingCount.toString(),
                     icon: Icons.pending_actions,
@@ -108,6 +110,7 @@ class PoliceDashboardPage extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _buildStatCard(
+                          context: context,
                           title: 'Verified',
                           value: verifiedCount.toString(),
                           icon: Icons.check_circle_outline,
@@ -118,6 +121,7 @@ class PoliceDashboardPage extends ConsumerWidget {
                       AppSpacing.hMd,
                       Expanded(
                         child: _buildStatCard(
+                          context: context,
                           title: 'Rejected',
                           value: rejectedCount.toString(),
                           icon: Icons.cancel_outlined,
@@ -145,6 +149,7 @@ class PoliceDashboardPage extends ConsumerWidget {
   }
 
   Widget _buildStatCard({
+    required BuildContext context,
     required String title,
     required String value,
     required IconData icon,
@@ -154,7 +159,7 @@ class PoliceDashboardPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(AppPadding.lg),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : AppColors.card,
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
         borderRadius: AppRadius.allMd,
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.border,
@@ -163,7 +168,7 @@ class PoliceDashboardPage extends ConsumerWidget {
             ? null
             : [
                 const BoxShadow(
-                  color: AppColors.shadow,
+                  color: AppColors.shadowLight,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -179,7 +184,7 @@ class PoliceDashboardPage extends ConsumerWidget {
               Text(
                 title.toUpperCase(),
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: AppSizes.bodySmall(context),
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.5,
                   color: isDark
@@ -193,7 +198,7 @@ class PoliceDashboardPage extends ConsumerWidget {
           Text(
             value,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: AppSizes.h1(context),
               fontWeight: FontWeight.w800,
               color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
             ),

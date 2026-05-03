@@ -6,6 +6,7 @@ import '../../../core/constants/app_padding.dart';
 import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/utils/app_sizes.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../theme/colors.dart';
 import '../data/notification_model.dart';
@@ -22,7 +23,7 @@ class NotificationsPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
-          : AppColors.scaffoldBackground,
+          : AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: AppPadding.screen,
@@ -35,7 +36,7 @@ class NotificationsPage extends ConsumerWidget {
                   Text(
                     AppStrings.titleNotifications,
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: AppSizes.h2(context),
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.4,
                       color: isDark
@@ -50,10 +51,10 @@ class NotificationsPage extends ConsumerWidget {
                       onPressed: () => ref
                           .read(notificationsProvider.notifier)
                           .markAllRead(),
-                      child: const Text(
+                      child: Text(
                         AppStrings.notificationsMarkAllRead,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: AppSizes.bodySmall(context),
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary,
                         ),
@@ -139,7 +140,7 @@ class _NotificationTile extends StatelessWidget {
         padding: const EdgeInsets.all(AppPadding.md),
         decoration: BoxDecoration(
           color: notification.isRead
-              ? (isDark ? AppColors.darkCard : AppColors.card)
+              ? (isDark ? AppColors.darkSurfaceElevated : AppColors.card)
               : (isDark
                     ? AppColors.primary.withValues(alpha: 0.08)
                     : AppColors.primarySoft),
@@ -174,7 +175,7 @@ class _NotificationTile extends StatelessWidget {
                   Text(
                     notification.title,
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: AppSizes.bodyRegular(context),
                       fontWeight: notification.isRead
                           ? FontWeight.w500
                           : FontWeight.w700,
@@ -187,7 +188,7 @@ class _NotificationTile extends StatelessWidget {
                   Text(
                     notification.body,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: AppSizes.bodySmall(context),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.textSecondary,
@@ -197,10 +198,10 @@ class _NotificationTile extends StatelessWidget {
                   Text(
                     dateStr,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppSizes.bodySmall(context),
                       color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.textMuted,
+                          ? AppColors.darkTextTertiary
+                          : AppColors.textTertiary,
                     ),
                   ),
                 ],
