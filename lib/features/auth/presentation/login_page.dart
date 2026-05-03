@@ -184,7 +184,7 @@ class _InlineError extends StatelessWidget {
         vertical: AppPadding.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.errorLight,
+        color: AppColors.errorSoft,
         borderRadius: AppRadius.allMd,
         border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
       ),
@@ -212,11 +212,11 @@ class _DemoAccountsCard extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final brightness = Theme.of(context).brightness;
     final bg = brightness == Brightness.dark
-        ? AppColors.darkCard
-        : AppColors.infoLight;
+        ? AppColors.darkSurfaceElevated
+        : AppColors.primarySoft;
     final fg = brightness == Brightness.dark
         ? AppColors.darkTextPrimary
-        : AppColors.info;
+        : AppColors.primary;
     return Container(
       padding: const EdgeInsets.all(AppPadding.lg),
       decoration: BoxDecoration(

@@ -2,75 +2,142 @@ import 'package:flutter/material.dart';
 
 import 'colors.dart';
 
-/// Type scale tokens — single source of truth for typography across the app.
+/// AppTypography — Design.md Section 2.2 Typography System
 ///
-/// Roles:
-///   display     — 28 / 800
-///   title       — 20 / 800
-///   heading     — 17 / 700
-///   bodyStrong  — 14 / 600
-///   body        — 13 / 500
-///   caption     — 11 / 600 (uppercase)
-///   mono        — 12 / 500 (monospace)
+/// Font Families:
+/// - Display (Headlines): Poppins — Bold, confident, modern
+/// - Body (Copy): Roboto — Professional, highly legible
+/// - Monospace (Data): RobotoMono — IMEI, case IDs, timestamps
 class AppTypography {
   AppTypography._();
 
-  static const String sans = 'Inter';
-  static const String mono = 'JetBrainsMono';
+  static const String displayFont = 'Poppins';
+  static const String bodyFont = 'Roboto';
+  static const String monoFont = 'RobotoMono';
 
-  static TextTheme textTheme(Color primary, Color secondary, Color muted) {
+  static TextTheme textTheme(Color textPrimary, Color textSecondary, Color textTertiary) {
     return TextTheme(
+      // Display Large — H1 (32px, Poppins Bold)
       displayLarge: TextStyle(
-        fontFamily: sans,
-        fontSize: 28,
-        fontWeight: FontWeight.w800,
-        color: primary,
-        height: 1.15,
-        letterSpacing: -0.4,
-      ),
-      titleLarge: TextStyle(
-        fontFamily: sans,
-        fontSize: 20,
-        fontWeight: FontWeight.w800,
-        color: primary,
-        height: 1.2,
-        letterSpacing: -0.2,
-      ),
-      titleMedium: TextStyle(
-        fontFamily: sans,
-        fontSize: 17,
+        fontFamily: displayFont,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
-        color: primary,
+        color: textPrimary,
         height: 1.25,
       ),
-      bodyLarge: TextStyle(
-        fontFamily: sans,
+      // Display Medium — H2 (24px, Poppins SemiBold)
+      displayMedium: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.35,
+      ),
+      // Display Small — H3 (20px, Poppins SemiBold)
+      displaySmall: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.4,
+      ),
+      // Headline Large — Alternative H1
+      headlineLarge: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 32,
+        fontWeight: FontWeight.w700,
+        color: textPrimary,
+        height: 1.25,
+      ),
+      // Headline Medium — Alternative H2
+      headlineMedium: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.35,
+      ),
+      // Headline Small — Alternative H3
+      headlineSmall: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.4,
+      ),
+      // Title Large — Section headers (20px)
+      titleLarge: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.4,
+      ),
+      // Title Medium — Card titles (17px, Poppins)
+      titleMedium: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.35,
+      ),
+      // Title Small — Sub-sections (14px, Poppins SemiBold)
+      titleSmall: TextStyle(
+        fontFamily: displayFont,
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: primary,
+        color: textPrimary,
         height: 1.4,
       ),
+      // Body Large — Primary body text (16px, Roboto)
+      bodyLarge: TextStyle(
+        fontFamily: bodyFont,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: textPrimary,
+        height: 1.5,
+      ),
+      // Body Medium — Secondary body text (14px, Roboto)
       bodyMedium: TextStyle(
-        fontFamily: sans,
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-        color: secondary,
-        height: 1.45,
+        fontFamily: bodyFont,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: textSecondary,
+        height: 1.5,
       ),
-      labelSmall: TextStyle(
-        fontFamily: sans,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        color: muted,
-        height: 1.3,
-        letterSpacing: 1.1,
-      ),
+      // Body Small — Tertiary text (12px, Roboto)
       bodySmall: TextStyle(
-        fontFamily: mono,
+        fontFamily: bodyFont,
         fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: secondary,
+        fontWeight: FontWeight.w400,
+        color: textTertiary,
         height: 1.4,
+      ),
+      // Label Large — Button text, labels (14px, Poppins SemiBold)
+      labelLarge: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.4,
+      ),
+      // Label Medium — Small labels (13px, Poppins SemiBold)
+      labelMedium: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.4,
+        letterSpacing: 0.5,
+      ),
+      // Label Small — Captions, badges (12px, Poppins SemiBold)
+      labelSmall: TextStyle(
+        fontFamily: displayFont,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: textSecondary,
+        height: 1.4,
+        letterSpacing: 0.5,
       ),
     );
   }
@@ -85,9 +152,9 @@ class AppTheme {
   static ThemeData get lightTheme {
     const colorScheme = ColorScheme.light(
       primary: AppColors.primary,
-      secondary: AppColors.secondary,
+      secondary: AppColors.success,
       onSecondary: AppColors.buttonTextLight,
-      tertiary: AppColors.tertiary,
+      tertiary: AppColors.primaryAccent,
       onSurface: AppColors.textPrimary,
       surfaceContainerHighest: AppColors.inputFill,
       error: AppColors.error,
@@ -98,16 +165,16 @@ class AppTheme {
     final textTheme = AppTypography.textTheme(
       AppColors.textPrimary,
       AppColors.textSecondary,
-      AppColors.textMuted,
+      AppColors.textTertiary,
     );
 
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: AppColors.scaffoldBackground,
+      scaffoldBackgroundColor: AppColors.background,
       canvasColor: AppColors.surface,
-      fontFamily: AppTypography.sans,
+      fontFamily: AppTypography.bodyFont,
       textTheme: textTheme,
       dividerTheme: const DividerThemeData(
         color: AppColors.divider,
@@ -140,7 +207,7 @@ class AppTheme {
           horizontal: 16,
           vertical: 14,
         ),
-        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textMuted),
+        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary),
         labelStyle: textTheme.bodyMedium?.copyWith(
           color: AppColors.textSecondary,
         ),
@@ -174,7 +241,7 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.buttonTextLight,
           disabledBackgroundColor: AppColors.border,
-          disabledForegroundColor: AppColors.textMuted,
+          disabledForegroundColor: AppColors.textTertiary,
           elevation: 0,
           minimumSize: const Size.fromHeight(52),
           shape: RoundedRectangleBorder(
@@ -245,24 +312,24 @@ class AppTheme {
   // ---------------------------------------------------------------------------
   static ThemeData get darkTheme {
     const colorScheme = ColorScheme.dark(
-      primary: AppColors.primaryLight,
+      primary: AppColors.primaryAccent,
       onPrimary: AppColors.buttonTextLight,
-      secondary: AppColors.secondary,
+      secondary: AppColors.success,
       onSecondary: AppColors.buttonTextLight,
-      tertiary: AppColors.tertiary,
+      tertiary: AppColors.primaryAccent,
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkTextPrimary,
-      surfaceContainerHighest: AppColors.darkCard,
+      surfaceContainerHighest: AppColors.darkSurfaceElevated,
       error: AppColors.error,
       onError: AppColors.buttonTextLight,
       outline: AppColors.darkBorder,
-      outlineVariant: AppColors.darkDivider,
+      outlineVariant: AppColors.darkBorder,
     );
 
     final textTheme = AppTypography.textTheme(
       AppColors.darkTextPrimary,
       AppColors.darkTextSecondary,
-      AppColors.darkTextMuted,
+      AppColors.darkTextTertiary,
     );
 
     return ThemeData(
@@ -271,10 +338,10 @@ class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.darkBackground,
       canvasColor: AppColors.darkSurface,
-      fontFamily: AppTypography.sans,
+      fontFamily: AppTypography.bodyFont,
       textTheme: textTheme,
       dividerTheme: const DividerThemeData(
-        color: AppColors.darkDivider,
+        color: AppColors.darkBorder,
         thickness: 1,
         space: 1,
       ),
@@ -288,7 +355,7 @@ class AppTheme {
         titleTextStyle: textTheme.titleMedium,
       ),
       cardTheme: const CardThemeData(
-        color: AppColors.darkCard,
+        color: AppColors.darkSurfaceElevated,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -299,19 +366,19 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.darkInput,
+        fillColor: AppColors.darkSurface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
         hintStyle: textTheme.bodyMedium?.copyWith(
-          color: AppColors.darkTextMuted,
+          color: AppColors.darkTextTertiary,
         ),
         labelStyle: textTheme.bodyMedium?.copyWith(
           color: AppColors.darkTextSecondary,
         ),
         floatingLabelStyle: textTheme.bodyLarge?.copyWith(
-          color: AppColors.tertiary,
+          color: AppColors.primaryAccent,
         ),
         errorStyle: textTheme.bodyMedium?.copyWith(color: AppColors.error),
         enabledBorder: OutlineInputBorder(
@@ -320,7 +387,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: AppColors.tertiary, width: 1.4),
+          borderSide: const BorderSide(color: AppColors.primaryAccent, width: 1.4),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
@@ -337,10 +404,10 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryLight,
+          backgroundColor: AppColors.primaryAccent,
           foregroundColor: AppColors.buttonTextLight,
           disabledBackgroundColor: AppColors.darkBorder,
-          disabledForegroundColor: AppColors.darkTextMuted,
+          disabledForegroundColor: AppColors.darkTextTertiary,
           elevation: 0,
           minimumSize: const Size.fromHeight(52),
           shape: RoundedRectangleBorder(
@@ -362,7 +429,7 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.tertiary,
+          foregroundColor: AppColors.primaryAccent,
           textStyle: textTheme.bodyLarge,
         ),
       ),
@@ -384,7 +451,7 @@ class AppTheme {
         showDragHandle: true,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.darkCard,
+        backgroundColor: AppColors.darkSurfaceElevated,
         contentTextStyle: textTheme.bodyLarge?.copyWith(
           color: AppColors.darkTextPrimary,
         ),
@@ -401,7 +468,7 @@ class AppTheme {
         ),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.tertiary,
+        color: AppColors.primaryAccent,
       ),
     );
   }

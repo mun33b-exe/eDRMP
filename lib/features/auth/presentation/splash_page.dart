@@ -5,13 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_durations.dart';
-import '../../../core/constants/app_padding.dart';
-import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/routes/route_helpers.dart';
 import '../../../core/routes/route_names.dart';
 import '../../../theme/colors.dart';
+import '../../../theme/text_styles.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../logic/auth_controller.dart';
 
@@ -63,79 +62,78 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final isDark = brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      body: Stack(
-        children: [
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  constraints: const BoxConstraints(
-                    minWidth: 180,
-                    minHeight: 56,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppPadding.lg,
-                    vertical: AppPadding.md,
-                  ),
-                  decoration: const BoxDecoration(
-                    color: AppColors.primaryDark,
-                    borderRadius: AppRadius.allLg,
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.shield_outlined,
-                        size: 24,
-                        color: AppColors.buttonTextLight,
-                      ),
-                      AppSpacing.hSm,
-                      Text(
-                        AppStrings.appName,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.buttonTextLight,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AppSpacing.vSm,
-                const Text(
-                  AppStrings.appTagline,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.darkTextMuted,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [AppColors.darkBackground, AppColors.darkSurface]
+                : [AppColors.primary, AppColors.primaryDark],
           ),
-          const Positioned(
-            bottom: 80,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.darkTextMuted,
+        ),
+        child: Stack(
+          children: [
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // eDRMP Logo / Brand
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: AppColors.textInverse.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(
+                      Icons.shield_outlined,
+                      size: 48,
+                      color: AppColors.textInverse,
+                    ),
+                  ),
+                  AppSpacing.vLg,
+                  // eDRMP Title — Poppins Bold, 48px, white
+                  Text(
+                    AppStrings.appName,
+                    style: AppTextStyles.h1(color: AppColors.textInverse),
+                  ),
+                  AppSpacing.vSm,
+                  // Tagline — Body Small, white, opacity 0.8
+                  Text(
+                    'Device Registration & Management Platform',
+                    style: AppTextStyles.bodySmall(
+                      color: AppColors.textInverse.withValues(alpha: 0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            // Loading indicator at bottom
+            Positioned(
+              bottom: 80,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.4,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.textInverse.withValues(alpha: 0.8),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
