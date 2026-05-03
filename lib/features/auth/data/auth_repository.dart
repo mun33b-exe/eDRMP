@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthUser;
 
@@ -57,7 +59,22 @@ class AuthRepository {
         password: password,
       );
       final user = response.user;
-      if (user == null) throw const InvalidCredentialsFailure();
+      dev.log(
+        'signUp response: user=${user?.id}, '
+        'session=${response.session != null}',
+        name: 'AuthRepository',
+      );
+      if (user == null) {
+        throw const GenericAuthFailure(
+          'Registration failed. Please try again.',
+        );
+      }
+
+      // Supabase with email confirmation returns a user but with
+      // identities list empty for duplicate emails (security feature)
+      if (user.identities != null && user.identities!.isEmpty) {
+        throw const EmailAlreadyRegisteredFailure();
+      }
 
       await _client.from('profiles').insert({
         'id': user.id,
@@ -146,7 +163,8 @@ class AuthRepository {
         msg.contains('email address is already')) {
       return const EmailAlreadyRegisteredFailure();
     }
-    return const InvalidCredentialsFailure();
+    dev.log('Unhandled auth error: ${e.message}', name: 'AuthRepository');
+    return GenericAuthFailure(e.message);
   }
 
   UserRole _parseRole(String role) {

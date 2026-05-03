@@ -41,3 +41,72 @@ CREATE POLICY "Participants can update transfers"
     OR to_owner_id = auth.uid()
     OR to_cnic = (SELECT cnic FROM public.profiles WHERE id = auth.uid())
   );
+
+-- ═════════════════════════════════════════════════════════════
+-- Helper: look up a profile ID by CNIC (SECURITY DEFINER bypasses RLS)
+-- ═════════════════════════════════════════════════════════════
+
+CREATE OR REPLACE FUNCTION public.lookup_profile_by_cnic(target_cnic text)
+RETURNS uuid
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT id FROM public.profiles WHERE cnic = target_cnic LIMIT 1;
+$$;
+
+-- ═════════════════════════════════════════════════════════════
+-- Helper: accept a transfer (SECURITY DEFINER — updates device owner)
+-- Verifies the caller is the recipient before proceeding.
+-- ═════════════════════════════════════════════════════════════
+
+CREATE OR REPLACE FUNCTION public.accept_device_transfer(transfer_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_device_id   uuid;
+  v_to_cnic     text;
+  v_caller_cnic text;
+  v_status      text;
+BEGIN
+  -- Fetch the transfer
+  SELECT device_id, to_cnic, status
+    INTO v_device_id, v_to_cnic, v_status
+    FROM public.device_transfers
+   WHERE id = transfer_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Transfer not found';
+  END IF;
+
+  IF v_status <> 'pending' THEN
+    RAISE EXCEPTION 'Transfer is no longer pending';
+  END IF;
+
+  -- Verify caller is the recipient
+  SELECT cnic INTO v_caller_cnic
+    FROM public.profiles
+   WHERE id = auth.uid();
+
+  IF v_caller_cnic IS NULL OR v_caller_cnic <> v_to_cnic THEN
+    RAISE EXCEPTION 'Only the designated recipient can accept this transfer';
+  END IF;
+
+  -- Update transfer
+  UPDATE public.device_transfers
+     SET status = 'accepted',
+         to_owner_id = auth.uid(),
+         resolved_at = now()
+   WHERE id = transfer_id;
+
+  -- Transfer device ownership
+  UPDATE public.devices
+     SET owner_id = auth.uid(),
+         updated_at = now()
+   WHERE id = v_device_id;
+END;
+$$;

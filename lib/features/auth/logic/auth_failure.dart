@@ -35,3 +35,7 @@ class TermsNotAcceptedFailure extends AuthFailure {
   const TermsNotAcceptedFailure()
     : super('Please accept the Terms & Privacy Policy to continue.');
 }
+
+class GenericAuthFailure extends AuthFailure {
+  const GenericAuthFailure(super.message);
+}

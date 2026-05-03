@@ -14,7 +14,7 @@ class TransferRepository {
         .select(
           '*, devices(brand, model, imei1), '
           'from_profile:profiles!device_transfers_from_owner_id_fkey(full_name), '
-          'to_profile:profiles!device_transfers_to_owner_id_fkey(full_name)',
+          'to_profile:profiles!device_transfers_to_owner_id_fkey!left(full_name)',
         )
         .eq('from_owner_id', userId)
         .order('created_at', ascending: false);
@@ -32,7 +32,7 @@ class TransferRepository {
         .select(
           '*, devices(brand, model, imei1), '
           'from_profile:profiles!device_transfers_from_owner_id_fkey(full_name), '
-          'to_profile:profiles!device_transfers_to_owner_id_fkey(full_name)',
+          'to_profile:profiles!device_transfers_to_owner_id_fkey!left(full_name)',
         )
         .eq('to_cnic', cnic)
         .order('created_at', ascending: false);
@@ -58,15 +58,11 @@ class TransferRepository {
   }) async {
     final userId = SupabaseService.client.auth.currentUser!.id;
 
-    // Resolve recipient's profile ID from CNIC
-    final recipientRows = await SupabaseService.client
-        .from('profiles')
-        .select('id')
-        .eq('cnic', recipientCnic)
-        .limit(1);
-
-    final recipientId =
-        recipientRows.isNotEmpty ? recipientRows.first['id'] as String : null;
+    // Resolve recipient's profile ID via SECURITY DEFINER function
+    // (bypasses RLS so we can look up other users by CNIC)
+    final lookupResult = await SupabaseService.client
+        .rpc<String?>('lookup_profile_by_cnic', params: {'target_cnic': recipientCnic});
+    final recipientId = lookupResult;
 
     final row = await SupabaseService.client
         .from('device_transfers')
@@ -83,36 +79,11 @@ class TransferRepository {
     return TransferModel.fromJson(row);
   }
 
-  /// Accept a transfer — updates transfer status + device owner_id.
+  /// Accept a transfer — uses SECURITY DEFINER RPC to atomically update
+  /// both the transfer status and the device owner_id.
   Future<void> accept(String transferId) async {
-    final userId = SupabaseService.client.auth.currentUser!.id;
-    final now = DateTime.now().toIso8601String();
-
-    // Get the transfer to find device_id
-    final transfer = await SupabaseService.client
-        .from('device_transfers')
-        .select('device_id')
-        .eq('id', transferId)
-        .single();
-
-    // Update transfer status
     await SupabaseService.client
-        .from('device_transfers')
-        .update({
-          'status': 'accepted',
-          'to_owner_id': userId,
-          'resolved_at': now,
-        })
-        .eq('id', transferId);
-
-    // Transfer device ownership
-    await SupabaseService.client
-        .from('devices')
-        .update({
-          'owner_id': userId,
-          'updated_at': now,
-        })
-        .eq('id', transfer['device_id'] as String);
+        .rpc<void>('accept_device_transfer', params: {'transfer_id': transferId});
   }
 
   /// Reject a transfer request.
