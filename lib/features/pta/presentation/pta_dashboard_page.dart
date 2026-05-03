@@ -113,7 +113,7 @@ class PtaDashboardPage extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisSpacing: AppPadding.sm,
                 mainAxisSpacing: AppPadding.sm,
-                childAspectRatio: context.responsive(mobile: 1.6, tablet: 1.8, desktop: 2.0),
+                childAspectRatio: context.responsive(mobile: 1.4, tablet: 1.8, desktop: 2.0),
                 children: [
                   _buildStatTile(
                     context,
@@ -245,7 +245,11 @@ class PtaDashboardPage extends ConsumerWidget {
                     AppSpacing.vLg,
                     SizedBox(
                       height: 120,
-                      child: _StaticChartPlaceholder(isDark: isDark),
+                      child: _StaticChartPlaceholder(
+                        isDark: isDark,
+                        registrations: liveStats?.dailyRegistrations,
+                        blocks: liveStats?.dailyBlocks,
+                      ),
                     ),
                   ],
                 ),
@@ -411,7 +415,7 @@ class PtaDashboardPage extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(context.responsive(mobile: AppPadding.md, tablet: AppPadding.lg)),
+        padding: EdgeInsets.all(context.responsive(mobile: AppPadding.sm + 4, tablet: AppPadding.lg)),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
           borderRadius: AppRadius.allMd,
@@ -676,22 +680,37 @@ class PtaDashboardPage extends ConsumerWidget {
 }
 
 class _StaticChartPlaceholder extends StatelessWidget {
-  const _StaticChartPlaceholder({required this.isDark});
+  const _StaticChartPlaceholder({
+    required this.isDark,
+    this.registrations,
+    this.blocks,
+  });
   final bool isDark;
+  final List<int>? registrations;
+  final List<int>? blocks;
 
   @override
   Widget build(BuildContext context) {
-    // Custom paint a simple static chart
     return CustomPaint(
-      painter: _ChartPainter(isDark: isDark),
+      painter: _ChartPainter(
+        isDark: isDark,
+        registrations: registrations ?? List<int>.filled(30, 0),
+        blocks: blocks ?? List<int>.filled(30, 0),
+      ),
       size: Size.infinite,
     );
   }
 }
 
 class _ChartPainter extends CustomPainter {
-  _ChartPainter({required this.isDark});
+  _ChartPainter({
+    required this.isDark,
+    required this.registrations,
+    required this.blocks,
+  });
   final bool isDark;
+  final List<int> registrations;
+  final List<int> blocks;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -707,16 +726,33 @@ class _ChartPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(w, y), gridPaint);
     }
 
-    final data1 = [40, 55, 48, 70, 65, 82, 75, 92, 88, 98, 95, 110];
-    final data2 = [22, 18, 25, 20, 28, 24, 30, 26, 22, 28, 24, 30];
-    const maxVal = 120.0;
+    // Build cumulative totals so the line shows running sum over 30 days
+    final cumRegs = <double>[];
+    final cumBlks = <double>[];
+    var sumRegs = 0;
+    var sumBlks = 0;
+    for (var i = 0; i < registrations.length; i++) {
+      sumRegs += registrations[i];
+      sumBlks += blocks[i];
+      cumRegs.add(sumRegs.toDouble());
+      cumBlks.add(sumBlks.toDouble());
+    }
 
-    final step = w / (data1.length - 1);
+    // Determine max value for scaling (at least 1 to avoid division by zero)
+    final maxVal = <double>[
+      ...cumRegs,
+      ...cumBlks,
+      1,
+    ].reduce((a, b) => a > b ? a : b) * 1.1;
+
+    if (cumRegs.isEmpty) return;
+
+    final step = w / (cumRegs.length - 1).clamp(1, cumRegs.length);
 
     final path1 = Path();
-    for (var i = 0; i < data1.length; i++) {
+    for (var i = 0; i < cumRegs.length; i++) {
       final x = i * step;
-      final y = h - (data1[i] / maxVal) * h;
+      final y = h - (cumRegs[i] / maxVal) * h;
       if (i == 0) {
         path1.moveTo(x, y);
       } else {
@@ -725,9 +761,9 @@ class _ChartPainter extends CustomPainter {
     }
 
     final path2 = Path();
-    for (var i = 0; i < data2.length; i++) {
+    for (var i = 0; i < cumBlks.length; i++) {
       final x = i * step;
-      final y = h - (data2[i] / maxVal) * h;
+      final y = h - (cumBlks[i] / maxVal) * h;
       if (i == 0) {
         path2.moveTo(x, y);
       } else {
@@ -760,17 +796,18 @@ class _ChartPainter extends CustomPainter {
 
     canvas.drawPath(path1, line1Paint);
 
-    // Simple dashed line implementation
     final dashPaint = Paint()
       ..color = AppColors.error.withValues(alpha: 0.7)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
 
-    // Simplistic dash (not a real path dash, but sufficient for a placeholder)
     canvas.drawPath(path2, dashPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _ChartPainter oldDelegate) =>
+      oldDelegate.registrations != registrations ||
+      oldDelegate.blocks != blocks ||
+      oldDelegate.isDark != isDark;
 }
