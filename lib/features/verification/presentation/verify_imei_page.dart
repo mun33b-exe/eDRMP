@@ -87,8 +87,22 @@ class _VerifyImeiPageState extends ConsumerState<VerifyImeiPage>
     }
 
     setState(() => _canScan = false);
+    await _scannerController.stop();
     await checkImei(imei, ref);
-    if (mounted) setState(() => _canScan = true);
+
+    if (!mounted) return;
+    final error = ref.read(verificationErrorProvider);
+    if (error != null) {
+      await _scannerController.start();
+      setState(() => _canScan = true);
+    }
+  }
+
+  Future<void> _onScanAgain() async {
+    ref.read(verificationResultProvider.notifier).state = null;
+    ref.read(verificationErrorProvider.notifier).state = null;
+    setState(() => _canScan = true);
+    await _scannerController.start();
   }
 
   Future<void> _onVerifyPressed() async {
@@ -129,6 +143,7 @@ class _VerifyImeiPageState extends ConsumerState<VerifyImeiPage>
           _ScanTab(
             scannerController: _scannerController,
             onDetect: _onBarcodeDetected,
+            onScanAgain: _onScanAgain,
             result: result,
             isLoading: isLoading,
             error: error,
@@ -158,6 +173,7 @@ class _ScanTab extends StatelessWidget {
   const _ScanTab({
     required this.scannerController,
     required this.onDetect,
+    required this.onScanAgain,
     required this.result,
     required this.isLoading,
     required this.error,
@@ -166,6 +182,7 @@ class _ScanTab extends StatelessWidget {
 
   final MobileScannerController scannerController;
   final void Function(BarcodeCapture) onDetect;
+  final VoidCallback onScanAgain;
   final VerificationResult? result;
   final bool isLoading;
   final String? error;
@@ -173,6 +190,27 @@ class _ScanTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showResult = result != null && !isLoading;
+
+    if (showResult) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(AppPadding.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _VerificationResultCard(result: result!, isDark: isDark),
+            AppSpacing.vLg,
+            AppButton(
+              label: AppStrings.verifyScanAgain,
+              variant: AppButtonVariant.ghost,
+              icon: Icons.qr_code_scanner_outlined,
+              onPressed: onScanAgain,
+            ),
+          ],
+        ),
+      );
+    }
+
     return Column(
       children: [
         Expanded(
@@ -192,8 +230,6 @@ class _ScanTab extends StatelessWidget {
           ),
         if (error != null && !isLoading)
           _ErrorCard(message: error!, isDark: isDark),
-        if (result != null && !isLoading)
-          _VerificationResultCard(result: result!, isDark: isDark),
         AppSpacing.vMd,
       ],
     );

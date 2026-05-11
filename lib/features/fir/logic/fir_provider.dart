@@ -59,6 +59,13 @@ class FirsNotifier extends AsyncNotifier<List<FirModel>> {
       state = AsyncValue.error(e, st);
     }
   }
+
+  /// Submits an unblock_request for a recovered (previously blocked) device.
+  /// Throws 'no_fir' or 'already_pending' on known failure modes.
+  Future<void> requestReactivation(String deviceId) async {
+    await _repo.requestReactivation(deviceId);
+    ref.invalidateSelf();
+  }
 }
 
 final firByIdProvider = FutureProvider.family<FirModel, String>((ref, id) {

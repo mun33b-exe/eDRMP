@@ -144,6 +144,14 @@ class PoliceDashboardPage extends ConsumerWidget {
                     onPressed: () => context.push(RouteNames.pendingFirQueue),
                     icon: Icons.list_alt,
                   ),
+                  AppSpacing.vMd,
+                  AppButton(
+                    label: 'Reactivation Requests',
+                    onPressed: () =>
+                        context.push(RouteNames.policeUnblockQueue),
+                    icon: Icons.lock_open_outlined,
+                    variant: AppButtonVariant.ghost,
+                  ),
                 ],
               ),
             ),

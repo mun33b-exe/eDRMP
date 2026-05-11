@@ -4,6 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/supabase_service.dart';
 
 @immutable
+class TopModel {
+  const TopModel({required this.label, required this.count});
+  final String label;
+  final int count;
+}
+
+@immutable
 class PtaStats {
   const PtaStats({
     required this.totalDevices,
@@ -12,6 +19,7 @@ class PtaStats {
     required this.blocked,
     required this.dailyRegistrations,
     required this.dailyBlocks,
+    required this.topModels,
   });
 
   final int totalDevices;
@@ -22,6 +30,9 @@ class PtaStats {
   /// 30-day daily counts: index 0 = 29 days ago, index 29 = today.
   final List<int> dailyRegistrations;
   final List<int> dailyBlocks;
+
+  /// Top 5 device models by registration count.
+  final List<TopModel> topModels;
 }
 
 class PtaStatsNotifier extends AsyncNotifier<PtaStats> {
@@ -29,7 +40,7 @@ class PtaStatsNotifier extends AsyncNotifier<PtaStats> {
   Future<PtaStats> build() async {
     final client = SupabaseService.client;
 
-    final devices = await client.from('devices').select('id, status, registered_at');
+    final devices = await client.from('devices').select('id, status, registered_at, brand, model');
     final firs = await client.from('firs').select('id, status');
 
     final total = devices.length;
@@ -67,6 +78,19 @@ class PtaStatsNotifier extends AsyncNotifier<PtaStats> {
       }
     }
 
+    // Compute top models
+    final modelCounts = <String, int>{};
+    for (final d in devices) {
+      final brand = (d['brand'] as String? ?? '').trim();
+      final model = (d['model'] as String? ?? '').trim();
+      final label = [brand, model].where((s) => s.isNotEmpty).join(' ');
+      if (label.isEmpty) continue;
+      modelCounts[label] = (modelCounts[label] ?? 0) + 1;
+    }
+    final sorted = modelCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final topModels = sorted.take(5).map((e) => TopModel(label: e.key, count: e.value)).toList();
+
     return PtaStats(
       totalDevices: total,
       approvals: approved,
@@ -74,6 +98,7 @@ class PtaStatsNotifier extends AsyncNotifier<PtaStats> {
       blocked: blockedCount,
       dailyRegistrations: dailyRegs,
       dailyBlocks: dailyBlks,
+      topModels: topModels,
     );
   }
 }

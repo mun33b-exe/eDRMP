@@ -21,11 +21,13 @@ import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/police/presentation/fir_review_page.dart';
 import '../../features/police/presentation/pending_fir_queue_page.dart';
 import '../../features/police/presentation/police_dashboard_page.dart';
+import '../../features/police/presentation/unblock_queue_page.dart';
 import '../../features/profile/presentation/profile_page.dart';
 import '../../features/pta/presentation/block_requests_page.dart';
 import '../../features/pta/presentation/device_approvals_page.dart';
 import '../../features/pta/presentation/pta_dashboard_page.dart';
 import '../../features/pta/presentation/pta_history_page.dart';
+import '../../features/pta/presentation/unblock_requests_page.dart';
 import '../../features/settings/presentation/settings_page.dart';
 import '../../features/map/presentation/theft_map_page.dart';
 import '../../features/verification/presentation/verify_imei_page.dart';
@@ -194,6 +196,12 @@ final List<RouteBase> appRoutes = <RouteBase>[
   ),
 
   GoRoute(
+    name: RouteNames.policeUnblockQueue,
+    path: RouteNames.policeUnblockQueue,
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const PoliceUnblockQueuePage()),
+  ),
+  GoRoute(
     name: RouteNames.ptaDashboard,
     path: RouteNames.ptaDashboard,
     pageBuilder: (context, state) =>
@@ -210,6 +218,12 @@ final List<RouteBase> appRoutes = <RouteBase>[
     path: RouteNames.blockRequests,
     pageBuilder: (context, state) =>
         _buildTransitionPage(state, const BlockRequestsPage()),
+  ),
+  GoRoute(
+    name: RouteNames.ptaUnblockQueue,
+    path: RouteNames.ptaUnblockQueue,
+    pageBuilder: (context, state) =>
+        _buildTransitionPage(state, const PtaUnblockRequestsPage()),
   ),
   GoRoute(
     name: RouteNames.ptaHistory,

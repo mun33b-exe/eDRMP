@@ -240,6 +240,8 @@ class AppStrings {
   static const String myDevicesFilterActive = 'Active';
   static const String myDevicesFilterPending = 'Pending';
   static const String myDevicesFilterBlocked = 'Blocked';
+  static const String myDevicesFilterEmptyBody =
+      'No devices match this filter.';
   static const String myDevicesImeiLabel = 'IMEI';
 
   // Add Device flow
@@ -387,6 +389,7 @@ class AppStrings {
   static const String verifyNotFoundBody =
       'This device is not in the eDRMP registry.';
   static const String verifyRegisterCta = 'Register this device';
+  static const String verifyScanAgain = 'Scan again';
   static const String verifyBlockedWarning =
       'This device has been reported stolen and blocked.';
   static const String verifyCameraPermission = 'Camera permission required';
@@ -443,4 +446,52 @@ class AppStrings {
   static const String transferNoDevices =
       'No approved devices available to transfer';
   static const String transferHistory = 'Transfer History';
+
+  // ---------------------------------------------------------------------------
+  // Reactivation / Found device (Phase 9E)
+  // ---------------------------------------------------------------------------
+  static const String deviceFoundTitle = 'Device found?';
+  static const String deviceFoundBody =
+      'If you have recovered your device, you can request PTA to reactivate it. Police verification is required.';
+  static const String deviceReactivateCta = 'Request reactivation';
+  static const String reactivateDialogTitle = 'Request reactivation';
+  static const String reactivateDialogBody =
+      'This will submit a reactivation request to police for verification. Once approved, PTA will unblock your device.';
+  static const String reactivateConfirm = 'Submit request';
+  static const String reactivateSuccess =
+      'Reactivation request submitted. Police will review it shortly.';
+  static const String reactivateAlreadyPending =
+      'A reactivation request is already pending for this device.';
+  static const String reactivateNoFir =
+      'No active FIR found for this device.';
+
+  // ---------------------------------------------------------------------------
+  // Police — Unblock Queue
+  // ---------------------------------------------------------------------------
+  static const String policeUnblockTitle = 'Reactivation Requests';
+  static const String policeUnblockEmpty = 'No pending reactivation requests';
+  static const String policeUnblockEmptyBody =
+      'Requests from citizens whose devices were blocked will appear here.';
+  static const String policeUnblockApprove = 'Approve';
+  static const String policeUnblockReject = 'Reject';
+  static const String policeUnblockApproveConfirmTitle = 'Approve Reactivation';
+  static const String policeUnblockApproveConfirmBody =
+      'Approve this request? It will be forwarded to PTA to unblock the device.';
+  static const String policeUnblockRejectTitle = 'Reject Reactivation';
+  static const String policeUnblockRejectHint = 'e.g. Device not recovered';
+  static const String policeUnblockApproved = 'Request approved';
+  static const String policeUnblockRejected = 'Request rejected';
+
+  // ---------------------------------------------------------------------------
+  // PTA — Unblock Queue
+  // ---------------------------------------------------------------------------
+  static const String ptaUnblockTitle = 'Unblock Queue';
+  static const String ptaUnblockEmpty = 'No devices awaiting unblock';
+  static const String ptaUnblockEmptyBody =
+      'Reactivation requests approved by police will appear here.';
+  static const String ptaUnblockAction = 'Unblock Device';
+  static const String ptaUnblockConfirmTitle = 'Unblock Device';
+  static const String ptaUnblockConfirmBody =
+      'This will unblock the device and mark the case as resolved.';
+  static const String ptaUnblockDone = 'Device unblocked';
 }

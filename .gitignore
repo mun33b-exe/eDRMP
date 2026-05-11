@@ -22,6 +22,7 @@ docs/
 graphify-out/
 design/
 android/app/src/main/AndroidManifest.xml
+.kiro/
 
 # IntelliJ related
 *.iml
@@ -54,5 +55,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-supabase.exe

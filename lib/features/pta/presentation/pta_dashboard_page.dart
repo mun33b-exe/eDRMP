@@ -183,6 +183,15 @@ class PtaDashboardPage extends ConsumerWidget {
                   ),
                 ],
               ),
+              AppSpacing.vMd,
+              _buildActionCard(
+                context: context,
+                title: 'Unblock Queue',
+                icon: Icons.lock_open_outlined,
+                color: AppColors.warning,
+                isDark: isDark,
+                onTap: () => context.push(RouteNames.ptaUnblockQueue),
+              ),
               AppSpacing.vLg,
 
               // Registrations vs Blocks Chart
@@ -275,46 +284,42 @@ class PtaDashboardPage extends ConsumerWidget {
                       ),
                     ),
                     AppSpacing.vLg,
-                    _buildDeviceRow(
-                      context,
-                      'Apple iPhone 15 / Pro',
-                      '412K',
-                      0.92,
-                      AppColors.primaryAccent,
-                      isDark,
-                    ),
-                    _buildDeviceRow(
-                      context,
-                      'Samsung Galaxy S24',
-                      '318K',
-                      0.71,
-                      AppColors.primaryAccent,
-                      isDark,
-                    ),
-                    _buildDeviceRow(
-                      context,
-                      'Xiaomi Redmi Note 13',
-                      '267K',
-                      0.59,
-                      AppColors.error,
-                      isDark,
-                    ),
-                    _buildDeviceRow(
-                      context,
-                      'Tecno Camon 30',
-                      '198K',
-                      0.44,
-                      AppColors.success,
-                      isDark,
-                    ),
-                    _buildDeviceRow(
-                      context,
-                      'Other',
-                      '1.21M',
-                      0.32,
-                      isDark ? AppColors.darkBorder : AppColors.border,
-                      isDark,
-                    ),
+                    if (liveStats == null)
+                      const Center(child: CircularProgressIndicator())
+                    else if (liveStats.topModels.isEmpty)
+                      Text(
+                        'No data yet',
+                        style: TextStyle(
+                          fontSize: AppSizes.bodySmall(context),
+                          color: isDark
+                              ? AppColors.darkTextTertiary
+                              : AppColors.textTertiary,
+                        ),
+                      )
+                    else
+                      ...() {
+                        final top = liveStats.topModels;
+                        final maxCount = top.first.count;
+                        final barColors = [
+                          AppColors.primaryAccent,
+                          AppColors.primaryAccent,
+                          AppColors.error,
+                          AppColors.success,
+                          isDark ? AppColors.darkBorder : AppColors.border,
+                        ];
+                        return top.asMap().entries.map((e) {
+                          final color = barColors[e.key % barColors.length];
+                          final pct = maxCount > 0 ? e.value.count / maxCount : 0.0;
+                          return _buildDeviceRow(
+                            context,
+                            e.value.label,
+                            e.value.count.toString(),
+                            pct,
+                            color,
+                            isDark,
+                          );
+                        });
+                      }(),
                   ],
                 ),
               ),

@@ -68,10 +68,20 @@ class _MyDevicesPageState extends ConsumerState<MyDevicesPage> {
               // Device list or empty state
               Expanded(
                 child: filtered.isEmpty
-                    ? const EmptyState(
-                        icon: Icons.phone_android_outlined,
-                        title: AppStrings.myDevicesEmpty,
-                        message: AppStrings.myDevicesEmptyBody,
+                    ? EmptyState(
+                        icon: _filter == _Filter.blocked
+                            ? Icons.lock_open_outlined
+                            : _filter == _Filter.pending
+                                ? Icons.hourglass_empty_outlined
+                                : Icons.phone_android_outlined,
+                        title: _filter == _Filter.blocked
+                            ? AppStrings.myDevicesFilterBlocked
+                            : _filter == _Filter.pending
+                                ? AppStrings.myDevicesFilterPending
+                                : AppStrings.myDevicesEmpty,
+                        message: _filter == _Filter.all
+                            ? AppStrings.myDevicesEmptyBody
+                            : AppStrings.myDevicesFilterEmptyBody,
                       )
                     : RefreshIndicator(
                         onRefresh: () async {
@@ -113,16 +123,18 @@ class _MyDevicesPageState extends ConsumerState<MyDevicesPage> {
       case _Filter.all:
         return devices;
       case _Filter.active:
-        return devices.where((d) => d.status == DeviceStatus.approved).toList();
+        return devices
+            .where(
+              (d) =>
+                  d.status == DeviceStatus.approved ||
+                  d.status == DeviceStatus.unblocked,
+            )
+            .toList();
       case _Filter.pending:
         return devices.where((d) => d.status == DeviceStatus.pending).toList();
       case _Filter.blocked:
         return devices
-            .where(
-              (d) =>
-                  d.status == DeviceStatus.blocked ||
-                  d.status == DeviceStatus.rejected,
-            )
+            .where((d) => d.status == DeviceStatus.blocked)
             .toList();
     }
   }

@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Thin initialiser wrapper around the Supabase Flutter SDK.
@@ -9,8 +10,8 @@ class SupabaseService {
 
   static Future<void> init() async {
     await Supabase.initialize(
-      url: const String.fromEnvironment('SUPABASE_URL'),
-      anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
+      url: dotenv.env['SUPABASE_URL']!,
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
     );
   }
 

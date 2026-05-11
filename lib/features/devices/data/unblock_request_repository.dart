@@ -13,6 +13,26 @@ class UnblockRequestRepository {
     return rows.map(UnblockRequestModel.fromJson).toList();
   }
 
+  /// Police queue — all requests awaiting police review.
+  Future<List<UnblockRequestModel>> fetchAllPendingPolice() async {
+    final rows = await SupabaseService.client
+        .from('unblock_requests')
+        .select()
+        .eq('status', 'pending_police')
+        .order('created_at', ascending: false);
+    return rows.map(UnblockRequestModel.fromJson).toList();
+  }
+
+  /// PTA queue — all requests police-approved, awaiting PTA unblock.
+  Future<List<UnblockRequestModel>> fetchAllPoliceApproved() async {
+    final rows = await SupabaseService.client
+        .from('unblock_requests')
+        .select()
+        .eq('status', 'police_approved')
+        .order('created_at', ascending: false);
+    return rows.map(UnblockRequestModel.fromJson).toList();
+  }
+
   Future<UnblockRequestModel> create({
     required String firId,
     required String deviceId,

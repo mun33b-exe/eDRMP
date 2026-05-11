@@ -85,6 +85,49 @@ class FirRepository {
     return FirModel.fromJson(row);
   }
 
+  /// Finds the most recent blocked FIR for [deviceId] and submits an
+  /// unblock_request on behalf of the current user.
+  /// Returns the FIR id if successful, throws if no eligible FIR exists.
+  Future<String> requestReactivation(String deviceId) async {
+    final rows = await SupabaseService.client
+        .from('firs')
+        .select('id')
+        .eq('device_id', deviceId)
+        .eq('status', 'blocked')
+        .order('created_at', ascending: false)
+        .limit(1);
+
+    if (rows.isEmpty) {
+      throw Exception('no_fir');
+    }
+
+    final firId = rows.first['id'] as String;
+    final userId = SupabaseService.client.auth.currentUser!.id;
+
+    final existing = await SupabaseService.client
+        .from('unblock_requests')
+        .select('id')
+        .eq('fir_id', firId)
+        .eq('requested_by', userId)
+        .inFilter('status', ['pending_police', 'police_approved'])
+        .limit(1);
+
+    if (existing.isNotEmpty) {
+      throw Exception('already_pending');
+    }
+
+    await SupabaseService.client
+        .from('unblock_requests')
+        .insert({
+          'fir_id': firId,
+          'device_id': deviceId,
+          'requested_by': userId,
+          'status': 'pending_police',
+        });
+
+    return firId;
+  }
+
   Future<void> updateFirStatus(
     String id,
     CaseStatus status, [

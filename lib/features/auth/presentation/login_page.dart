@@ -143,7 +143,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               isLoading: isLoading,
             ),
             AppSpacing.vLg,
-            const _DemoAccountsCard(),
+            // const _DemoAccountsCard(),
           ],
         ),
       ),
@@ -204,43 +204,43 @@ class _InlineError extends StatelessWidget {
   }
 }
 
-class _DemoAccountsCard extends ConsumerWidget {
-  const _DemoAccountsCard();
+// class _DemoAccountsCard extends ConsumerWidget {
+//   const _DemoAccountsCard();
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = Theme.of(context).textTheme;
-    final brightness = Theme.of(context).brightness;
-    final bg = brightness == Brightness.dark
-        ? AppColors.darkSurfaceElevated
-        : AppColors.primarySoft;
-    final fg = brightness == Brightness.dark
-        ? AppColors.darkTextPrimary
-        : AppColors.primary;
-    return Container(
-      padding: const EdgeInsets.all(AppPadding.lg),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: AppRadius.allLg,
-        border: Border.all(color: fg.withValues(alpha: 0.18)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.science_outlined, size: 18, color: fg),
-              AppSpacing.hSm,
-              Text(
-                AppStrings.authDemoAccountsTitle,
-                style: textTheme.bodyLarge?.copyWith(color: fg),
-              ),
-            ],
-          ),
-          AppSpacing.vSm,
-          Text(AppStrings.authDemoAccountsBody, style: textTheme.bodyMedium),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final textTheme = Theme.of(context).textTheme;
+//     final brightness = Theme.of(context).brightness;
+//     final bg = brightness == Brightness.dark
+//         ? AppColors.darkSurfaceElevated
+//         : AppColors.primarySoft;
+//     final fg = brightness == Brightness.dark
+//         ? AppColors.darkTextPrimary
+//         : AppColors.primary;
+//     return Container(
+//       padding: const EdgeInsets.all(AppPadding.lg),
+//       decoration: BoxDecoration(
+//         color: bg,
+//         borderRadius: AppRadius.allLg,
+//         border: Border.all(color: fg.withValues(alpha: 0.18)),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             children: [
+//               Icon(Icons.science_outlined, size: 18, color: fg),
+//               AppSpacing.hSm,
+//               Text(
+//                 AppStrings.authDemoAccountsTitle,
+//                 style: textTheme.bodyLarge?.copyWith(color: fg),
+//               ),
+//             ],
+//           ),
+//           AppSpacing.vSm,
+//           Text(AppStrings.authDemoAccountsBody, style: textTheme.bodyMedium),
+//         ],
+//       ),
+//     );
+//   }
+// }

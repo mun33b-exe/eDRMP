@@ -93,3 +93,17 @@ final unblockRequestsByFirProvider =
     FutureProvider.family<List<UnblockRequestModel>, String>((ref, firId) {
       return ref.read(unblockRequestRepositoryProvider).fetchByFirId(firId);
     });
+
+final pendingPoliceUnblockProvider =
+    FutureProvider<List<UnblockRequestModel>>((ref) {
+      return ref
+          .read(unblockRequestRepositoryProvider)
+          .fetchAllPendingPolice();
+    });
+
+final pendingPtaUnblockProvider =
+    FutureProvider<List<UnblockRequestModel>>((ref) {
+      return ref
+          .read(unblockRequestRepositoryProvider)
+          .fetchAllPoliceApproved();
+    });

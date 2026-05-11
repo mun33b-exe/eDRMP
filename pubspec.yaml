@@ -19,12 +19,13 @@ dependencies:
   firebase_messaging: ^15.0.0
 
   qr_flutter: ^4.1.0
-  mobile_scanner: ^5.2.3
+  mobile_scanner: ^6.0.0
   connectivity_plus: ^6.1.0
   sentry_flutter: ^8.10.1
   image_picker: ^1.1.2
   intl: any
   flutter_local_notifications: ^21.0.0
+  flutter_dotenv: ^5.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -32,3 +33,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env

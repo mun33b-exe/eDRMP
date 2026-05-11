@@ -16,6 +16,7 @@ import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_timeline.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../theme/colors.dart';
+import '../../fir/logic/fir_provider.dart';
 import '../data/device_model.dart';
 import '../logic/device_provider.dart';
 
@@ -116,6 +117,10 @@ class DeviceDetailsPage extends ConsumerWidget {
             ),
             AppSpacing.vMd,
             _TimelineCard(device: device, isDark: isDark),
+            if (device.status == DeviceStatus.blocked) ...[
+              AppSpacing.vXl,
+              _ReactivationCard(device: device, isDark: isDark),
+            ],
             if (device.status == DeviceStatus.approved ||
                 device.status == DeviceStatus.unblocked) ...[
               AppSpacing.vXl,
@@ -331,26 +336,30 @@ class _TimelineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = _buildItems(device.status);
+    final items = _buildItems(device);
     return AppTimeline(items: items, isDark: isDark);
   }
 
-  List<AppTimelineItemData> _buildItems(DeviceStatus status) {
-    // Map device status to timeline state for each step.
-    // States: 'done', 'active', 'pending'
-    switch (status) {
+  static String _fmt(DateTime d) {
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    final hour = d.hour > 12 ? d.hour - 12 : (d.hour == 0 ? 12 : d.hour);
+    final min = d.minute.toString().padLeft(2, '0');
+    final ampm = d.hour >= 12 ? 'PM' : 'AM';
+    return '${d.day} ${months[d.month]} ${d.year} · $hour:$min $ampm';
+  }
+
+  List<AppTimelineItemData> _buildItems(DeviceModel device) {
+    final submittedMeta = _fmt(device.registeredAt);
+    switch (device.status) {
       case DeviceStatus.pending:
         return [
-          const AppTimelineItemData(
+          AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineSubmitted,
-            meta: '28 Apr 2026 · 10:42 AM',
-          ),
-          const AppTimelineItemData(
-            state: 'done',
-            title: AppStrings.timelineDocVerified,
-            meta: '28 Apr 2026 · 11:15 AM',
-            note: 'Invoice and CNIC validated by automated checks.',
+            meta: submittedMeta,
           ),
           const AppTimelineItemData(
             state: 'active',
@@ -365,54 +374,79 @@ class _TimelineCard extends StatelessWidget {
         ];
       case DeviceStatus.approved:
         return [
-          const AppTimelineItemData(
+          AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineSubmitted,
-            meta: '12 Mar 2026 · 09:14 AM',
+            meta: submittedMeta,
           ),
           const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineDocVerified,
-            meta: '12 Mar 2026 · 10:01 AM',
+            meta: 'Documents validated',
           ),
           const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelinePtaReview,
-            meta: '13 Mar 2026 · 14:22 PM',
+            meta: 'Review complete',
           ),
           const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineApproved,
-            meta: '14 Mar 2026 · 08:30 AM',
+            meta: 'Device registered',
           ),
         ];
       case DeviceStatus.rejected:
-      case DeviceStatus.blocked:
-      case DeviceStatus.unblocked:
         return [
-          const AppTimelineItemData(
+          AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelineSubmitted,
-            meta: '—',
-          ),
-          const AppTimelineItemData(
-            state: 'done',
-            title: AppStrings.timelineDocVerified,
-            meta: '—',
+            meta: submittedMeta,
           ),
           const AppTimelineItemData(
             state: 'done',
             title: AppStrings.timelinePtaReview,
-            meta: '—',
+            meta: 'Review complete',
           ),
+          const AppTimelineItemData(
+            state: 'rejected',
+            title: 'Application rejected',
+            meta: 'See rejection details',
+          ),
+        ];
+      case DeviceStatus.blocked:
+        return [
           AppTimelineItemData(
             state: 'done',
-            title: status == DeviceStatus.rejected
-                ? 'Application rejected'
-                : status == DeviceStatus.unblocked
-                ? 'Device unblocked'
-                : 'Device blocked',
-            meta: '—',
+            title: AppStrings.timelineSubmitted,
+            meta: submittedMeta,
+          ),
+          const AppTimelineItemData(
+            state: 'done',
+            title: AppStrings.timelineApproved,
+            meta: 'Was registered',
+          ),
+          const AppTimelineItemData(
+            state: 'done',
+            title: 'Device blocked',
+            meta: 'Reported stolen — blocked on network',
+          ),
+        ];
+      case DeviceStatus.unblocked:
+        return [
+          AppTimelineItemData(
+            state: 'done',
+            title: AppStrings.timelineSubmitted,
+            meta: submittedMeta,
+          ),
+          const AppTimelineItemData(
+            state: 'done',
+            title: AppStrings.timelineApproved,
+            meta: 'Was registered',
+          ),
+          const AppTimelineItemData(
+            state: 'done',
+            title: 'Device unblocked',
+            meta: 'Reactivated after recovery',
           ),
         ];
     }
@@ -512,6 +546,135 @@ class _QrCard extends StatelessWidget {
             ),
           ),
           // TODO(Phase 9D): upload QR to device-qr-codes storage + insert device_qr_codes row.
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Reactivation card — shown only for blocked devices
+// ---------------------------------------------------------------------------
+
+class _ReactivationCard extends ConsumerStatefulWidget {
+  const _ReactivationCard({required this.device, required this.isDark});
+
+  final DeviceModel device;
+  final bool isDark;
+
+  @override
+  ConsumerState<_ReactivationCard> createState() => _ReactivationCardState();
+}
+
+class _ReactivationCardState extends ConsumerState<_ReactivationCard> {
+  bool _loading = false;
+
+  Future<void> _submit() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(AppStrings.reactivateDialogTitle),
+        content: const Text(AppStrings.reactivateDialogBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text(AppStrings.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(AppStrings.reactivateConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _loading = true);
+    try {
+      await ref
+          .read(firsProvider.notifier)
+          .requestReactivation(widget.device.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(AppStrings.reactivateSuccess)),
+        );
+      }
+    } on Exception catch (e) {
+      if (!mounted) return;
+      final msg = e.toString().contains('already_pending')
+          ? AppStrings.reactivateAlreadyPending
+          : e.toString().contains('no_fir')
+              ? AppStrings.reactivateNoFir
+              : AppStrings.somethingWentWrong;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg)),
+      );
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = widget.isDark;
+    return Container(
+      padding: const EdgeInsets.all(AppPadding.md),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurfaceElevated : AppColors.card,
+        borderRadius: AppRadius.allLg,
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.border,
+        ),
+        boxShadow: isDark
+            ? null
+            : const [
+                BoxShadow(
+                  color: AppColors.shadowLight,
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.phonelink_ring_outlined,
+                size: 18,
+                color: AppColors.primary,
+              ),
+              AppSpacing.hSm,
+              Text(
+                AppStrings.deviceFoundTitle,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          AppSpacing.vSm,
+          Text(
+            AppStrings.deviceFoundBody,
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.textSecondary,
+            ),
+          ),
+          AppSpacing.vMd,
+          AppButton(
+            label: AppStrings.deviceReactivateCta,
+            onPressed: _loading ? null : _submit,
+            isLoading: _loading,
+            icon: Icons.lock_open_outlined,
+          ),
         ],
       ),
     );
